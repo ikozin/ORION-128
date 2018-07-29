@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace disasm8080.Model
+namespace Dasm.Model
 {
     public class OpDataString : OpData
     {

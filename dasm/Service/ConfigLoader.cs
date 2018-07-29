@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace disasm8080.Service
+namespace Dasm.Service
 {
     public static class ConfigLoader
     {

@@ -1,9 +1,9 @@
-﻿using disasm8080.Service;
+﻿using Dasm.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace disasm8080.Model
+namespace Dasm.Model
 {
     public class OpCode
     {

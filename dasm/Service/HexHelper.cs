@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace disasm8080.Service
+namespace Dasm.Service
 {
     public static class HexHelper
     {

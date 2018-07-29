@@ -1,11 +1,11 @@
-﻿using disasm8080.Model;
-using disasm8080.Service;
+﻿using Dasm.Model;
+using Dasm.Service;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-namespace disasm8080
+namespace Dasm
 {
     class Program
     {
@@ -62,7 +62,7 @@ namespace disasm8080
             }
             catch (Exception)
             {
-                Console.WriteLine("disasm8080 <path> l:<label> c:<comment> d:<data> [i:<include>] [s:<start>] o:<file>");
+                Console.WriteLine("dasm <path> l:<label> c:<comment> d:<data> [i:<include>] [s:<start>] o:<file>");
                 Console.WriteLine("<path> input file name");
                 Console.WriteLine("<label> label file name");
                 Console.WriteLine("<comment> comment file name");
@@ -120,7 +120,7 @@ namespace disasm8080
                     }
                 }
             }
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }

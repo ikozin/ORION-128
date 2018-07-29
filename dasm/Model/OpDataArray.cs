@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace disasm8080.Model
+namespace Dasm.Model
 {
     public class OpDataArray
     {

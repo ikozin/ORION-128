@@ -1,4 +1,4 @@
-﻿namespace disasm8080.Model
+﻿namespace Dasm.Model
 {
     public class OpDataWordHex : OpDataHex
     {

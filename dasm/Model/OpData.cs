@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace disasm8080.Model
+namespace Dasm.Model
 {
     public abstract class OpData
     {
