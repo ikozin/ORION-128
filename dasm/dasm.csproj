@@ -55,6 +55,7 @@
     <Compile Include="Model\OpDataByteChar.cs" />
     <Compile Include="Model\OpDataByteHex.cs" />
     <Compile Include="Model\OpDataChar.cs" />
+    <Compile Include="Model\OpDataCharSize.cs" />
     <Compile Include="Model\OpDataDWordChar.cs" />
     <Compile Include="Model\OpDataHex.cs" />
     <Compile Include="Model\OpDataQWordChar.cs" />

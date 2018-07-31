@@ -21,6 +21,13 @@ namespace Dasm.Model
             _list.Add("DC", new OpDataDWordChar(Blanks));
             _list.Add("QC", new OpDataQWordChar(Blanks));
             _list.Add("S", new OpDataString(Blanks));
+            _list.Add("C2", new OpDataCharSize(Blanks, 2));
+            _list.Add("C3", new OpDataCharSize(Blanks, 3));
+            _list.Add("C4", new OpDataCharSize(Blanks, 4));
+            _list.Add("C5", new OpDataCharSize(Blanks, 5));
+            _list.Add("C6", new OpDataCharSize(Blanks, 6));
+            _list.Add("C7", new OpDataCharSize(Blanks, 7));
+            _list.Add("C8", new OpDataCharSize(Blanks, 8));
         }
 
         public OpData Get(string key)

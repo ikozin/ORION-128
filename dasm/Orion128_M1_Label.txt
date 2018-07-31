@@ -68,6 +68,7 @@
 0F3D5H:Y_POS_ADDR
 0F9C4H:SetPosCursor
 0F9CCH:ReLoadHL
+0F9CFH:LoadHL
 0F9D9H:Start_Sumbol
 0F9DEH:Start_Extract
 0F9E5H:Start_Extract_Line
@@ -81,3 +82,8 @@
 0F9FFH:SetZeroDisplayPage
 0F9FBH:LoadByteDisplayPage
 0FD2EH:DispSymC_Hidden
+0FE00H:ClearScreen
+0FE11H:ClearScreen_Loop
+0FE46H:Unknown_Data
+0F8E1H:Handle_Loop
+0F901H:Handle_Inverse
