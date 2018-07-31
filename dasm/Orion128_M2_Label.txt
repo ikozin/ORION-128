@@ -1,0 +1,2 @@
+﻿0F8EFH:LoadCodePage
+0FE4AH:CodePageTable
