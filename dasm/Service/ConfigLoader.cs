@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Dasm.Service
 {
@@ -12,37 +13,41 @@ namespace Dasm.Service
             Dictionary<string, string> list = new Dictionary<string, string>();
             foreach (var line in lines)
             {
-                var items = line.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var items = line.Split(new[] { ':' });
                 if (String.IsNullOrEmpty(defValue))
                 {
-                    if (items.Length != 2) continue;
-                    if (items[0].Contains("-"))
+                    if (items.Length < 2) continue;
+                    string key = items[0];
+                    string value = String.Join(":", items.Skip(1).ToArray());
+                    if (key.Contains("-"))
                     {
-                        (ushort lo, ushort hi) = items[0].ParseBoundary();
+                        (ushort lo, ushort hi) = key.ParseBoundary();
                         for (; lo <= hi; lo++)
                         {
                             string addr = lo.ToHex();
-                            list.Add(addr, items[1]);
+                            list.Add(addr, value);
                         }
                     }
                     else
-                        list.Add(items[0], items[1]);
+                        list.Add(key, value);
                 }
                 else
                 {
                     if (items.Length == 0) continue;
-                    if (items[0].Contains("-"))
+                    string key = items[0];
+                    string value = String.Join(":", items.Skip(1).ToArray());
+                    if (key.Contains("-"))
                     {
-                        (ushort lo, ushort hi) = items[0].ParseBoundary();
+                        (ushort lo, ushort hi) = key.ParseBoundary();
                         int len = hi - lo;
                         for (int i = 0; i <= len; lo++, i++) // ushort переполнении станет 0, поэтому с ним сравнивать бесполезно
                         {
                             string addr = lo.ToHex();
-                            list.Add(addr, items.Length > 1 ? items[1] : defValue);
+                            list.Add(addr, items.Length > 1 ? value : defValue);
                         }
                     }
                     else
-                        list.Add(items[0], items.Length > 1 ? items[1] : defValue);
+                        list.Add(key, items.Length > 1 ? value : defValue);
                 }
             }
             return list;
