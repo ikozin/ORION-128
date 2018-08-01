@@ -32,10 +32,8 @@ namespace Dasm.Model
             if (HasByte)
             {
                 if (stream.Position == stream.Length) throw new IndexOutOfRangeException();
-                int data = stream.ReadByte();
-                param = String.Format("{0:X2}H", data);
-                if (param[0] >= 'A') param = '0' + param;
-
+                byte data = (byte)stream.ReadByte();
+                param = data.ToHex();
             }
             else if (HasWord)
             {
