@@ -19,16 +19,7 @@ namespace Dasm.Service
                     if (items.Length < 2) continue;
                     string key = items[0];
                     string value = String.Join(":", items.Skip(1).ToArray());
-                    if (key.Contains("-"))
-                    {
-                        (ushort lo, ushort hi) = key.ParseBoundary();
-                        for (; lo <= hi; lo++)
-                        {
-                            string addr = lo.ToHex();
-                            list.Add(addr, value);
-                        }
-                    }
-                    else
+                    if (!HandleBoundary(key, value, list))
                         list.Add(key, value);
                 }
                 else
@@ -36,23 +27,30 @@ namespace Dasm.Service
                     if (items.Length == 0) continue;
                     string key = items[0];
                     string value = String.Join(":", items.Skip(1).ToArray());
-                    if (key.Contains("-"))
-                    {
-                        (ushort lo, ushort hi) = key.ParseBoundary();
-                        int len = hi - lo;
-                        for (int i = 0; i <= len; lo++, i++) // ushort переполнении станет 0, поэтому с ним сравнивать бесполезно
-                        {
-                            string addr = lo.ToHex();
-                            list.Add(addr, items.Length > 1 ? value : defValue);
-                        }
-                    }
-                    else
-                        list.Add(key, items.Length > 1 ? value : defValue);
+
+                    value = value.Length > 0 ? value : defValue;
+                    if (!HandleBoundary(key, value, list))
+                        list.Add(key, value);
                 }
             }
             return list;
         }
 
+        // Обрабатываем диапазон адресов
+        private static bool HandleBoundary(string key, string value, Dictionary<string, string> list)
+        {
+            if (!key.Contains("-")) return false;
+            (ushort lo, ushort hi) = key.ParseBoundary();
+            int len = hi - lo;
+            for (int i = 0; i <= len; lo++, i++) // ushort при переполнении станет 0, поэтому с ним сравнивать бесполезно
+            {
+                string addr = lo.ToHex();
+                list.Add(addr, value);
+            }
+            return true;
+        }
+
+        // Получаем диапазон адресов
         private static (ushort, ushort) ParseBoundary(this string value)
         {
             var bounds = value.Split(new[] { '-', ' ' }, StringSplitOptions.RemoveEmptyEntries);

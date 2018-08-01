@@ -2,7 +2,6 @@
 using Dasm.Service;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 
 namespace Dasm
@@ -11,14 +10,14 @@ namespace Dasm
     {
         static void Main(string[] args)
         {
-            uint width = 32;
+            uint width = 32;        // Ширина строки (для форматирования)
             ushort org = 0x0000;
 
             string text;
 
+            #region Разбор параметров командной строки
             string includePath = null;
             string fileName = null;
-
             Dictionary<string, string> comments = null;
             Dictionary<string, string> labels = null;
             Dictionary<string, string> datas = null;
@@ -73,6 +72,7 @@ namespace Dasm
                 Console.ReadLine();
                 return;
             }
+            #endregion
 
             OpCodeArray codeArray = new OpCodeArray(labels);
             OpDataArray dataArray = new OpDataArray();
@@ -101,17 +101,14 @@ namespace Dasm
                         {
                             if (stream.Position == stream.Length) break;
                             byte data = (byte)stream.ReadByte();
-                            text = codeArray.Handle((byte)data, stream);
+                            text = codeArray.Handle(data, stream);
                         }
 
-                        while (text.Length < width) text += ' ';
+                        while (text.Length < width) text += ' ';    // Форматируем строку
                         string note = comments.ContainsKey(addr) ? comments[addr] : "";
                         if (labels.ContainsKey(addr))
                             writer.WriteLine(String.Format("{0}:", labels[addr]));
                         writer.WriteLine(String.Format("    {0};{1} {2}", text, addr, note));
-
-                        //if (data == 0xC3 || data == 0xC9)
-                        //    writer.WriteLine();
                     }
                     catch (Exception)
                     {
@@ -120,7 +117,9 @@ namespace Dasm
                     }
                 }
             }
-            //Console.ReadLine();
+#if DEBUG            
+            Console.ReadLine();
+#endif
         }
     }
 }
