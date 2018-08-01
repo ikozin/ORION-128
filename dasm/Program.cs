@@ -10,11 +10,9 @@ namespace Dasm
     {
         static void Main(string[] args)
         {
-            uint width = 32;        // Ширина строки (для форматирования)
             ushort org = 0x0000;
 
             string text;
-
             #region Разбор параметров командной строки
             string includePath = null;
             string fileName = null;
@@ -104,7 +102,7 @@ namespace Dasm
                             text = codeArray.Handle(data, stream);
                         }
 
-                        while (text.Length < width) text += ' ';    // Форматируем строку
+                        text = String.Format("{0, -32}", text); // Форматируем строку
                         string note = comments.ContainsKey(addr) ? comments[addr] : "";
                         if (labels.ContainsKey(addr))
                             writer.WriteLine(String.Format("{0}:", labels[addr]));

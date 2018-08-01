@@ -19,6 +19,7 @@ namespace Dasm.Service
                     if (items.Length < 2) continue;
                     string key = items[0];
                     string value = String.Join(":", items.Skip(1).ToArray());
+
                     if (!HandleBoundary(key, value, list))
                         list.Add(key, value);
                 }
