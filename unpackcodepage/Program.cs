@@ -24,8 +24,9 @@ namespace UnpackCodepage
                     reader.Position = ParseHex(args[1]) - 0xF800;
                     while (reader.Position < reader.Length)
                     {
-                        // Распаковываем очередонй символ
+                        // Распаковываем очередной символ
                         //symbolData[0] = 0;
+                        Console.Write("0{0:X4}H-", reader.Position + 0xF800);
                         int index = 7;
                         int pos = 1;
                         while (index > 0)
@@ -41,6 +42,7 @@ namespace UnpackCodepage
                             }
                             while (count >= 0);
                         }
+                        Console.WriteLine("0{0:X4}H", reader.Position + 0xF800 - 1);
                         // Отображаем распакованный символ
                         for (int i = 0; i < symbolData.Length; i++)
                         {
