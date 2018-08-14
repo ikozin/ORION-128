@@ -4,8 +4,8 @@ DisplayModePort	EQU 0F800H
 DisplayPagePort	EQU 0F900H
 DisplayViewPort	EQU 0F900H
 
-VAL_0C0H_ADDR		EQU 0F3CFH
-VAL_30H_ADDR		EQU 0F3D0H
+SCREEN_ADDR_HI		EQU 0F3CFH
+SCREEN_SIZE_HI		EQU 0F3D0H
 CODEPAGE_ADDR		EQU 0F3D1H
 INVERSE_DISP_ADDR	EQU 0F3D3H
 X_POS_ADDR			EQU 0F3D4H
@@ -52,24 +52,24 @@ Run_0BFFDH			EQU 0BFFDH
 ORG 0F800H
 
     jmp StartCode                   ;0F800H 
-InputKey_Entry:
-    jmp InputKey                    ;0F803H Ввод символа с клавиатуры (вых: A - введенный символ)
-LoadByte_Entry:
-    jmp LoadByte                    ;0F806H Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта, A = 08H - без поиска)
+InputKeyA_Entry:
+    jmp InputKeyA                   ;0F803H Ввод символа с клавиатуры (вых: A - введенный символ)
+LoadByteA_Entry:
+    jmp LoadByteA                   ;0F806H Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта, A = 08H - без поиска)
 DisplaySymC_Entry:
     jmp 0F3CCH                      ;0F809H Вывод символа на экран (вх: C = выводимый символ)
-SaveByte_Entry:
-    jmp SaveByte                    ;0F80CH Запись байта на магнитофон (вх: A = записываемый байт)
+SaveByteC_Entry:
+    jmp SaveByteC                   ;0F80CH Запись байта на магнитофон (вх: C = записываемый байт)
 DispplaySymA_Entry:
     jmp DispSymA                    ;0F80FH Вывод символа на экран (вх: A = выводимый символ)
-GetKeyState_Entry:
-    jmp GetKeyState                 ;0F812H Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
-DisplayHEX_Entry:
-    jmp DisplayHex                  ;0F815H Вывод байта на экран в HEX-коде (вх: A = выводимый символ)
-DisplayText_Entry:
-    jmp DisplayText                 ;0F818H Вывод на экран сообщений (вх: HL - адрес начала, конечный байт - 00H)
-InputkeyCode_Entry:
-    jmp InputKeyCode                ;0F81BH Ввод кода нажатой клавиши inkey  (вых: A = 0FFH - не нажата, A = 0FEH - РУС/ЛАТ, иначе - код клавиши)
+GetKeyStateA_Entry:
+    jmp GetKeyStateA                ;0F812H Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
+DisplayHexA_Entry:
+    jmp DisplayHexA                 ;0F815H Вывод байта на экран в HEX-коде (вх: A = выводимый символ)
+DisplayTextHL_Entry:
+    jmp DisplayTextHL               ;0F818H Вывод на экран сообщений (вх: HL - адрес начала, конечный байт - 00H)
+InputkeyCodeA_Entry:
+    jmp InputKeyCodeA               ;0F81BH Ввод кода нажатой клавиши inkey  (вых: A = 0FFH - не нажата, A = 0FEH - РУС/ЛАТ, иначе - код клавиши)
 GetPosCursor_Entry:
     jmp GetPosCursor                ;0F81EH Запрос положения курсора (вых: H - номер строки Y, L номер позиции X)
 NotImplemented_Entry:
@@ -110,13 +110,13 @@ StartCode:
     lxi H, 6040H                    ;0F860H Значение 6040H (запись - 1200 бод = 40H, чтение - для стандартной скорости = 60H)
     shld PAUSE_SAVE_ADDR            ;0F863H сохраняем в ячейке. 0F3DAH - ячейка в которой хранится константа записи на магнитную 40H. 0F3DBH - ячейка в которой хранится константа чтения с магнитной ленты = 60H
     lxi H, Label_Version            ;0F866H 
-    call DisplayText                ;0F869H Выводим "orion-128.2"
+    call DisplayTextHL              ;0F869H Выводим "orion-128.2"
 HandleCmd:
     lxi SP, 0F3C9H                  ;0F86CH Начало цикла обработки команд
     mvi A, 8AH                      ;0F86FH 
     sta 0F403H                      ;0F871H 
     lxi H, Label_Prompt             ;0F874H 
-    call DisplayText                ;0F877H Выводим приглашение для ввода команды "=>"
+    call DisplayTextHL              ;0F877H Выводим приглашение для ввода команды "=>"
     sta 0F3E5H                      ;0F87AH 
     lxi H, HotReset                 ;0F87DH 
     shld 0F3D8H                     ;0F880H 
@@ -148,7 +148,7 @@ InitializeCodePage:
     shld CODEPAGE_ADDR              ;0F8BFH сохраняем в ячейке 0F3D1H
     call LoadCodePage               ;0F8C2H загружаем знакогенератор
     lxi H, 30C0H                    ;0F8C5H Значение 30C0H
-    shld VAL_0C0H_ADDR              ;0F8C8H сохраняем в ячейке 0F3CFH (0C0H -> 0F3CFH, 30H -> 0F3D0H)
+    shld SCREEN_ADDR_HI             ;0F8C8H сохраняем в ячейках: 0C0H -> 0F3CFH (старшый байт начала видеопамяти 0C000H), 30H -> 0F3D0H (старшый байт размера видеопамяти 3000H = 12К)
     lxi H, DispSymC                 ;0F8CBH Адрес 0FCD0H (0F809H Вывод символа на экран, 0F855H Код команды безусловного перехода JMP)
     shld 0F3CDH                     ;0F8CEH сохраняем в ячейке 0F3CDH
     lxi H, Stub                     ;0F8D1H Значение 0F8DDH
@@ -159,7 +159,7 @@ Stub:
     ret                             ;0F8DDH 
     lxi D, 0F3F0H                   ;0F8DEH 
 Handle_Loop:
-    call InputKey                   ;0F8E1H 
+    call InputKeyA                  ;0F8E1H 
     cpi 2EH                         ;0F8E4H 
     jz HotReset                     ;0F8E6H 
     cpi 7FH                         ;0F8E9H 7FH -> Спец. символ инверсия вывода
@@ -225,9 +225,9 @@ HotReset:
     lxi D, 0000H                    ;0F960H 
     stc                             ;0F963H 
     ret                             ;0F964H 
-DisplayHex_M:
+DisplayHexM:
     mov A, M                        ;0F965H 
-DisplayHex:
+DisplayHexA:
     push PSW                        ;0F966H сохраняем аккумулятор и слово состояния
     rrc                             ;0F967H Старшие 4 бита загоняем в младшие
     rrc                             ;0F968H Старшие 4 бита загоняем в младшие
@@ -247,7 +247,7 @@ DisplayTetrasHex_1:
     call DisplaySymC_Entry          ;0F97CH Отображаем HEX символ
     pop B                           ;0F97FH 
     ret                             ;0F980H 
-DisplayText:
+DisplayTextHL:
     mov A, M                        ;0F981H 
     ana A                           ;0F982H 
     rz                              ;0F983H 
@@ -256,7 +256,7 @@ DisplayText:
     call DisplaySymC_Entry          ;0F986H 
     pop B                           ;0F989H 
     inx H                           ;0F98AH 
-    jmp DisplayText                 ;0F98BH 
+    jmp DisplayTextHL               ;0F98BH 
 CalcControlSum:
     lxi B, 0000H                    ;0F98EH Обнуляем BC
 CalcSumLoop:
@@ -264,7 +264,7 @@ CalcSumLoop:
     add M                           ;0F992H 
     mov C, A                        ;0F993H 
     push PSW                        ;0F994H Сохраняем флаги
-    call CheckEnd                   ;0F995H 
+    call CheckBlockEnd              ;0F995H 
     jz Ret_Pop_PSW                  ;0F998H 
     pop psw                         ;0F99BH Восстанавливаем флаги
     mov A, B                        ;0F99CH 
@@ -277,13 +277,13 @@ DisplayAddr:
     call DisplaySpace               ;0F9A6H 
 DisplayHL:
     mov A, H                        ;0F9A9H 
-    call DisplayHex                 ;0F9AAH Отображаем адрес (H)
+    call DisplayHexA                ;0F9AAH Отображаем адрес (H)
     mov A, L                        ;0F9ADH 
-    call DisplayHex                 ;0F9AEH Отображаем адрес (L)
+    call DisplayHexA                ;0F9AEH Отображаем адрес (L)
 DisplaySpace:
     mvi A, 20H                      ;0F9B1H ' '
     jmp DispSymA                    ;0F9B3H 
-CheckEnd:
+CheckBlockEnd:
     mov A, H                        ;0F9B6H ----------------------------------------
     cmp D                           ;0F9B7H Проверяем на конец блока
     rnz                             ;0F9B8H в HL - начало блока
@@ -351,8 +351,9 @@ SaveByteDisplayPage:
     sta 0F900H                      ;0FA04H 
     mov M, C                        ;0FA07H 
     jmp SetZeroDisplayPage          ;0FA08H 
+LoadByteA_WithoutSync:
     mvi A, 08H                      ;0FA0BH 
-LoadByte:
+LoadByteA:
     push B                          ;0FA0DH 
     push D                          ;0FA0EH 
     push H                          ;0FA0FH 
@@ -415,11 +416,11 @@ Ret_Pop_HDB:
     pop D                           ;0FA6FH 
     pop B                           ;0FA70H 
     ret                             ;0FA71H 
-Save_HL:
+SaveByteHL:
     mov C, H                        ;0FA72H 
-    call SaveByte                   ;0FA73H 
+    call SaveByteC                  ;0FA73H 
     mov C, L                        ;0FA76H 
-SaveByte:
+SaveByteC:
     push PSW                        ;0FA77H 
     push D                          ;0FA78H 
     push B                          ;0FA79H 
@@ -455,7 +456,7 @@ DisplayNextAddr:
     inx H                           ;0FAA6H 
 EditMemory:
     call DisplayAddr                ;0FAA7H 
-    call DisplayHex_M               ;0FAAAH 
+    call DisplayHexM                ;0FAAAH 
     call DisplaySpace               ;0FAADH 
     call 0F8DEH                     ;0FAB0H 
     lxi D, 0F3F0H                   ;0FAB3H 
@@ -476,12 +477,14 @@ DumpMemory_NextByte:
     call DisplaySpace               ;0FACAH 
     mov A, B                        ;0FACDH 
     ana A                           ;0FACEH 
-    jz 0FAD9H                       ;0FACFH 
+    jz DumpMemory_HexA_M            ;0FACFH 
     call LoadByteDisplayPage        ;0FAD2H 
     mov A, C                        ;0FAD5H 
-    jmp 0FADAH                      ;0FAD6H 
+    jmp DumpMemory_HexA             ;0FAD6H 
+DumpMemory_HexA_M:
     mov A, M                        ;0FAD9H 
-    call DisplayHex                 ;0FADAH 
+DumpMemory_HexA:
+    call DisplayHexA                ;0FADAH 
     inx H                           ;0FADDH 
     mov A, L                        ;0FADEH 
     ani 0FH                         ;0FADFH 
@@ -493,18 +496,19 @@ DumpMemory_NextByte:
     jmp DumpMemory_NextLine         ;0FAECH 
 LoadFile:
     mvi A, 0FFH                     ;0FAEFH 
-    call 0FB28H                     ;0FAF1H 
+    call LoadFile_Sync              ;0FAF1H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
     xchg                            ;0FAF4H 
-    call 0FB26H                     ;0FAF5H 
+    call LoadFile_WithoutSync       ;0FAF5H 
     xchg                            ;0FAF8H 
     push H                          ;0FAF9H 
-    call 0FA0BH                     ;0FAFAH 
+LoadFile_Loop:
+    call LoadByteA_WithoutSync      ;0FAFAH 
     mov M, A                        ;0FAFDH 
-    call CheckEnd                   ;0FAFEH 
+    call CheckBlockEnd              ;0FAFEH 
     inx H                           ;0FB01H 
-    jnz 0FAFAH                      ;0FB02H 
+    jnz LoadFile_Loop               ;0FB02H 
     mvi A, 0FFH                     ;0FB05H 
-    call 0FB28H                     ;0FB07H 
+    call LoadFile_Sync              ;0FB07H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
     mov B, H                        ;0FB0AH 
     mov C, L                        ;0FB0BH 
     pop H                           ;0FB0CH 
@@ -518,13 +522,15 @@ LoadFile:
     mov H, B                        ;0FB1AH 
     mov L, C                        ;0FB1BH 
     call DisplayHL                  ;0FB1CH 
-    call CheckEnd                   ;0FB1FH 
+    call CheckBlockEnd              ;0FB1FH 
     rz                              ;0FB22H 
     jmp 0FA28H                      ;0FB23H 
+LoadFile_WithoutSync:
     mvi A, 08H                      ;0FB26H 
-    call LoadByte                   ;0FB28H 
+LoadFile_Sync:
+    call LoadByteA                  ;0FB28H 
     mov H, A                        ;0FB2BH 
-    call 0FA0BH                     ;0FB2CH 
+    call LoadByteA_WithoutSync      ;0FB2CH 
     mov L, A                        ;0FB2FH 
     ret                             ;0FB30H 
 SaveFile:
@@ -534,27 +540,29 @@ SaveFile:
     push B                          ;0FB36H 
     push H                          ;0FB37H 
     lxi B, 0000H                    ;0FB38H 
-    call SaveByte                   ;0FB3BH 
+SaveFile_Header:
+    call SaveByteC                  ;0FB3BH 
     dcr B                           ;0FB3EH 
-    jnz 0FB3BH                      ;0FB3FH 
+    jnz SaveFile_Header             ;0FB3FH 
     mvi C, 0E6H                     ;0FB42H 
-    call SaveByte                   ;0FB44H 
-    call Save_HL                    ;0FB47H 
+    call SaveByteC                  ;0FB44H 
+    call SaveByteHL                 ;0FB47H 
     xchg                            ;0FB4AH 
-    call Save_HL                    ;0FB4BH 
+    call SaveByteHL                 ;0FB4BH 
     xchg                            ;0FB4EH 
     pop H                           ;0FB4FH 
+SaveFile_Loop:
     mov C, M                        ;0FB50H 
-    call SaveByte                   ;0FB51H 
-    call CheckEnd                   ;0FB54H 
+    call SaveByteC                  ;0FB51H 
+    call CheckBlockEnd              ;0FB54H 
     inx H                           ;0FB57H 
-    jnz 0FB50H                      ;0FB58H 
+    jnz SaveFile_Loop               ;0FB58H 
     lxi H, 0000H                    ;0FB5BH 
-    call Save_HL                    ;0FB5EH 
+    call SaveByteHL                 ;0FB5EH 
     mvi C, 0E6H                     ;0FB61H 
-    call SaveByte                   ;0FB63H 
+    call SaveByteC                  ;0FB63H 
     pop H                           ;0FB66H 
-    call Save_HL                    ;0FB67H 
+    call SaveByteHL                 ;0FB67H 
     jmp DisplayHL                   ;0FB6AH 
 SetColorMode:
     mov C, L                        ;0FB6DH 
@@ -570,7 +578,7 @@ SetColorMode:
     xra A                           ;0FB81H 
     sta 0F900H                      ;0FB82H 
     ret                             ;0FB85H 
-GetKeyState:
+GetKeyStateA:
     xra A                           ;0FB86H 
     sta 0F400H                      ;0FB87H 
     lda 0F401H                      ;0FB8AH 
@@ -579,25 +587,26 @@ GetKeyState:
     mvi A, 0FFH                     ;0FB90H 
     ret                             ;0FB92H 
 CMD_ROM_BOOT:
-    lxi D, 0B800H                   ;0FB93H 
-    mov H, E                        ;0FB96H 
-    mov L, E                        ;0FB97H 
-    mvi A, 90H                      ;0FB98H 
-    sta 0F503H                      ;0FB9AH 
-    shld 0F501H                     ;0FB9DH 
-    lda 0F500H                      ;0FBA0H 
-    stax D                          ;0FBA3H 
-    inx D                           ;0FBA4H 
-    inx H                           ;0FBA5H 
-    mov A, H                        ;0FBA6H 
-    cpi 08H                         ;0FBA7H 
-    jnz 0FB9DH                      ;0FBA9H 
-    jmp Run_0BFFDH                  ;0FBACH 
-InputKey:
+    lxi D, 0B800H                   ;0FB93H  --------------------------------------------
+    mov H, E                        ;0FB96H  --------------------------------------------
+    mov L, E                        ;0FB97H  --------------------------------------------
+    mvi A, 90H                      ;0FB98H  --------------------------------------------
+    sta 0F503H                      ;0FB9AH  Загружаем ROM диск 
+ROM_LoopLoad:
+    shld 0F501H                     ;0FB9DH  в ОЗУ по адресу 0B800H до 0BFFFH
+    lda 0F500H                      ;0FBA0H  т.е. до начала видеопамяти 0C000H.
+    stax D                          ;0FBA3H  В конце загруженного блока
+    inx D                           ;0FBA4H  в последних 3-х байтах (начиная с 0BFFDH)
+    inx H                           ;0FBA5H  должна быть команда jmp на начало программы
+    mov A, H                        ;0FBA6H  --------------------------------------------
+    cpi 08H                         ;0FBA7H  --------------------------------------------
+    jnz ROM_LoopLoad                ;0FBA9H  --------------------------------------------
+    jmp Run_0BFFDH                  ;0FBACH  --------------------------------------------
+InputKeyA:
     push B                          ;0FBAFH 
     push D                          ;0FBB0H 
     push H                          ;0FBB1H 
-    call InputKeyCode               ;0FBB2H 
+    call InputKeyCodeA              ;0FBB2H 
     cpi 0FFH                        ;0FBB5H 
     jnz 0FBBDH                      ;0FBB7H 
     sta 0F3E6H                      ;0FBBAH 
@@ -606,7 +615,7 @@ InputKey:
     dcr E                           ;0FBC0H 
     inr E                           ;0FBC1H 
     cz 0FDF2H                       ;0FBC2H 
-    call InputKeyCode               ;0FBC5H 
+    call InputKeyCodeA              ;0FBC5H 
     inr A                           ;0FBC8H 
     jz 0FBBFH                       ;0FBC9H 
     push PSW                        ;0FBCCH 
@@ -621,7 +630,7 @@ InputKey:
     cma                             ;0FBDBH 
     mov M, A                        ;0FBDCH 
     sta 0F402H                      ;0FBDDH 
-    call InputKeyCode               ;0FBE0H 
+    call InputKeyCodeA              ;0FBE0H 
     inr A                           ;0FBE3H 
     jnz 0FBE0H                      ;0FBE4H 
     call 0FDF2H                     ;0FBE7H 
@@ -633,7 +642,7 @@ InputKey:
     jz 0FC02H                       ;0FBF4H 
     dcr D                           ;0FBF7H 
     jz 0FC02H                       ;0FBF8H 
-    call InputKeyCode               ;0FBFBH 
+    call InputKeyCodeA              ;0FBFBH 
     cmp E                           ;0FBFEH 
     jz 0FBF7H                       ;0FBFFH 
     call 0FE1BH                     ;0FC02H 
@@ -641,7 +650,7 @@ InputKey:
     call 0FDF2H                     ;0FC06H 
     mov A, E                        ;0FC09H 
     jmp Ret_Pop_HDB                 ;0FC0AH 
-InputKeyCode:
+InputKeyCodeA:
     push B                          ;0FC0DH 
     push D                          ;0FC0EH 
     push H                          ;0FC0FH 
@@ -658,7 +667,7 @@ InputKeyCode:
     cpi 0FFH                        ;0FC23H 
     jz 0FC33H                       ;0FC25H 
     mov E, A                        ;0FC28H 
-    call 0FCBAH                     ;0FC29H 
+    call InputKey_Delay             ;0FC29H 
     lda 0F401H                      ;0FC2CH 
     cmp E                           ;0FC2FH 
     jz 0FC46H                       ;0FC30H 
@@ -741,11 +750,13 @@ InputKeyCode:
     jm 0FC87H                       ;0FCB4H 
     adi 40H                         ;0FCB7H 
     ret                             ;0FCB9H 
+InputKey_Delay:
     lxi H, 0B00H                    ;0FCBAH 
+InputKey_DelayLoop:
     dcx H                           ;0FCBDH 
     mov A, H                        ;0FCBEH 
     ora L                           ;0FCBFH 
-    jnz 0FCBDH                      ;0FCC0H 
+    jnz InputKey_DelayLoop          ;0FCC0H 
     ret                             ;0FCC3H 
 DisplayNewLine:
     mvi A, 0DH                      ;0FCC4H 
@@ -834,9 +845,9 @@ DispSymC_Hidden:
     lxi H, 0000H                    ;0FD44H 
     dad SP                          ;0FD47H 
     shld 0F3DFH                     ;0FD48H 
-    lda VAL_30H_ADDR                ;0FD4BH 
+    lda SCREEN_SIZE_HI              ;0FD4BH 
     mov B, A                        ;0FD4EH 
-    lda VAL_0C0H_ADDR               ;0FD4FH 
+    lda SCREEN_ADDR_HI              ;0FD4FH 
     mov H, A                        ;0FD52H 
     mvi L, 0AH                      ;0FD53H 
     sphl                            ;0FD55H 
@@ -918,7 +929,7 @@ Ret_Zero_HB:
     add L                           ;0FDCBH 
     mov B, A                        ;0FDCCH 
     mov L, H                        ;0FDCDH 
-    lda VAL_0C0H_ADDR               ;0FDCEH 
+    lda SCREEN_ADDR_HI              ;0FDCEH 
     mov H, A                        ;0FDD1H 
     mov A, B                        ;0FDD2H 
     dcr H                           ;0FDD3H 
@@ -957,9 +968,9 @@ Ret_Zero_HB:
 ClearScreen:
     push PSW                        ;0FE00H 
     push H                          ;0FE01H 
-    lda VAL_0C0H_ADDR               ;0FE02H Старший байт начала экранной области, начало 0C0H -> 0C000H
+    lda SCREEN_ADDR_HI              ;0FE02H Старший байт начала экранной области, начало 0C0H -> 0C000H
     mov H, A                        ;0FE05H 
-    lda VAL_30H_ADDR                ;0FE06H Старший байт размера экранной области, размер 30H ->  3000H
+    lda SCREEN_SIZE_HI              ;0FE06H Старший байт размера экранной области, размер 30H ->  3000H
     add H                           ;0FE09H 
     mov C, A                        ;0FE0AH Запоминаем старший байт конца экранной области, до этого адреса заполняем
     mvi L, 00H                      ;0FE0BH В HL начало экранной области 0C000H
