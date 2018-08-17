@@ -4,17 +4,21 @@ DisplayModePort	    EQU 0F800H
 DisplayPagePort	    EQU 0F900H
 DisplayViewPort	    EQU 0F900H
 
-SCREEN_ADDR_HI		EQU 0F3CFH
-SCREEN_SIZE_HI		EQU 0F3D0H
-CODEPAGE_ADDR		EQU 0F3D1H
-INVERSE_DISP_ADDR	EQU 0F3D3H
-X_POS_ADDR			EQU 0F3D4H
-Y_POS_ADDR			EQU 0F3D5H
-RESTART_ADDR        EQU 0F3D8H
-PAUSE_SAVE_ADDR		EQU 0F3DAH
-PAUSE_LOAD_ADDR		EQU 0F3DBH
-LOADBYTE_ADDR	    EQU 0F3DCH
-
+Reserv_JMP_ADDR     EQU 0F3C9H      ; XX   =   0C3H (код команды JMP)
+Reserv_ADDR	        EQU 0F3CAH      ; XXXX
+DispSymC_JMP_ADDR   EQU 0F3CCH      ; XX   =   0C3H (код команды JMP)
+DispSymC_ADDR       EQU 0F3CDH      ; XXXX
+SCREEN_ADDR_HI		EQU 0F3CFH		; XX   =   0C0H (старший байт начала видеопамяти 0C000H)
+SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H (старший байт размера видеопамяти 3000H = 12К)
+CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H
+INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H
+X_POS_ADDR			EQU 0F3D4H		; XX
+Y_POS_ADDR			EQU 0F3D5H		; XX
+RESTART_ADDR        EQU 0F3D8H		; XXXX
+PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
+PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
+LOADBYTE_ADDR	    EQU 0F3DCH		; XX
+USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
 Run_0BFFDH			EQU 0BFFDH
 
 ; 0F400H - порт клавиатуры
@@ -50,6 +54,64 @@ Run_0BFFDH			EQU 0BFFDH
 ;      |             |             |             |             |
 ; 0000 ---------------------------------------------------------
 ;
+;    Служебные ячейки
+; -----------------------------------------------------------------------------------------------------------------------------------
+;|   0F3C9H   | 0C3H | Reserv_JMP_ADDR   | 0C3H (код команды JMP) - Резерв 
+;|   0F3CAH   |  XX  | Reserv_ADDR       | LO - адрес
+;|   0F3CBH   |  XX  | Reserv_ADDR       | HI - адрес
+;|   0F3CCH   | 0C3H | DispSymC_JMP_ADDR | 0C3H (код команды JMP) - DispSymC
+;|   0F3CDH   |  XX  | DispSymC_ADDR     | LO - адрес
+;|   0F3CEH   |  XX  | DispSymC_ADDR     | HI - адрес
+;|   0F3CFH   | 0C0H | SCREEN_ADDR_HI    | старший байт начала видеопамяти 0C000H
+;|   0F3D0H   |  30H | SCREEN_SIZE_HI    | старший байт размера видеопамяти 3000H = 12К
+;|   0F3D1H   |  00H | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
+;|   0F3D2H   | 0F0H | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
+;|   0F3D3H   |  00H | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
+;|   0F3D4H   |  XX  | X_POS_ADDR        |
+;|   0F3D5H   |  XX  | Y_POS_ADDR        |
+;|   0F3D6H   |  --  |                   |
+;|   0F3D7H   |  --  |                   |
+;|   0F3D8H   |  XX  | RESTART_ADDR      | LO - адрес возврата
+;|   0F3D9H   |  XX  | RESTART_ADDR      | HI - адрес возврата
+;|   0F3DAH   |  40H | PAUSE_SAVE_ADDR   | запись - 1200 бод = 40H
+;|   0F3DBH   |  60H | PAUSE_LOAD_ADDR   | чтение - для стандартной скорости = 60H
+;|   0F3DCH   |  XX  | LOADBYTE_ADDR     |
+;|   0F3DDH   |  --  |                   |
+;|   0F3DEH   |  --  |                   |
+;|   0F3DFH   |  XX  |                   |
+;|   0F3E0H   |  XX  |                   |
+;|   0F3E1H   |  --  |                   |
+;|   0F3E2H   |  --  |                   |
+;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
+;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
+;|   0F3E5H   |  XX  |                   |
+;|   0F3E6H   |  XX  |                   |
+;|   0F3E7H   |  --  |                   |
+;|   0F3E8H   |  --  |                   |
+;|   0F3E9H   |  --  |                   |
+;|   0F3EAH   |  --  |                   |
+;|   0F3EBH   |  --  |                   |
+;|   0F3ECH   |  --  |                   |
+;|   0F3EDH   |  --  |                   |
+;|   0F3EEH   |  XX  |                   |
+;|   0F3EFH   |  XX  |                   |
+;|   0F3F0H   |  XX  |                   |
+;|   0F3F1H   |  XX  |                   |
+;|   0F3F2H   |  --  |                   |
+;|   0F3F3H   |  --  |                   |
+;|   0F3F4H   |  --  |                   |
+;|   0F3F5H   |  --  |                   |
+;|   0F3F6H   |  --  |                   |
+;|   0F3F7H   |  --  |                   |
+;|   0F3F8H   |  --  |                   |
+;|   0F3F9H   |  --  |                   |
+;|   0F3FAH   |  --  |                   |
+;|   0F3FBH   |  --  |                   |
+;|   0F3FCH   |  --  |                   |
+;|   0F3FDH   |  --  |                   |
+;|   0F3FEH   |  --  |                   |
+;|   0F3FFH   |  --  |                   |
+; -----------------------------------------------------------------------------------------------------------------------------------
 
 ORG 0F800H
 
@@ -59,7 +121,7 @@ InputKeyA_Entry:
 LoadByteA_Entry:
     jmp LoadByteA                   ;0F806H Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта, A = 08H - без поиска)
 DisplaySymC_Entry:
-    jmp 0F3CCH                      ;0F809H Вывод символа на экран (вх: C = выводимый символ)
+    jmp DispSymC_JMP_ADDR           ;0F809H Вывод символа на экран (вх: C = выводимый символ)
 SaveByteC_Entry:
     jmp SaveByteC                   ;0F80CH Запись байта на магнитофон (вх: C = записываемый байт)
 DispplaySymA_Entry:
@@ -75,7 +137,7 @@ InputkeyCodeA_Entry:
 GetPosCursor_Entry:
     jmp GetPosCursor                ;0F81EH Запрос положения курсора (вых: H - номер строки Y, L номер позиции X)
 NotImplemented_Entry:
-    jmp 0F3C9H                      ;0F821H Не используется
+    jmp Reserv_JMP_ADDR             ;0F821H Не используется
 LoadFile_Entry:
     jmp LoadFile                    ;0F824H Чтение файла из магнитной ленты
 SaveFile_Entry:
@@ -98,7 +160,7 @@ SetPosCursor_Entry:
     nop                             ;0F840H 
     nop                             ;0F841H 
 StartCode:
-    lxi SP, 0F3C9H                  ;0F842H 
+    lxi SP, Reserv_JMP_ADDR         ;0F842H 
     xra A                           ;0F845H 
     sta 0F800H                      ;0F846H Порт - Управление цветным режимом
     sta 0F900H                      ;0F849H Порт - Управление переключением страниц памяти
@@ -106,15 +168,15 @@ StartCode:
     sta INVERSE_DISP_ADDR           ;0F84FH 
     sta 0F402H                      ;0F852H 
     mvi A, 0C3H                     ;0F855H Код команды безусловного перехода JMP
-    sta 0F3CCH                      ;0F857H 
-    sta 0F3C9H                      ;0F85AH 
+    sta DispSymC_JMP_ADDR           ;0F857H 
+    sta Reserv_JMP_ADDR             ;0F85AH 
     call InitializeCodePage         ;0F85DH 
     lxi H, 6040H                    ;0F860H Значение 6040H (запись - 1200 бод = 40H, чтение - для стандартной скорости = 60H)
     shld PAUSE_SAVE_ADDR            ;0F863H сохраняем в ячейке. 0F3DAH - ячейка в которой хранится константа записи на магнитную 40H. 0F3DBH - ячейка в которой хранится константа чтения с магнитной ленты = 60H
     lxi H, Label_Version            ;0F866H 
     call DisplayTextHL              ;0F869H Выводим "orion-128.2"
 HandleCmd:
-    lxi SP, 0F3C9H                  ;0F86CH Начало цикла обработки команд
+    lxi SP, Reserv_JMP_ADDR         ;0F86CH Начало цикла обработки команд
     mvi A, 8AH                      ;0F86FH 
     sta 0F403H                      ;0F871H 
     lxi H, Label_Prompt             ;0F874H 
@@ -150,13 +212,13 @@ InitializeCodePage:
     shld CODEPAGE_ADDR              ;0F8BFH сохраняем в ячейке 0F3D1H
     call LoadCodePage               ;0F8C2H загружаем знакогенератор
     lxi H, 30C0H                    ;0F8C5H Значение 30C0H
-    shld SCREEN_ADDR_HI             ;0F8C8H сохраняем в ячейках: 0C0H -> 0F3CFH (старшый байт начала видеопамяти 0C000H), 30H -> 0F3D0H (старшый байт размера видеопамяти 3000H = 12К)
+    shld SCREEN_ADDR_HI             ;0F8C8H сохраняем в ячейках: 0C0H -> 0F3CFH (старший байт начала видеопамяти 0C000H), 30H -> 0F3D0H (старший байт размера видеопамяти 3000H = 12К)
     lxi H, DispSymC                 ;0F8CBH Адрес 0FCD0H (0F809H Вывод символа на экран, 0F855H Код команды безусловного перехода JMP)
-    shld 0F3CDH                     ;0F8CEH сохраняем в ячейке 0F3CDH
+    shld DispSymC_ADDR              ;0F8CEH сохраняем в ячейке 0F3CDH
     lxi H, Stub                     ;0F8D1H Значение 0F8DDH
-    shld 0F3CAH                     ;0F8D4H сохраняем в ячейке 0F3CAH
+    shld Reserv_ADDR                ;0F8D4H сохраняем в ячейке 0F3CAH
     lxi H, 0BFFFH                   ;0F8D7H Значение 0BFFFH
-    shld 0F3E3H                     ;0F8DAH сохраняем в ячейке 0F3E3H
+    shld USER_MAX_RAM_ADDR          ;0F8DAH сохраняем в ячейке 0F3E3H
 Stub:
     ret                             ;0F8DDH 
     lxi D, 0F3F0H                   ;0F8DEH 
@@ -307,9 +369,9 @@ SetPosCursor:
     shld X_POS_ADDR                 ;0F9C8H ---------------
     ret                             ;0F9CBH 
 SaveRamAddr:
-    shld 0F3E3H                     ;0F9CCH 
+    shld USER_MAX_RAM_ADDR          ;0F9CCH 
 LoadRamAddr:
-    lhld 0F3E3H                     ;0F9CFH 
+    lhld USER_MAX_RAM_ADDR          ;0F9CFH 
     ret                             ;0F9D2H 
 LoadCodePage:
     lxi H, CodePageTable            ;0F9D3H Адрес начала знакогенератора в ПЗУ (0FE48H - 0FFFFH)
@@ -583,7 +645,7 @@ SetColorMode:
     sta 0F900H                      ;0FB82H 
     ret                             ;0FB85H 
 GetKeyStateA:
-    xra A                           ;0FB86H 
+    xra A                           ;0FB86H  Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
     sta 0F400H                      ;0FB87H 
     lda 0F401H                      ;0FB8AH 
     xri 0FFH                        ;0FB8DH 

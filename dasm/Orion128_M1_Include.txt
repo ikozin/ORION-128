@@ -4,17 +4,21 @@ DisplayModePort	    EQU 0F800H
 DisplayPagePort	    EQU 0F900H
 DisplayViewPort	    EQU 0F900H
 
-SCREEN_ADDR_HI		EQU 0F3CFH
-SCREEN_SIZE_HI		EQU 0F3D0H
-CODEPAGE_ADDR		EQU 0F3D1H
-INVERSE_DISP_ADDR	EQU 0F3D3H
-X_POS_ADDR			EQU 0F3D4H
-Y_POS_ADDR			EQU 0F3D5H
-RESTART_ADDR        EQU 0F3D8H
-PAUSE_SAVE_ADDR		EQU 0F3DAH
-PAUSE_LOAD_ADDR		EQU 0F3DBH
-LOADBYTE_ADDR	    EQU 0F3DCH
-
+Reserv_JMP_ADDR     EQU 0F3C9H      ; XX   =   0C3H (код команды JMP)
+Reserv_ADDR	        EQU 0F3CAH      ; XXXX
+DispSymC_JMP_ADDR   EQU 0F3CCH      ; XX   =   0C3H (код команды JMP)
+DispSymC_ADDR       EQU 0F3CDH      ; XXXX
+SCREEN_ADDR_HI		EQU 0F3CFH		; XX   =   0C0H (старший байт начала видеопамяти 0C000H)
+SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H (старший байт размера видеопамяти 3000H = 12К)
+CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H
+INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H
+X_POS_ADDR			EQU 0F3D4H		; XX
+Y_POS_ADDR			EQU 0F3D5H		; XX
+RESTART_ADDR        EQU 0F3D8H		; XXXX
+PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
+PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
+LOADBYTE_ADDR	    EQU 0F3DCH		; XX
+USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
 Run_0BFFDH			EQU 0BFFDH
 
 ; 0F400H - порт клавиатуры
@@ -50,3 +54,61 @@ Run_0BFFDH			EQU 0BFFDH
 ;      |             |             |             |             |
 ; 0000 ---------------------------------------------------------
 ;
+;    Служебные ячейки
+; -----------------------------------------------------------------------------------------------------------------------------------
+;|   0F3C9H   | 0C3H | Reserv_JMP_ADDR   | 0C3H (код команды JMP) - Резерв 
+;|   0F3CAH   |  XX  | Reserv_ADDR       | LO - адрес
+;|   0F3CBH   |  XX  | Reserv_ADDR       | HI - адрес
+;|   0F3CCH   | 0C3H | DispSymC_JMP_ADDR | 0C3H (код команды JMP) - DispSymC
+;|   0F3CDH   |  XX  | DispSymC_ADDR     | LO - адрес
+;|   0F3CEH   |  XX  | DispSymC_ADDR     | HI - адрес
+;|   0F3CFH   | 0C0H | SCREEN_ADDR_HI    | старший байт начала видеопамяти 0C000H
+;|   0F3D0H   |  30H | SCREEN_SIZE_HI    | старший байт размера видеопамяти 3000H = 12К
+;|   0F3D1H   |  00H | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
+;|   0F3D2H   | 0F0H | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
+;|   0F3D3H   |  00H | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
+;|   0F3D4H   |  XX  | X_POS_ADDR        |
+;|   0F3D5H   |  XX  | Y_POS_ADDR        |
+;|   0F3D6H   |  --  |                   |
+;|   0F3D7H   |  --  |                   |
+;|   0F3D8H   |  XX  | RESTART_ADDR      | LO - адрес возврата
+;|   0F3D9H   |  XX  | RESTART_ADDR      | HI - адрес возврата
+;|   0F3DAH   |  40H | PAUSE_SAVE_ADDR   | запись - 1200 бод = 40H
+;|   0F3DBH   |  60H | PAUSE_LOAD_ADDR   | чтение - для стандартной скорости = 60H
+;|   0F3DCH   |  XX  | LOADBYTE_ADDR     |
+;|   0F3DDH   |  --  |                   |
+;|   0F3DEH   |  --  |                   |
+;|   0F3DFH   |  XX  |                   |
+;|   0F3E0H   |  XX  |                   |
+;|   0F3E1H   |  --  |                   |
+;|   0F3E2H   |  --  |                   |
+;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
+;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
+;|   0F3E5H   |  XX  |                   |
+;|   0F3E6H   |  XX  |                   |
+;|   0F3E7H   |  --  |                   |
+;|   0F3E8H   |  --  |                   |
+;|   0F3E9H   |  --  |                   |
+;|   0F3EAH   |  --  |                   |
+;|   0F3EBH   |  --  |                   |
+;|   0F3ECH   |  --  |                   |
+;|   0F3EDH   |  --  |                   |
+;|   0F3EEH   |  XX  |                   |
+;|   0F3EFH   |  XX  |                   |
+;|   0F3F0H   |  XX  |                   |
+;|   0F3F1H   |  XX  |                   |
+;|   0F3F2H   |  --  |                   |
+;|   0F3F3H   |  --  |                   |
+;|   0F3F4H   |  --  |                   |
+;|   0F3F5H   |  --  |                   |
+;|   0F3F6H   |  --  |                   |
+;|   0F3F7H   |  --  |                   |
+;|   0F3F8H   |  --  |                   |
+;|   0F3F9H   |  --  |                   |
+;|   0F3FAH   |  --  |                   |
+;|   0F3FBH   |  --  |                   |
+;|   0F3FCH   |  --  |                   |
+;|   0F3FDH   |  --  |                   |
+;|   0F3FEH   |  --  |                   |
+;|   0F3FFH   |  --  |                   |
+; -----------------------------------------------------------------------------------------------------------------------------------
