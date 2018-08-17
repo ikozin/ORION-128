@@ -1,8 +1,8 @@
 ﻿include "8085.inc"
 
-DisplayModePort	EQU 0F800H
-DisplayPagePort	EQU 0F900H
-DisplayViewPort	EQU 0F900H
+DisplayModePort	    EQU 0F800H
+DisplayPagePort	    EQU 0F900H
+DisplayViewPort	    EQU 0F900H
 
 SCREEN_ADDR_HI		EQU 0F3CFH
 SCREEN_SIZE_HI		EQU 0F3D0H
@@ -10,8 +10,10 @@ CODEPAGE_ADDR		EQU 0F3D1H
 INVERSE_DISP_ADDR	EQU 0F3D3H
 X_POS_ADDR			EQU 0F3D4H
 Y_POS_ADDR			EQU 0F3D5H
+RESTART_ADDR        EQU 0F3D8H
 PAUSE_SAVE_ADDR		EQU 0F3DAH
 PAUSE_LOAD_ADDR		EQU 0F3DBH
+LOADBYTE_ADDR	    EQU 0F3DCH
 
 Run_0BFFDH			EQU 0BFFDH
 
@@ -23,7 +25,7 @@ Run_0BFFDH			EQU 0BFFDH
 ; 0F900H - системный порт №2 - управление переключением страниц - (только для записи)
 ; 0FA00H - системный порт №3 - управление переключением экранов - (только для записи)
 ; 0FB00H - системный порт №4 - переключение типов дисплеев (не используется) - (только для записи)
-
+;
 ; FFFF ---------------------------------------------------------
 ;      |   МОНИТОР   |                                         |
 ; F800 ---------------                                         |
@@ -47,4 +49,4 @@ Run_0BFFDH			EQU 0BFFDH
 ;      |    ОЗУ      |                  О З У                  |
 ;      |             |             |             |             |
 ; 0000 ---------------------------------------------------------
-
+;

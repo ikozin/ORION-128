@@ -1,8 +1,8 @@
 include "8085.inc"
 
-DisplayModePort	EQU 0F800H
-DisplayPagePort	EQU 0F900H
-DisplayViewPort	EQU 0F900H
+DisplayModePort	    EQU 0F800H
+DisplayPagePort	    EQU 0F900H
+DisplayViewPort	    EQU 0F900H
 
 SCREEN_ADDR_HI		EQU 0F3CFH
 SCREEN_SIZE_HI		EQU 0F3D0H
@@ -10,8 +10,10 @@ CODEPAGE_ADDR		EQU 0F3D1H
 INVERSE_DISP_ADDR	EQU 0F3D3H
 X_POS_ADDR			EQU 0F3D4H
 Y_POS_ADDR			EQU 0F3D5H
+RESTART_ADDR        EQU 0F3D8H
 PAUSE_SAVE_ADDR		EQU 0F3DAH
 PAUSE_LOAD_ADDR		EQU 0F3DBH
+LOADBYTE_ADDR	    EQU 0F3DCH
 
 Run_0BFFDH			EQU 0BFFDH
 
@@ -23,7 +25,7 @@ Run_0BFFDH			EQU 0BFFDH
 ; 0F900H - системный порт №2 - управление переключением страниц - (только для записи)
 ; 0FA00H - системный порт №3 - управление переключением экранов - (только для записи)
 ; 0FB00H - системный порт №4 - переключение типов дисплеев (не используется) - (только для записи)
-
+;
 ; FFFF ---------------------------------------------------------
 ;      |   МОНИТОР   |                                         |
 ; F800 ---------------                                         |
@@ -47,7 +49,7 @@ Run_0BFFDH			EQU 0BFFDH
 ;      |    ОЗУ      |                  О З У                  |
 ;      |             |             |             |             |
 ; 0000 ---------------------------------------------------------
-
+;
 
 ORG 0F800H
 
@@ -119,7 +121,7 @@ HandleCmd:
     call DisplayTextHL              ;0F877H Выводим приглашение для ввода команды "=>"
     sta 0F3E5H                      ;0F87AH 
     lxi H, HotReset                 ;0F87DH 
-    shld 0F3D8H                     ;0F880H 
+    shld RESTART_ADDR               ;0F880H 
     lxi H, HandleCmd                ;0F883H Сохраняем начало цикла обработки команд в HL
     push H                          ;0F886H 
     call 0F8DEH                     ;0F887H 
@@ -373,7 +375,8 @@ LoadByteA:
     mvi B, 00H                      ;0FA22H 
     dcr B                           ;0FA24H 
     jnz 0FA2CH                      ;0FA25H 
-    lhld 0F3D8H                     ;0FA28H 
+Load_Error:
+    lhld RESTART_ADDR               ;0FA28H 
     pchl                            ;0FA2BH 
     lda 0F402H                      ;0FA2CH 
     rrc                             ;0FA2FH 
@@ -400,57 +403,58 @@ LoadByteA:
     cpi 0E6H                        ;0FA4EH 
     jnz 0FA5AH                      ;0FA50H 
     xra A                           ;0FA53H 
-    sta 0F3DCH                      ;0FA54H 
+    sta LOADBYTE_ADDR               ;0FA54H 
     jmp 0FA64H                      ;0FA57H 
     cpi 19H                         ;0FA5AH 
     jnz 0FA1DH                      ;0FA5CH 
     mvi A, 0FFH                     ;0FA5FH 
-    sta 0F3DCH                      ;0FA61H 
+    sta LOADBYTE_ADDR               ;0FA61H 
     mvi D, 09H                      ;0FA64H 
     dcr D                           ;0FA66H 
     jnz 0FA1DH                      ;0FA67H 
-    lda 0F3DCH                      ;0FA6AH 
+    lda LOADBYTE_ADDR               ;0FA6AH 
     xra C                           ;0FA6DH 
 Ret_Pop_HDB:
     pop H                           ;0FA6EH 
     pop D                           ;0FA6FH 
     pop B                           ;0FA70H 
     ret                             ;0FA71H 
-SaveByteHL:
+SaveFile_HL:
     mov C, H                        ;0FA72H 
     call SaveByteC                  ;0FA73H 
     mov C, L                        ;0FA76H 
 SaveByteC:
-    push PSW                        ;0FA77H 
-    push D                          ;0FA78H 
-    push B                          ;0FA79H 
-    mvi D, 08H                      ;0FA7AH 
-    mov A, C                        ;0FA7CH 
-    rlc                             ;0FA7DH 
-    mov C, A                        ;0FA7EH 
-    mvi A, 01H                      ;0FA7FH 
-    xra C                           ;0FA81H 
+    push PSW                        ;0FA77H Запись байта, каждый бит кодируется двумя сигналами 0 = 10, 1 = 01
+    push D                          ;0FA78H        Пример записи 00H
+    push B                          ;0FA79H  _   _   _   _   _   _   _   _   
+    mvi D, 08H                      ;0FA7AH | |_| |_| |_| |_| |_| |_| |_| |_|
+SaveByteC_Loop:
+    mov A, C                        ;0FA7CH  1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 
+    rlc                             ;0FA7DH |___|___|___|___|___|___|___|___|
+    mov C, A                        ;0FA7EH   0   0   0   0   0   0   0   0  
+    mvi A, 01H                      ;0FA7FH |_______________|_______________|
+    xra C                           ;0FA81H         0               0        
     sta 0F402H                      ;0FA82H 
-    call Pause_Save                 ;0FA85H 
-    xra A                           ;0FA88H 
-    xra C                           ;0FA89H 
-    sta 0F402H                      ;0FA8AH 
-    call Pause_Save                 ;0FA8DH 
-    dcr D                           ;0FA90H 
-    jnz 0FA7CH                      ;0FA91H 
-    pop B                           ;0FA94H 
+    call Pause_Save                 ;0FA85H        Пример записи 0AAH
+    xra A                           ;0FA88H    ___     ___     ___     ___   
+    xra C                           ;0FA89H |_|   |___|   |___|   |___|   |_|
+    sta 0F402H                      ;0FA8AH  0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 
+    call Pause_Save                 ;0FA8DH |___|___|___|___|___|___|___|___|
+    dcr D                           ;0FA90H   1   0   1   0   1   0   1   0  
+    jnz SaveByteC_Loop              ;0FA91H |_______________|_______________|
+    pop B                           ;0FA94H         A               A        
     pop D                           ;0FA95H 
 Ret_Pop_PSW:
     pop psw                         ;0FA96H 
     ret                             ;0FA97H 
 Pause_Save:
     lda PAUSE_SAVE_ADDR             ;0FA98H Загружаем значение паузы для записи на магнитную ленту
-    jmp Pause_A                     ;0FA9BH 
+    jmp Pause_Loop                  ;0FA9BH 
 Pause_Load:
     lda PAUSE_LOAD_ADDR             ;0FA9EH Загружаем значение паузы для чтения с магнитной ленты
-Pause_A:
+Pause_Loop:
     dcr A                           ;0FAA1H 
-    jnz Pause_A                     ;0FAA2H 
+    jnz Pause_Loop                  ;0FAA2H 
     ret                             ;0FAA5H 
 DisplayNextAddr:
     inx H                           ;0FAA6H 
@@ -495,11 +499,11 @@ DumpMemory_HexA:
     call 0F8DEH                     ;0FAE9H 
     jmp DumpMemory_NextLine         ;0FAECH 
 LoadFile:
-    mvi A, 0FFH                     ;0FAEFH 
-    call LoadFile_Sync              ;0FAF1H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    mvi A, 0FFH                     ;0FAEFH  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    call LoadFile_HL_sync           ;0FAF1H  Загружаем адрес начала блока
     xchg                            ;0FAF4H 
-    call LoadFile_WithoutSync       ;0FAF5H 
-    xchg                            ;0FAF8H 
+    call LoadFile_HL                ;0FAF5H  Загружаем адрес конца блока
+    xchg                            ;0FAF8H  HL - адрес начала блока, DE - адрес конца блока
     push H                          ;0FAF9H 
 LoadFile_Loop:
     call LoadByteA_WithoutSync      ;0FAFAH 
@@ -507,48 +511,48 @@ LoadFile_Loop:
     call CheckBlockEnd              ;0FAFEH 
     inx H                           ;0FB01H 
     jnz LoadFile_Loop               ;0FB02H 
-    mvi A, 0FFH                     ;0FB05H 
-    call LoadFile_Sync              ;0FB07H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    mvi A, 0FFH                     ;0FB05H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    call LoadFile_HL_sync           ;0FB07H  Загружаем контрольную сумму
     mov B, H                        ;0FB0AH 
     mov C, L                        ;0FB0BH 
-    pop H                           ;0FB0CH 
+    pop H                           ;0FB0CH  HL - адрес начала блока, DE - адрес конца блока, BC - контрольная сумма
     call DisplayHL                  ;0FB0DH 
     xchg                            ;0FB10H 
     call DisplayHL                  ;0FB11H 
     xchg                            ;0FB14H 
-    push B                          ;0FB15H 
+    push B                          ;0FB15H  Помещаем в стек контрольную сумму
     call CalcControlSum             ;0FB16H 
-    pop D                           ;0FB19H 
+    pop D                           ;0FB19H  Извлекаем из стека контрольную сумму
     mov H, B                        ;0FB1AH 
     mov L, C                        ;0FB1BH 
     call DisplayHL                  ;0FB1CH 
-    call CheckBlockEnd              ;0FB1FH 
-    rz                              ;0FB22H 
-    jmp 0FA28H                      ;0FB23H 
-LoadFile_WithoutSync:
+    call CheckBlockEnd              ;0FB1FH  Проверяем на совпадение загруженную и посчитанную контрольную сумму
+    rz                              ;0FB22H  Выходим если контрольная сумма совпала
+    jmp Load_Error                  ;0FB23H 
+LoadFile_HL:
     mvi A, 08H                      ;0FB26H 
-LoadFile_Sync:
+LoadFile_HL_sync:
     call LoadByteA                  ;0FB28H 
     mov H, A                        ;0FB2BH 
     call LoadByteA_WithoutSync      ;0FB2CH 
     mov L, A                        ;0FB2FH 
     ret                             ;0FB30H 
 SaveFile:
-    push H                          ;0FB31H 
-    call CalcControlSum             ;0FB32H 
+    push H                          ;0FB31H  Запись файла на магнитную ленту (вх: HL - нач. адрес массива, DE - конечный адрес)
+    call CalcControlSum             ;0FB32H  Вычисляем контрольную сумму записываемого блока
     pop H                           ;0FB35H 
-    push B                          ;0FB36H 
+    push B                          ;0FB36H  Помещаем в стек контрольную сумму
     push H                          ;0FB37H 
-    lxi B, 0000H                    ;0FB38H 
+    lxi B, 0000H                    ;0FB38H  Запись заголовка: 0 записываем 255 раз
 SaveFile_Header:
     call SaveByteC                  ;0FB3BH 
     dcr B                           ;0FB3EH 
     jnz SaveFile_Header             ;0FB3FH 
-    mvi C, 0E6H                     ;0FB42H 
-    call SaveByteC                  ;0FB44H 
-    call SaveByteHL                 ;0FB47H 
+    mvi C, 0E6H                     ;0FB42H  Маркер начала данных
+    call SaveByteC                  ;0FB44H  Записываем маркер
+    call SaveFile_HL                ;0FB47H  Записываем адрес начала блока
     xchg                            ;0FB4AH 
-    call SaveByteHL                 ;0FB4BH 
+    call SaveFile_HL                ;0FB4BH  Записываем адрес конца блока
     xchg                            ;0FB4EH 
     pop H                           ;0FB4FH 
 SaveFile_Loop:
@@ -558,11 +562,11 @@ SaveFile_Loop:
     inx H                           ;0FB57H 
     jnz SaveFile_Loop               ;0FB58H 
     lxi H, 0000H                    ;0FB5BH 
-    call SaveByteHL                 ;0FB5EH 
-    mvi C, 0E6H                     ;0FB61H 
-    call SaveByteC                  ;0FB63H 
-    pop H                           ;0FB66H 
-    call SaveByteHL                 ;0FB67H 
+    call SaveFile_HL                ;0FB5EH  После данных записываем 2 байта нулей
+    mvi C, 0E6H                     ;0FB61H  Маркер конца данных
+    call SaveByteC                  ;0FB63H  Записываем маркер
+    pop H                           ;0FB66H  Извлекаем из стека контрольную сумму
+    call SaveFile_HL                ;0FB67H  Записываем контрольную сумму записываемого блока
     jmp DisplayHL                   ;0FB6AH 
 SetColorMode:
     mov C, L                        ;0FB6DH 
