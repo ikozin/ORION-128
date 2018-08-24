@@ -322,7 +322,7 @@ DisplayTextHL:
     inx H                           ;0F98AH 
     jmp DisplayTextHL               ;0F98BH 
 CalcControlSum:
-    lxi B, 0000H                    ;0F98EH Обнуляем BC
+    lxi B, 0000H                    ;0F98EH Подсчет контрольной суммы блока (вх: HL - адрес начала, DE - адрес конца; вых: BC - контрольная сумма). Обнуляем BC
 CalcSumLoop:
     mov A, C                        ;0F991H 
     add M                           ;0F992H 
@@ -462,7 +462,7 @@ Load_Error:
     ora A                           ;0FA49H 
     jp 0FA66H                       ;0FA4AH 
     mov A, C                        ;0FA4DH 
-    cpi 0E6H                        ;0FA4EH 
+    cpi 0E6H                        ;0FA4EH Маркер начала/конца данных
     jnz 0FA5AH                      ;0FA50H 
     xra A                           ;0FA53H 
     sta LOADBYTE_ADDR               ;0FA54H 
