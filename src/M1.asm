@@ -19,6 +19,9 @@ PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
 PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
 LOADBYTE_ADDR	    EQU 0F3DCH		; XX
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
+Cmd_Param           EQU 0F3EEH      ; XXXX
+Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
+Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
 Run_0BFFDH			EQU 0BFFDH
 
 ; 0F400H - порт клавиатуры
@@ -82,8 +85,8 @@ Run_0BFFDH			EQU 0BFFDH
 ;|   0F3E0H   |  XX  |                   |
 ;|   0F3E1H   |  --  |                   |
 ;|   0F3E2H   |  --  |                   |
-;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
-;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательскго ОЗУ
+;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
+;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
 ;|   0F3E5H   |  XX  |                   |
 ;|   0F3E6H   |  XX  |                   |
 ;|   0F3E7H   |  --  |                   |
@@ -93,24 +96,51 @@ Run_0BFFDH			EQU 0BFFDH
 ;|   0F3EBH   |  --  |                   |
 ;|   0F3ECH   |  --  |                   |
 ;|   0F3EDH   |  --  |                   |
-;|   0F3EEH   |  XX  |                   |
-;|   0F3EFH   |  XX  |                   |
-;|   0F3F0H   |  XX  |                   |
-;|   0F3F1H   |  XX  |                   |
-;|   0F3F2H   |  --  |                   |
-;|   0F3F3H   |  --  |                   |
-;|   0F3F4H   |  --  |                   |
-;|   0F3F5H   |  --  |                   |
-;|   0F3F6H   |  --  |                   |
-;|   0F3F7H   |  --  |                   |
-;|   0F3F8H   |  --  |                   |
-;|   0F3F9H   |  --  |                   |
-;|   0F3FAH   |  --  |                   |
-;|   0F3FBH   |  --  |                   |
-;|   0F3FCH   |  --  |                   |
-;|   0F3FDH   |  --  |                   |
-;|   0F3FEH   |  --  |                   |
-;|   0F3FFH   |  --  |                   |
+;|   0F3EEH   |  XX  | Cmd_Param         | LO - значение текущего параметра введенной команды
+;|   0F3EFH   |  XX  | Cmd_Param         | HI - значение текущего параметра введенной команды
+;|   0F3F0H   |  XX  | Cmd_Buffer_Start  | Буфер для введенной команды
+;|   0F3F1H   |  XX  | Cmd_Buffer        | Буфер для введенной команды
+;|   0F3F2H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F3H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F4H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F5H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F6H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F7H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F8H   |  XX  |                   | Буфер для введенной команды
+;|   0F3F9H   |  XX  |                   | Буфер для введенной команды
+;|   0F3FAH   |  XX  |                   | Буфер для введенной команды
+;|   0F3FBH   |  XX  |                   | Буфер для введенной команды
+;|   0F3FCH   |  XX  |                   | Буфер для введенной команды
+;|   0F3FDH   |  XX  |                   | Буфер для введенной команды
+;|   0F3FEH   |  XX  |                   | Буфер для введенной команды
+;|   0F3FFH   |  XX  |                   | Буфер для введенной команды
+; -----------------------------------------------------------------------------------------------------------------------------------
+;
+;
+;                     Коды символов
+; _____________________________________________________
+;|     |     |     |     |     |     |     |     |     |
+;|     |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+;|_____|_____|_____|_____|_____|_____|_____|_____|_____|
+;|     |     |     |     |     |     |     |     |     |
+;|  0  |     |     |Space|  0  |  O  |  P  |  Ю  |  П  |
+;|  1  |  F1 |     |  !  |  1  |  A  |  Q  |  А  |  Я  |
+;|  2  |  F2 |     |  "  |  2  |  B  |  R  |  Б  |  Р  |
+;|  3  |  F3 |     |  #  |  3  |  C  |  S  |  Ц  |  С  |
+;|  4  |  F4 |     |  $  |  4  |  D  |  T  |  Д  |  Т  |
+;|  5  |     |     |  %  |  5  |  E  |  U  |  Е  |  У  |
+;|  6  |     |     |  &  |  6  |  F  |  V  |  Ф  |  Ж  |
+;|  7  |     |     |  '  |  7  |  G  |  W  |  Г  |  В  |
+;|  8  |  <- |  -> |  (  |  8  |  H  |  X  |  Х  |  Ь  |
+;|  9  | ТАБ |     |  )  |  9  |  I  |  Y  |  И  |  Ы  |
+;|  A  |  ПС |     |  *  |  :  |  J  |  Z  |  Й  |  Э  |
+;|  B  |     | АР2 |  +  |  ;  |  K  |  [  |  К  |  Ш  |
+;|  C  |  \  |     |  ,  |  <  |  L  |  \  |  Л  |  З  |
+;|  D  |  ВК |     |  -  |  =  |  M  |  ]  |  М  |  Щ  |
+;|  E  |     |     |  .  |  >  |  N  |  ^  |  Н  |  Ч  |
+;|  F  |     | СТР |  /  |  ?  |  O  |  _  |  О  |  ЗБ |
+;|_____|_____|_____|_____|_____|_____|_____|_____|_____|
+;
 ; -----------------------------------------------------------------------------------------------------------------------------------
 
 ORG 0F800H
@@ -186,25 +216,25 @@ HandleCmd:
     shld RESTART_ADDR               ;0F880H 
     lxi H, HandleCmd                ;0F883H Сохраняем начало цикла обработки команд в HL
     push H                          ;0F886H 
-    call 0F8DEH                     ;0F887H 
+    call Handle_Loop_Start          ;0F887H 
     call DisplayNewLine             ;0F88AH 
-    call 0F918H                     ;0F88DH 
-    lda 0F3F0H                      ;0F890H 
-    cpi 4DH                         ;0F893H M <адрес> <ВК>						- Модификация ячеек ОЗУ
+    call Handle_Parse_Cmd_Params    ;0F88DH 
+    lda Cmd_Buffer_Start            ;0F890H 
+    cpi 4DH                         ;0F893H M<адрес><ВК>                     - Модификация ячеек ОЗУ
     jz EditMemory                   ;0F895H 
-    cpi 44H                         ;0F898H D <нач. адрес> <номер стр.> <ВК>	- Вывод дампа памяти
+    cpi 44H                         ;0F898H D<нач. адрес>,<номер стр.><ВК>   - Вывод дампа памяти
     jz DumpMemory                   ;0F89AH 
-    cpi 49H                         ;0F89DH I <ВК>								- Ввод с магнитофона
+    cpi 49H                         ;0F89DH I<ВК>                            - Ввод с магнитофона
     jz LoadFile                     ;0F89FH 
-    cpi 4FH                         ;0F8A2H O <нач. адрес> <конеч. адрес> <ВК>	- Вывод на магнитофон
+    cpi 4FH                         ;0F8A2H O<нач. адрес>,<конеч. адрес><ВК> - Вывод на магнитофон
     jz SaveFile                     ;0F8A4H 
-    cpi 52H                         ;0F8A7H R
+    cpi 52H                         ;0F8A7H R<ВК>
     jz CMD_ROM_BOOT                 ;0F8A9H 
-    cpi 5AH                         ;0F8ACH Z <ВК>								- Передача управления по адресу 0BFFDH
+    cpi 5AH                         ;0F8ACH Z<ВК>                            - Передача управления по адресу 0BFFDH
     jz Run_0BFFDH                   ;0F8AEH 
-    cpi 43H                         ;0F8B1H C <байт цвета> <ВК>					- Включение цветного режима дисплея
+    cpi 43H                         ;0F8B1H C<байт цвета><ВК>                - Включение цветного режима дисплея
     jz SetColorMode                 ;0F8B3H 
-    cpi 47H                         ;0F8B6H G <адрес> <ВК>						- Передача управления по адресу
+    cpi 47H                         ;0F8B6H G<адрес><ВК>                     - Передача управления по адресу
     jnz HotReset                    ;0F8B8H 
     pchl                            ;0F8BBH Переходим на начало цикла обработки команд (см 0F883H)
 InitializeCodePage:
@@ -221,22 +251,24 @@ InitializeCodePage:
     shld USER_MAX_RAM_ADDR          ;0F8DAH сохраняем в ячейке 0F3E3H
 Stub:
     ret                             ;0F8DDH 
-    lxi D, 0F3F0H                   ;0F8DEH 
+Handle_Loop_Start:
+    lxi D, Cmd_Buffer_Start         ;0F8DEH 
 Handle_Loop:
     call InputKeyA                  ;0F8E1H 
     cpi 2EH                         ;0F8E4H 
     jz HotReset                     ;0F8E6H 
-    cpi 7FH                         ;0F8E9H 7FH -> Спец. символ инверсия вывода
+    cpi 7FH                         ;0F8E9H 7FH -> Спец. символ - инверсия вывода
     jz Handle_Inverse               ;0F8EBH 
-    cpi 18H                         ;0F8EEH 
+    cpi 18H                         ;0F8EEH 18H -> Спец. символ - вправо
     jz 0F908H                       ;0F8F0H 
-    cpi 08H                         ;0F8F3H 
+    cpi 08H                         ;0F8F3H 08H -> Спец. символ - влево 
     jnz 0F907H                      ;0F8F5H 
     mvi A, 0F0H                     ;0F8F8H 
     cmp E                           ;0F8FAH 
     jz Handle_Loop                  ;0F8FBH 
-    mvi A, 08H                      ;0F8FEH 
-    dcx D                           ;0F900H 
+Handle_KeyLeft:
+    mvi A, 08H                      ;0F8FEH 08H -> Спец. символ - влево, перемещаем курсор влево (для исправления ввода)
+    dcx D                           ;0F900H Адрес в DE тоже сдвигаем на символ вперед (для исправления ввода)
 Handle_Inverse:
     call DispSymA                   ;0F901H 
     jmp Handle_Loop                 ;0F904H 
@@ -248,46 +280,51 @@ Handle_Inverse:
     mov A, E                        ;0F90FH 
     cpi 0FFH                        ;0F910H 
     jnz Handle_Loop                 ;0F912H 
-    jmp 0F8FEH                      ;0F915H 
-    lxi D, 0F3F1H                   ;0F918H 
-    call 0F92AH                     ;0F91BH 
-    shld 0F3EEH                     ;0F91EH 
-    rc                              ;0F921H 
-    call 0F92AH                     ;0F922H 
+    jmp Handle_KeyLeft              ;0F915H 
+Handle_Parse_Cmd_Params:
+    lxi D, Cmd_Buffer               ;0F918H Разбираем введенные параметры команды (без пробелов), сама команда по адресу Cmd_Buffer_Start
+    call Handle_ParseParam          ;0F91BH 
+    shld Cmd_Param                  ;0F91EH 
+    rc                              ;0F921H Если нет признака конца команды, то обрабатываем следующий параметр
+    call Handle_ParseParam          ;0F922H 
     xchg                            ;0F925H 
-    lhld 0F3EEH                     ;0F926H 
+    lhld Cmd_Param                  ;0F926H 
     ret                             ;0F929H 
-    lxi H, 0000H                    ;0F92AH 
+Handle_ParseParam:
+    lxi H, 0000H                    ;0F92AH В HL будет значение текущего введенного параметра
     mov B, L                        ;0F92DH 
     mov C, L                        ;0F92EH 
-    dad B                           ;0F92FH 
-    ldax D                          ;0F930H 
-    inx D                           ;0F931H 
-    cpi 0DH                         ;0F932H 
-    jz 0F960H                       ;0F934H 
-    cpi 2CH                         ;0F937H 
-    rz                              ;0F939H 
-    sui 30H                         ;0F93AH 
-    jm HotReset                     ;0F93CH 
-    cpi 0AH                         ;0F93FH 
-    jm 0F950H                       ;0F941H 
-    cpi 11H                         ;0F944H 
-    jm HotReset                     ;0F946H 
-    cpi 17H                         ;0F949H 
-    jp HotReset                     ;0F94BH 
-    sui 07H                         ;0F94EH 
-    mov C, A                        ;0F950H 
-    dad H                           ;0F951H 
-    dad H                           ;0F952H 
-    dad H                           ;0F953H 
-    dad H                           ;0F954H 
-    jnc 0F92FH                      ;0F955H 
+Handle_ParseNextHex:
+    dad B                           ;0F92FH Сохраняем в HL младшую тетраду из BC
+    ldax D                          ;0F930H Загружаем обрабатываемый символ по адресу DE
+    inx D                           ;0F931H Переходим к следующему символу
+    cpi 0DH                         ;0F932H 0DH -> Спец. символ - Enter (ВК)
+    jz Handle_EnterCommand          ;0F934H Ввод команды
+    cpi 2CH                         ;0F937H ','
+    rz                              ;0F939H Завершаем обрабатывать текущий параметр введенной команды
+    sui 30H                         ;0F93AH ------------------------------
+    jm HotReset                     ;0F93CH Проверяем что символ является HEX значением 0-9 или A-F
+    cpi 0AH                         ;0F93FH Если символ меньше '0', то идем на горячий сброс
+    jm Handle_HexC                  ;0F941H Проверяем это цифра или буква 
+    cpi 11H                         ;0F944H Если буква, то проверяем дальше
+    jm HotReset                     ;0F946H Проверяем что введенный
+    cpi 17H                         ;0F949H символ в диапазоне A-F
+    jp HotReset                     ;0F94BH Если буква больше F, то идем на горячий сброс
+    sui 07H                         ;0F94EH Приводим символ к числу и сохраняем в C
+Handle_HexC:
+    mov C, A                        ;0F950H ------------------------------
+    dad H                           ;0F951H Сдвигаем 
+    dad H                           ;0F952H на 4 бита
+    dad H                           ;0F953H (тетраду [полубайт])
+    dad H                           ;0F954H влево
+    jnc Handle_ParseNextHex         ;0F955H 
 HotReset:
     mvi A, 3FH                      ;0F958H '?'
     call DispSymA                   ;0F95AH 
     jmp HandleCmd                   ;0F95DH 
+Handle_EnterCommand:
     lxi D, 0000H                    ;0F960H 
-    stc                             ;0F963H 
+    stc                             ;0F963H Признак конца команды
     ret                             ;0F964H 
 DisplayHexM:
     mov A, M                        ;0F965H 
@@ -322,7 +359,7 @@ DisplayTextHL:
     inx H                           ;0F98AH 
     jmp DisplayTextHL               ;0F98BH 
 CalcControlSum:
-    lxi B, 0000H                    ;0F98EH Подсчет контрольной суммы блока (вх: HL - адрес начала, DE - адрес конца; вых: BC - контрольная сумма). Обнуляем BC
+    lxi B, 0000H                    ;0F98EH Обнуляем BC
 CalcSumLoop:
     mov A, C                        ;0F991H 
     add M                           ;0F992H 
@@ -462,7 +499,7 @@ Load_Error:
     ora A                           ;0FA49H 
     jp 0FA66H                       ;0FA4AH 
     mov A, C                        ;0FA4DH 
-    cpi 0E6H                        ;0FA4EH Маркер начала/конца данных
+    cpi 0E6H                        ;0FA4EH 
     jnz 0FA5AH                      ;0FA50H 
     xra A                           ;0FA53H 
     sta LOADBYTE_ADDR               ;0FA54H 
@@ -524,13 +561,13 @@ EditMemory:
     call DisplayAddr                ;0FAA7H 
     call DisplayHexM                ;0FAAAH 
     call DisplaySpace               ;0FAADH 
-    call 0F8DEH                     ;0FAB0H 
-    lxi D, 0F3F0H                   ;0FAB3H 
+    call Handle_Loop_Start          ;0FAB0H 
+    lxi D, Cmd_Buffer_Start         ;0FAB3H 
     ldax D                          ;0FAB6H 
     cpi 0DH                         ;0FAB7H 
     jz DisplayNextAddr              ;0FAB9H 
     push H                          ;0FABCH 
-    call 0F92AH                     ;0FABDH 
+    call Handle_ParseParam          ;0FABDH 
     xchg                            ;0FAC0H 
     pop H                           ;0FAC1H 
     mov M, E                        ;0FAC2H 
@@ -558,14 +595,14 @@ DumpMemory_HexA:
     mov A, L                        ;0FAE4H 
     ana A                           ;0FAE5H 
     jnz DumpMemory_NextLine         ;0FAE6H 
-    call 0F8DEH                     ;0FAE9H 
+    call Handle_Loop_Start          ;0FAE9H 
     jmp DumpMemory_NextLine         ;0FAECH 
 LoadFile:
-    mvi A, 0FFH                     ;0FAEFH  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
-    call LoadFile_HL_sync           ;0FAF1H  Загружаем адрес начала блока
+    mvi A, 0FFH                     ;0FAEFH Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    call LoadFile_HL_sync           ;0FAF1H Загружаем адрес начала блока
     xchg                            ;0FAF4H 
-    call LoadFile_HL                ;0FAF5H  Загружаем адрес конца блока
-    xchg                            ;0FAF8H  HL - адрес начала блока, DE - адрес конца блока
+    call LoadFile_HL                ;0FAF5H Загружаем адрес конца блока
+    xchg                            ;0FAF8H HL - адрес начала блока, DE - адрес конца блока
     push H                          ;0FAF9H 
 LoadFile_Loop:
     call LoadByteA_WithoutSync      ;0FAFAH 
@@ -573,23 +610,23 @@ LoadFile_Loop:
     call CheckBlockEnd              ;0FAFEH 
     inx H                           ;0FB01H 
     jnz LoadFile_Loop               ;0FB02H 
-    mvi A, 0FFH                     ;0FB05H  Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
-    call LoadFile_HL_sync           ;0FB07H  Загружаем контрольную сумму
+    mvi A, 0FFH                     ;0FB05H Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
+    call LoadFile_HL_sync           ;0FB07H Загружаем контрольную сумму
     mov B, H                        ;0FB0AH 
     mov C, L                        ;0FB0BH 
-    pop H                           ;0FB0CH  HL - адрес начала блока, DE - адрес конца блока, BC - контрольная сумма
+    pop H                           ;0FB0CH HL - адрес начала блока, DE - адрес конца блока, BC - контрольная сумма
     call DisplayHL                  ;0FB0DH 
     xchg                            ;0FB10H 
     call DisplayHL                  ;0FB11H 
     xchg                            ;0FB14H 
-    push B                          ;0FB15H  Помещаем в стек контрольную сумму
+    push B                          ;0FB15H Помещаем в стек контрольную сумму
     call CalcControlSum             ;0FB16H 
-    pop D                           ;0FB19H  Извлекаем из стека контрольную сумму
+    pop D                           ;0FB19H Извлекаем из стека контрольную сумму
     mov H, B                        ;0FB1AH 
     mov L, C                        ;0FB1BH 
     call DisplayHL                  ;0FB1CH 
-    call CheckBlockEnd              ;0FB1FH  Проверяем на совпадение загруженную и посчитанную контрольную сумму
-    rz                              ;0FB22H  Выходим если контрольная сумма совпала
+    call CheckBlockEnd              ;0FB1FH Проверяем на совпадение загруженную и посчитанную контрольную сумму
+    rz                              ;0FB22H Выходим если контрольная сумма совпала
     jmp Load_Error                  ;0FB23H 
 LoadFile_HL:
     mvi A, 08H                      ;0FB26H 
@@ -600,21 +637,21 @@ LoadFile_HL_sync:
     mov L, A                        ;0FB2FH 
     ret                             ;0FB30H 
 SaveFile:
-    push H                          ;0FB31H  Запись файла на магнитную ленту (вх: HL - нач. адрес массива, DE - конечный адрес)
-    call CalcControlSum             ;0FB32H  Вычисляем контрольную сумму записываемого блока
+    push H                          ;0FB31H Запись файла на магнитную ленту (вх: HL - нач. адрес массива, DE - конечный адрес)
+    call CalcControlSum             ;0FB32H Вычисляем контрольную сумму записываемого блока
     pop H                           ;0FB35H 
-    push B                          ;0FB36H  Помещаем в стек контрольную сумму
+    push B                          ;0FB36H Помещаем в стек контрольную сумму
     push H                          ;0FB37H 
-    lxi B, 0000H                    ;0FB38H  Запись заголовка: 0 записываем 255 раз
+    lxi B, 0000H                    ;0FB38H Запись заголовка: 0 записываем 255 раз
 SaveFile_Header:
     call SaveByteC                  ;0FB3BH 
     dcr B                           ;0FB3EH 
     jnz SaveFile_Header             ;0FB3FH 
-    mvi C, 0E6H                     ;0FB42H  Маркер начала данных
-    call SaveByteC                  ;0FB44H  Записываем маркер
-    call SaveFile_HL                ;0FB47H  Записываем адрес начала блока
+    mvi C, 0E6H                     ;0FB42H Маркер начала данных
+    call SaveByteC                  ;0FB44H Записываем маркер
+    call SaveFile_HL                ;0FB47H Записываем адрес начала блока
     xchg                            ;0FB4AH 
-    call SaveFile_HL                ;0FB4BH  Записываем адрес конца блока
+    call SaveFile_HL                ;0FB4BH Записываем адрес конца блока
     xchg                            ;0FB4EH 
     pop H                           ;0FB4FH 
 SaveFile_Loop:
@@ -624,11 +661,11 @@ SaveFile_Loop:
     inx H                           ;0FB57H 
     jnz SaveFile_Loop               ;0FB58H 
     lxi H, 0000H                    ;0FB5BH 
-    call SaveFile_HL                ;0FB5EH  После данных записываем 2 байта нулей
-    mvi C, 0E6H                     ;0FB61H  Маркер конца данных
-    call SaveByteC                  ;0FB63H  Записываем маркер
-    pop H                           ;0FB66H  Извлекаем из стека контрольную сумму
-    call SaveFile_HL                ;0FB67H  Записываем контрольную сумму записываемого блока
+    call SaveFile_HL                ;0FB5EH После данных записываем 2 байта нулей
+    mvi C, 0E6H                     ;0FB61H Маркер конца данных
+    call SaveByteC                  ;0FB63H Записываем маркер
+    pop H                           ;0FB66H Извлекаем из стека контрольную сумму
+    call SaveFile_HL                ;0FB67H Записываем контрольную сумму записываемого блока
     jmp DisplayHL                   ;0FB6AH 
 SetColorMode:
     mov C, L                        ;0FB6DH 
@@ -645,7 +682,7 @@ SetColorMode:
     sta 0F900H                      ;0FB82H 
     ret                             ;0FB85H 
 GetKeyStateA:
-    xra A                           ;0FB86H  Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
+    xra A                           ;0FB86H Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
     sta 0F400H                      ;0FB87H 
     lda 0F401H                      ;0FB8AH 
     xri 0FFH                        ;0FB8DH 
@@ -653,21 +690,21 @@ GetKeyStateA:
     mvi A, 0FFH                     ;0FB90H 
     ret                             ;0FB92H 
 CMD_ROM_BOOT:
-    lxi D, 0B800H                   ;0FB93H  --------------------------------------------
-    mov H, E                        ;0FB96H  --------------------------------------------
-    mov L, E                        ;0FB97H  --------------------------------------------
-    mvi A, 90H                      ;0FB98H  --------------------------------------------
-    sta 0F503H                      ;0FB9AH  Загружаем ROM диск 
+    lxi D, 0B800H                   ;0FB93H --------------------------------------------
+    mov H, E                        ;0FB96H --------------------------------------------
+    mov L, E                        ;0FB97H --------------------------------------------
+    mvi A, 90H                      ;0FB98H --------------------------------------------
+    sta 0F503H                      ;0FB9AH Загружаем ROM диск 
 ROM_LoopLoad:
-    shld 0F501H                     ;0FB9DH  в ОЗУ по адресу 0B800H до 0BFFFH
-    lda 0F500H                      ;0FBA0H  т.е. до начала видеопамяти 0C000H.
-    stax D                          ;0FBA3H  В конце загруженного блока
-    inx D                           ;0FBA4H  в последних 3-х байтах (начиная с 0BFFDH)
-    inx H                           ;0FBA5H  должна быть команда jmp на начало программы
-    mov A, H                        ;0FBA6H  --------------------------------------------
-    cpi 08H                         ;0FBA7H  --------------------------------------------
-    jnz ROM_LoopLoad                ;0FBA9H  --------------------------------------------
-    jmp Run_0BFFDH                  ;0FBACH  --------------------------------------------
+    shld 0F501H                     ;0FB9DH в ОЗУ по адресу 0B800H до 0BFFFH
+    lda 0F500H                      ;0FBA0H т.е. до начала видеопамяти 0C000H.
+    stax D                          ;0FBA3H В конце загруженного блока
+    inx D                           ;0FBA4H в последних 3-х байтах (начиная с 0BFFDH)
+    inx H                           ;0FBA5H должна быть команда jmp на начало программы
+    mov A, H                        ;0FBA6H --------------------------------------------
+    cpi 08H                         ;0FBA7H --------------------------------------------
+    jnz ROM_LoopLoad                ;0FBA9H --------------------------------------------
+    jmp Run_0BFFDH                  ;0FBACH --------------------------------------------
 InputKeyA:
     push B                          ;0FBAFH 
     push D                          ;0FBB0H 
@@ -840,10 +877,10 @@ DispSymC_0:
     push PSW                        ;0FCD3H 
     mov A, C                        ;0FCD4H 
     cpi 7FH                         ;0FCD5H ----------------------------------------------------------
-    jnz DispSymC_1                  ;0FCD7H  При выводе символа 7F переключаем признак инверсии вывода
-    lda INVERSE_DISP_ADDR           ;0FCDAH  Загружаем признак инверсии вывода
-    cma                             ;0FCDDH  инвертируем (переключаем)
-    sta INVERSE_DISP_ADDR           ;0FCDEH  Сохраняем признак инверсии вывода
+    jnz DispSymC_1                  ;0FCD7H При выводе символа 7F переключаем признак инверсии вывода
+    lda INVERSE_DISP_ADDR           ;0FCDAH Загружаем признак инверсии вывода
+    cma                             ;0FCDDH инвертируем (переключаем)
+    sta INVERSE_DISP_ADDR           ;0FCDEH Сохраняем признак инверсии вывода
     jmp DispSymC_Ret                ;0FCE1H ----------------------------------------------------------
 DispSymC_1:
     mvi H, 20H                      ;0FCE4H ----------------------------------------------------------

@@ -2,6 +2,9 @@
 0F3CAH:Reserv_ADDR
 0F3CCH:DispSymC_JMP_ADDR
 0F3CDH:DispSymC_ADDR
+0F3EEH:Cmd_Param
+0F3F0H:Cmd_Buffer_Start
+0F3F1H:Cmd_Buffer
 0BFFDH:Run_0BFFDH
 0F3CFH:SCREEN_ADDR_HI
 0F3D0H:SCREEN_SIZE_HI
@@ -38,9 +41,16 @@
 0F86CH:HandleCmd
 0F8BCH:InitializeCodePage
 0F8DDH:Stub
+0F8DEH:Handle_Loop_Start
 0F8E1H:Handle_Loop
+0F8FEH:Handle_KeyLeft
 0F901H:Handle_Inverse
+0F918H:Handle_Parse_Cmd_Params
+0F92AH:Handle_ParseParam
+0F92FH:Handle_ParseNextHex
+0F950H:Handle_HexC
 0F958H:HotReset
+0F960H:Handle_EnterCommand
 0F965H:DisplayHexM
 0F966H:DisplayHexA
 0F96FH:DisplayTetrasHex
