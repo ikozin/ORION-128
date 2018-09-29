@@ -67,7 +67,7 @@ namespace HexDump
             {
                 Console.WriteLine(ex.Message);
             }
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         private static void DisplayLine(uint addr, uint len, bool isViewLineAddr, bool isViewLineSum, byte[] data)
