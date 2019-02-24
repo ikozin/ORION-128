@@ -106,7 +106,14 @@ namespace Dasm
                         string note = comments.ContainsKey(addr) ? comments[addr] : "";
                         if (labels.ContainsKey(addr))
                             writer.WriteLine(String.Format("{0}:", labels[addr]));
-                        writer.WriteLine(String.Format("    {0};{1} {2}", text, addr, note));
+                        if (note.StartsWith(";"))
+                        {
+                            foreach (var commentLine in note.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                                writer.WriteLine(String.Format(";{0}", commentLine));
+                            writer.WriteLine(String.Format("    {0};{1}", text, addr));
+                        }
+                        else
+                            writer.WriteLine(String.Format("    {0};{1} {2}", text, addr, note));
                     }
                     catch (Exception)
                     {
