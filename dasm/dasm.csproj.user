@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>../../../rom/Orion128_M1.rom  s:0F800H   l:DATA\Orion128_M1\Orion128_M1_Label.txt   c:DATA\Orion128_M1\Orion128_M1_Comment.txt   d:DATA\Orion128_M1\Orion128_M1_Data.txt   i:DATA\Orion128_M1\Orion128_M1_Include.txt    o:Orion128_M1_source.asm</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+  </PropertyGroup>
+</Project>
