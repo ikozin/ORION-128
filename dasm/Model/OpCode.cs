@@ -44,7 +44,10 @@ namespace Dasm.Model
                 ushort word = (ushort)((hi << 8) | lo);
                 param = word.ToHex();
                 if (_constList.ContainsKey(param))
+                {
                     param = _constList[param];
+                    if (param.StartsWith(";")) param = param.Substring(1);
+                }
             }
             return String.Format(Command, param);
         }

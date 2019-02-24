@@ -105,7 +105,15 @@ namespace Dasm
                         text = String.Format("{0, -32}", text); // Форматируем строку
                         string note = comments.ContainsKey(addr) ? comments[addr] : "";
                         if (labels.ContainsKey(addr))
-                            writer.WriteLine(String.Format("{0}:", labels[addr]));
+                        {
+                            var label = labels[addr];
+                            if (label.StartsWith(";"))
+                            {
+                                label = label.Substring(1);
+                                writer.WriteLine();
+                            }
+                            writer.WriteLine(String.Format("{0}:", label));
+                        }
                         if (note.StartsWith(";"))
                         {
                             foreach (var commentLine in note.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))

@@ -7,12 +7,12 @@ namespace Dasm.Model
     {
         public string Format { get; private set; }
 
-        private string _formaTtingBlank;
+        private string _formattingBlank;
 
         public OpData(string fmt, string fmtBlank)
         {
             Format = fmt;
-            _formaTtingBlank = fmtBlank;
+            _formattingBlank = fmtBlank;
         }
 
         public abstract string GetString(Stream stream);
@@ -20,7 +20,7 @@ namespace Dasm.Model
         public string ToString(Stream stream)
         {
             string value = GetString(stream);
-            return String.Format("{0}{1}{2}", Format, _formaTtingBlank, value);
+            return String.Format("{0}{1}{2}", Format, _formattingBlank, value);
         }
     }
 }
