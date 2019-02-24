@@ -6,6 +6,9 @@ namespace UnpackCodepage
 {
     class Program
     {
+        private const string Bit0 = " ";
+        private const string Bit1 = "X";
+
         static void Main(string[] args)
         {
             if (args.Length != 2)
@@ -48,7 +51,7 @@ namespace UnpackCodepage
                         {
                             for (int bitPos = 0x80; bitPos > 0; bitPos >>= 1)
                             {
-                                Console.Write("{0}", (symbolData[i] & bitPos) > 0 ? "X" : " ");
+                                Console.Write("{0}", (symbolData[i] & bitPos) > 0 ? Bit1 : Bit0);
                             }
                             Console.WriteLine();
                         }
