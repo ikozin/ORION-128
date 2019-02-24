@@ -4,7 +4,7 @@
 **Мои утилиты**
 1. [dasm - Дизассемблер для i8080](https://github.com/ikozin/ORION-128/tree/master/dasm)
 2. [hexdump - Вывод в HEX формате с подсчетом контрольных сумм](https://github.com/ikozin/ORION-128/tree/master/hexdump)
-3. [unpackcodepage - Распаковка знакоaенератора из образа ПЗУ](https://github.com/ikozin/ORION-128/tree/master/unpackcodepage)
+3. [unpackcodepage - Распаковка знакогенератора из образа ПЗУ](https://github.com/ikozin/ORION-128/tree/master/unpackcodepage)
 
 **Полезные ссылки**
 
