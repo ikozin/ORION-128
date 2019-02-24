@@ -7,32 +7,19 @@ namespace Dasm.Service
 {
     public static class ConfigLoader
     {
-        internal static Dictionary<string, string> LoadDictionary(string path, string defValue = null)
+        internal static Dictionary<string, string> LoadDictionary(string path)
         {
             var lines = File.ReadAllLines(path);
             Dictionary<string, string> list = new Dictionary<string, string>();
             foreach (var line in lines)
             {
                 var items = line.Split(new[] { ':' });
-                if (String.IsNullOrEmpty(defValue))
-                {
-                    if (items.Length < 2) continue;
-                    string key = items[0];
-                    string value = String.Join(":", items.Skip(1).ToArray());
+                if (items.Length < 2) continue;
+                string key = items[0];
+                string value = String.Join(":", items.Skip(1).ToArray());
 
-                    if (!HandleBoundary(key, value, list))
-                        list.Add(key, value);
-                }
-                else
-                {
-                    if (items.Length == 0) continue;
-                    string key = items[0];
-                    string value = String.Join(":", items.Skip(1).ToArray());
-
-                    value = value.Length > 0 ? value : defValue;
-                    if (!HandleBoundary(key, value, list))
-                        list.Add(key, value);
-                }
+                if (!HandleBoundary(key, value, list))
+                    list.Add(key, value);
             }
             return list;
         }

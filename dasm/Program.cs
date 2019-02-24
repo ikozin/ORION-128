@@ -35,7 +35,7 @@ namespace Dasm
                 if (arg.ToLower().StartsWith("d:"))
                 {
                     string path = arg.Substring(2);
-                    datas = ConfigLoader.LoadDictionary(path, "D");
+                    datas = ConfigLoader.LoadDictionary(path);
                 }
                 if (arg.ToLower().StartsWith("o:"))
                 {
