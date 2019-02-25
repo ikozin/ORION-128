@@ -2,6 +2,7 @@
 0F3CAH:Reserv_ADDR
 0F3CCH:DispSymC_JMP_ADDR
 0F3CDH:DispSymC_ADDR
+0F3E5H:KEY_LED
 0F3E6H:KEY_CODE
 0F3EEH:Cmd_Param
 0F3F0H:Cmd_Buffer_Start
@@ -105,6 +106,7 @@
 0FB9DH:ROM_LoopLoad
 0FBAFH:;InputKeyA
 0FC0DH:;InputKeyCodeA
+0FC1AH:InputKeyCodeA_Loop
 0FCBAH:;InputKey_Delay
 0FCBDH:InputKey_DelayLoop
 0FCC4H:;DisplayNewLine
