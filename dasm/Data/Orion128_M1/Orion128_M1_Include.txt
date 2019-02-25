@@ -19,6 +19,7 @@ PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
 PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
 LOADBYTE_ADDR	    EQU 0F3DCH		; XX
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
+KEY_CODE            EQU OF3E6H      ; XX
 Cmd_Param           EQU 0F3EEH      ; XXXX
 Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
 Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
@@ -88,7 +89,7 @@ Run_0BFFDH			EQU 0BFFDH
 ;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
 ;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
 ;|   0F3E5H   |  XX  |                   |
-;|   0F3E6H   |  XX  |                   |
+;|   0F3E6H   |  XX  | KEY_CODE          | Код нажатой клавиши
 ;|   0F3E7H   |  --  |                   |
 ;|   0F3E8H   |  --  |                   |
 ;|   0F3E9H   |  --  |                   |
