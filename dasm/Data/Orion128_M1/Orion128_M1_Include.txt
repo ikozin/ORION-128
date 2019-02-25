@@ -20,7 +20,7 @@ PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для станда
 LOADBYTE_ADDR	    EQU 0F3DCH		; XX
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
 KEY_LED             EQU 0F3E5H      ; XX
-KEY_CODE            EQU OF3E6H      ; XX
+KEY_CODE            EQU 0F3E6H      ; XX
 Cmd_Param           EQU 0F3EEH      ; XXXX
 Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
 Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
