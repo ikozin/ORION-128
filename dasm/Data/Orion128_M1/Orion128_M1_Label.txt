@@ -121,6 +121,10 @@
 0FDBFH:Ret_Zero_HB
 0FE00H:;ClearScreen
 0FE11H:ClearScreen_Loop
+0FE1BH:;LongPause
+0FE1EH:LongPause_Loop
+0FE1FH:LongPause_EI
+0FE25H:LongPause_DI
 0FE30H:;Label_Version
 0FE3EH:Label_Prompt
 0FE46H:Unknown_Data
