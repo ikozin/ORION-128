@@ -119,6 +119,7 @@
 0FD2EH:DispSymC_Hidden
 0FD80H:DispSymC_Ret
 0FDBFH:Ret_Zero_HB
+0FDF2H:;???BlinkCurret???
 0FE00H:;ClearScreen
 0FE11H:ClearScreen_Loop
 0FE1BH:;LongPause
