@@ -19,6 +19,8 @@ PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
 PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
 LOADBYTE_ADDR	    EQU 0F3DCH		; XX
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
+KEY_LED             EQU 0F3E5H      ; XX
+KEY_CODE            EQU 0F3E6H      ; XX
 Cmd_Param           EQU 0F3EEH      ; XXXX
 Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
 Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
@@ -59,61 +61,61 @@ Run_0BFFDH			EQU 0BFFDH
 ;
 ;    Служебные ячейки
 ; -----------------------------------------------------------------------------------------------------------------------------------
-;|   0F3C9H   | 0C3H | Reserv_JMP_ADDR   | 0C3H (код команды JMP) - Резерв 
-;|   0F3CAH   |  XX  | Reserv_ADDR       | LO - адрес
-;|   0F3CBH   |  XX  | Reserv_ADDR       | HI - адрес
-;|   0F3CCH   | 0C3H | DispSymC_JMP_ADDR | 0C3H (код команды JMP) - DispSymC
-;|   0F3CDH   |  XX  | DispSymC_ADDR     | LO - адрес
-;|   0F3CEH   |  XX  | DispSymC_ADDR     | HI - адрес
-;|   0F3CFH   | 0C0H | SCREEN_ADDR_HI    | старший байт начала видеопамяти 0C000H
-;|   0F3D0H   |  30H | SCREEN_SIZE_HI    | старший байт размера видеопамяти 3000H = 12К
-;|   0F3D1H   |  00H | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
-;|   0F3D2H   | 0F0H | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
-;|   0F3D3H   |  00H | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
-;|   0F3D4H   |  XX  | X_POS_ADDR        |
-;|   0F3D5H   |  XX  | Y_POS_ADDR        |
-;|   0F3D6H   |  --  |                   |
-;|   0F3D7H   |  --  |                   |
-;|   0F3D8H   |  XX  | RESTART_ADDR      | LO - адрес возврата
-;|   0F3D9H   |  XX  | RESTART_ADDR      | HI - адрес возврата
-;|   0F3DAH   |  40H | PAUSE_SAVE_ADDR   | запись - 1200 бод = 40H
-;|   0F3DBH   |  60H | PAUSE_LOAD_ADDR   | чтение - для стандартной скорости = 60H
-;|   0F3DCH   |  XX  | LOADBYTE_ADDR     |
-;|   0F3DDH   |  --  |                   |
-;|   0F3DEH   |  --  |                   |
-;|   0F3DFH   |  XX  |                   |
-;|   0F3E0H   |  XX  |                   |
-;|   0F3E1H   |  --  |                   |
-;|   0F3E2H   |  --  |                   |
-;|   0F3E3H   | 0FFH | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
-;|   0F3E4H   | 0BFH | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
-;|   0F3E5H   |  XX  |                   |
-;|   0F3E6H   |  XX  |                   |
-;|   0F3E7H   |  --  |                   |
-;|   0F3E8H   |  --  |                   |
-;|   0F3E9H   |  --  |                   |
-;|   0F3EAH   |  --  |                   |
-;|   0F3EBH   |  --  |                   |
-;|   0F3ECH   |  --  |                   |
-;|   0F3EDH   |  --  |                   |
-;|   0F3EEH   |  XX  | Cmd_Param         | LO - значение текущего параметра введенной команды
-;|   0F3EFH   |  XX  | Cmd_Param         | HI - значение текущего параметра введенной команды
-;|   0F3F0H   |  XX  | Cmd_Buffer_Start  | Буфер для введенной команды
-;|   0F3F1H   |  XX  | Cmd_Buffer        | Буфер для введенной команды
-;|   0F3F2H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F3H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F4H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F5H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F6H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F7H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F8H   |  XX  |                   | Буфер для введенной команды
-;|   0F3F9H   |  XX  |                   | Буфер для введенной команды
-;|   0F3FAH   |  XX  |                   | Буфер для введенной команды
-;|   0F3FBH   |  XX  |                   | Буфер для введенной команды
-;|   0F3FCH   |  XX  |                   | Буфер для введенной команды
-;|   0F3FDH   |  XX  |                   | Буфер для введенной команды
-;|   0F3FEH   |  XX  |                   | Буфер для введенной команды
-;|   0F3FFH   |  XX  |                   | Буфер для введенной команды
+;| 0F3C9H | C3 | Reserv_JMP_ADDR   | 0C3H (код команды JMP) - Резерв 
+;| 0F3CAH | XX | Reserv_ADDR       | LO - адрес
+;| 0F3CBH | XX | Reserv_ADDR       | HI - адрес
+;| 0F3CCH | C3 | DispSymC_JMP_ADDR | 0C3H (код команды JMP) - DispSymC
+;| 0F3CDH | XX | DispSymC_ADDR     | LO - адрес
+;| 0F3CEH | XX | DispSymC_ADDR     | HI - адрес
+;| 0F3CFH | C0 | SCREEN_ADDR_HI    | старший байт начала видеопамяти 0C000H
+;| 0F3D0H | 30 | SCREEN_SIZE_HI    | старший байт размера видеопамяти 3000H = 12К
+;| 0F3D1H | 00 | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
+;| 0F3D2H | F0 | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
+;| 0F3D3H | 00 | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
+;| 0F3D4H | XX | X_POS_ADDR        |
+;| 0F3D5H | XX | Y_POS_ADDR        |
+;| 0F3D6H | -- |                   |
+;| 0F3D7H | -- |                   |
+;| 0F3D8H | XX | RESTART_ADDR      | LO - адрес возврата
+;| 0F3D9H | XX | RESTART_ADDR      | HI - адрес возврата
+;| 0F3DAH | 40 | PAUSE_SAVE_ADDR   | запись - 1200 бод = 40H
+;| 0F3DBH | 60 | PAUSE_LOAD_ADDR   | чтение - для стандартной скорости = 60H
+;| 0F3DCH | XX | LOADBYTE_ADDR     |
+;| 0F3DDH | XX |                   |
+;| 0F3DEH | -- |                   |
+;| 0F3DFH | XX |                   |
+;| 0F3E0H | XX |                   |
+;| 0F3E1H | -- |                   |
+;| 0F3E2H | -- |                   |
+;| 0F3E3H | FF | USER_MAX_RAM_ADDR | LO - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
+;| 0F3E4H | BF | USER_MAX_RAM_ADDR | HI - адрес 0BFFFH = верхний адрес пользовательского ОЗУ
+;| 0F3E5H | XX | KEY_LED           |
+;| 0F3E6H | XX | KEY_CODE          | Код нажатой клавиши
+;| 0F3E7H | -- |                   |
+;| 0F3E8H | -- |                   |
+;| 0F3E9H | -- |                   |
+;| 0F3EAH | -- |                   |
+;| 0F3EBH | -- |                   |
+;| 0F3ECH | -- |                   |
+;| 0F3EDH | -- |                   |
+;| 0F3EEH | XX | Cmd_Param         | LO - значение текущего параметра введенной команды
+;| 0F3EFH | XX | Cmd_Param         | HI - значение текущего параметра введенной команды
+;| 0F3F0H | XX | Cmd_Buffer_Start  | Буфер для введенной команды
+;| 0F3F1H | XX | Cmd_Buffer        | Буфер для введенной команды
+;| 0F3F2H | XX |                   | Буфер для введенной команды
+;| 0F3F3H | XX |                   | Буфер для введенной команды
+;| 0F3F4H | XX |                   | Буфер для введенной команды
+;| 0F3F5H | XX |                   | Буфер для введенной команды
+;| 0F3F6H | XX |                   | Буфер для введенной команды
+;| 0F3F7H | XX |                   | Буфер для введенной команды
+;| 0F3F8H | XX |                   | Буфер для введенной команды
+;| 0F3F9H | XX |                   | Буфер для введенной команды
+;| 0F3FAH | XX |                   | Буфер для введенной команды
+;| 0F3FBH | XX |                   | Буфер для введенной команды
+;| 0F3FCH | XX |                   | Буфер для введенной команды
+;| 0F3FDH | XX |                   | Буфер для введенной команды
+;| 0F3FEH | XX |                   | Буфер для введенной команды
+;| 0F3FFH | XX |                   | Буфер для введенной команды
 ; -----------------------------------------------------------------------------------------------------------------------------------
 ;
 ;
@@ -146,49 +148,177 @@ Run_0BFFDH			EQU 0BFFDH
 ORG 0F800H
 
     jmp StartCode                   ;0F800H 
+
 InputKeyA_Entry:
-    jmp InputKeyA                   ;0F803H Ввод символа с клавиатуры (вых: A - введенный символ)
+;------------------------------------------
+; Ввод символа с клавиатуры
+;  вх:  нет
+;  вых: A  = введенный символ
+;------------------------------------------
+    jmp InputKeyA                   ;0F803H
+
 LoadByteA_Entry:
-    jmp LoadByteA                   ;0F806H Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта, A = 08H - без поиска)
+;------------------------------------------
+; Ввод байта с магнитофона
+;  вх:  A  = 0FFH - с поиском синхробайта
+;       A  = 08H  - без поиска
+;  вых: A  = введенный символ
+;------------------------------------------
+    jmp LoadByteA                   ;0F806H
+
 DisplaySymC_Entry:
-    jmp DispSymC_JMP_ADDR           ;0F809H Вывод символа на экран (вх: C = выводимый символ)
+;------------------------------------------
+; Вывод символа на экран
+;  вх:  C  = выводимый символ
+;  вых: нет
+;------------------------------------------
+    jmp DispSymC_JMP_ADDR           ;0F809H
+
 SaveByteC_Entry:
-    jmp SaveByteC                   ;0F80CH Запись байта на магнитофон (вх: C = записываемый байт)
-DispplaySymA_Entry:
-    jmp DispSymA                    ;0F80FH Вывод символа на экран (вх: A = выводимый символ)
+;------------------------------------------
+; Запись байта на магнитофон
+;  вх:  C  = записываемый байт
+;  вых: нет
+;------------------------------------------
+    jmp SaveByteC                   ;0F80CH
+
+DisplaySymA_Entry:
+;------------------------------------------
+; Вывод символа на экран
+;  вх:  A  = выводимый символ
+;  вых: нет
+;------------------------------------------
+    jmp DispSymA                    ;0F80FH
+
 GetKeyStateA_Entry:
-    jmp GetKeyStateA                ;0F812H Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
+;------------------------------------------
+; Опрос состояния клавиатуры
+;  вх:  нет
+;  вых: A  = 00H  - не нажата
+;       A  = 0FFH - нажата
+;------------------------------------------
+    jmp GetKeyStateA                ;0F812H
+
 DisplayHexA_Entry:
-    jmp DisplayHexA                 ;0F815H Вывод байта на экран в HEX-коде (вх: A = выводимый символ)
+;------------------------------------------
+; Вывод байта на экран в HEX-коде
+;  вх:  A  = выводимый символ
+;  вых: нет
+;------------------------------------------
+    jmp DisplayHexA                 ;0F815H
+
 DisplayTextHL_Entry:
-    jmp DisplayTextHL               ;0F818H Вывод на экран сообщений (вх: HL - адрес начала, конечный байт - 00H)
+;------------------------------------------
+; Вывод на экран сообщений
+;  вх:  HL = адрес начала сообщения, конечный байт - 00H
+;  вых: нет
+;------------------------------------------
+    jmp DisplayTextHL               ;0F818H
+
 InputkeyCodeA_Entry:
-    jmp InputKeyCodeA               ;0F81BH Ввод кода нажатой клавиши inkey  (вых: A = 0FFH - не нажата, A = 0FEH - РУС/ЛАТ, иначе - код клавиши)
+;------------------------------------------
+; Ввод кода нажатой клавиши inkey
+;  вх:  нет
+;  вых: A  = 0FFH - не нажата
+;       A  = 0FEH - РУС/ЛАТ
+;       A  = код клавиши
+;------------------------------------------
+    jmp InputKeyCodeA               ;0F81BH
+
 GetPosCursor_Entry:
-    jmp GetPosCursor                ;0F81EH Запрос положения курсора (вых: H - номер строки Y, L номер позиции X)
+;------------------------------------------
+; Запрос положения курсора
+;  вх:  нет
+;  вых: H  = номер строки  Y
+;       L  = номер позиции X
+;------------------------------------------
+    jmp GetPosCursor                ;0F81EH
+
 NotImplemented_Entry:
-    jmp Reserv_JMP_ADDR             ;0F821H Не используется
+;------------------------------------------
+; Не используется
+;------------------------------------------
+    jmp Reserv_JMP_ADDR             ;0F821H
+
 LoadFile_Entry:
-    jmp LoadFile                    ;0F824H Чтение файла из магнитной ленты
+;------------------------------------------
+; Чтение файла из магнитной ленты
+;------------------------------------------
+    jmp LoadFile                    ;0F824H
+
 SaveFile_Entry:
-    jmp SaveFile                    ;0F827H Запись файла на магнитную ленту (вх: HL - нач. адрес массива, DE - конечный адрес)
+;------------------------------------------
+; Запись файла на магнитную ленту
+;  вх:  HL = нач. адрес массива
+;       DE = конечный адрес
+;  вых: нет
+;------------------------------------------
+    jmp SaveFile                    ;0F827H
+
 CalcControlSum_Entry:
-    jmp CalcControlSum              ;0F82AH Подсчет контрольной суммы блока (вх: HL - адрес начала, DE - адрес конца; вых: BC - контрольная сумма)
+;------------------------------------------
+; Подсчет контрольной суммы блока
+;  вх:  HL = адрес начала
+;       DE = адрес конца
+;  вых: BC = контрольная сумма
+;------------------------------------------
+    jmp CalcControlSum              ;0F82AH
+
 LoadCodePage_Entry:
-    jmp LoadCodePage                ;0F82DH Распаковка внутреннего знакогенератора
+;------------------------------------------
+; Распаковка внутреннего знакогенератора
+;  вх:  нет
+;  вых: нет
+;------------------------------------------
+    jmp LoadCodePage                ;0F82DH
+
 LoadRamAddr_Entry:
-    jmp LoadRamAddr                 ;0F830H Чтение конечного адреса ОЗУ пользователя (вых: HL - конечный адрес)
+;------------------------------------------
+; Чтение конечного адреса ОЗУ пользователя
+;  вх:  нет
+;  вых: HL = конечный адрес
+;------------------------------------------
+    jmp LoadRamAddr                 ;0F830H
+
 SaveRamAddr_Entry:
-    jmp SaveRamAddr                 ;0F833H Запись конечного адреса ОЗУ пользователя (вх: HL - конечный адрес)
+;------------------------------------------
+; Запись конечного адреса ОЗУ пользователя
+;  вх:  HL = конечный адрес
+;  вых: нет
+;------------------------------------------
+    jmp SaveRamAddr                 ;0F833H
+
 LoadByteDisplayPage_Entry:
-    jmp LoadByteDisplayPage         ;0F836H Чтение байта из доп. страницы (вх: HL - адрес, A - N страницы (0-3), C - считанный байт)
+;------------------------------------------
+; Чтение байта из доп. страницы
+;  вх:  HL = адрес
+;       A  = N страницы (0-3)
+;  вых: C  = считанный байт
+;------------------------------------------
+    jmp LoadByteDisplayPage         ;0F836H
+
 SaveByteDisplayPage_Entry:
-    jmp SaveByteDisplayPage         ;0F839H Запись байта в доп. страницы (вх: HL - адрес, A - N страницы (0-3), C - записываемый байт)
+;------------------------------------------
+; Запись байта в доп. страницы
+;  вх:  HL = адрес
+;       A  = N страницы (0-3)
+;       C  = записываемый байт
+;  вых: нет
+;------------------------------------------
+    jmp SaveByteDisplayPage         ;0F839H
+
 SetPosCursor_Entry:
-    jmp SetPosCursor                ;0F83CH 
+;------------------------------------------
+; Установить положение курсора
+;  вх:  H  = номер строки  Y
+;       L  = номер позиции X
+;  вых: нет
+;------------------------------------------
+    jmp SetPosCursor                ;0F83CH
     ret                             ;0F83FH 
     nop                             ;0F840H 
     nop                             ;0F841H 
+
 StartCode:
     lxi SP, Reserv_JMP_ADDR         ;0F842H 
     xra A                           ;0F845H 
@@ -211,7 +341,7 @@ HandleCmd:
     sta 0F403H                      ;0F871H 
     lxi H, Label_Prompt             ;0F874H 
     call DisplayTextHL              ;0F877H Выводим приглашение для ввода команды "=>"
-    sta 0F3E5H                      ;0F87AH 
+    sta KEY_LED                     ;0F87AH 
     lxi H, HotReset                 ;0F87DH 
     shld RESTART_ADDR               ;0F880H 
     lxi H, HandleCmd                ;0F883H Сохраняем начало цикла обработки команд в HL
@@ -237,6 +367,7 @@ HandleCmd:
     cpi 47H                         ;0F8B6H G<адрес><ВК>                     - Передача управления по адресу
     jnz HotReset                    ;0F8B8H 
     pchl                            ;0F8BBH Переходим на начало цикла обработки команд (см 0F883H)
+
 InitializeCodePage:
     lxi H, 0F000H                   ;0F8BCH Начальный адрес знакогенератора
     shld CODEPAGE_ADDR              ;0F8BFH сохраняем в ячейке 0F3D1H
@@ -251,6 +382,7 @@ InitializeCodePage:
     shld USER_MAX_RAM_ADDR          ;0F8DAH сохраняем в ячейке 0F3E3H
 Stub:
     ret                             ;0F8DDH 
+
 Handle_Loop_Start:
     lxi D, Cmd_Buffer_Start         ;0F8DEH 
 Handle_Loop:
@@ -281,6 +413,7 @@ Handle_Inverse:
     cpi 0FFH                        ;0F910H 
     jnz Handle_Loop                 ;0F912H 
     jmp Handle_KeyLeft              ;0F915H 
+
 Handle_Parse_Cmd_Params:
     lxi D, Cmd_Buffer               ;0F918H Разбираем введенные параметры команды (без пробелов), сама команда по адресу Cmd_Buffer_Start
     call Handle_ParseParam          ;0F91BH 
@@ -290,6 +423,7 @@ Handle_Parse_Cmd_Params:
     xchg                            ;0F925H 
     lhld Cmd_Param                  ;0F926H 
     ret                             ;0F929H 
+
 Handle_ParseParam:
     lxi H, 0000H                    ;0F92AH В HL будет значение текущего введенного параметра
     mov B, L                        ;0F92DH 
@@ -322,10 +456,12 @@ HotReset:
     mvi A, 3FH                      ;0F958H '?'
     call DispSymA                   ;0F95AH 
     jmp HandleCmd                   ;0F95DH 
+
 Handle_EnterCommand:
     lxi D, 0000H                    ;0F960H 
     stc                             ;0F963H Признак конца команды
     ret                             ;0F964H 
+
 DisplayHexM:
     mov A, M                        ;0F965H 
 DisplayHexA:
@@ -348,16 +484,18 @@ DisplayTetrasHex_1:
     call DisplaySymC_Entry          ;0F97CH Отображаем HEX символ
     pop B                           ;0F97FH 
     ret                             ;0F980H 
+
 DisplayTextHL:
-    mov A, M                        ;0F981H 
-    ana A                           ;0F982H 
-    rz                              ;0F983H 
+    mov A, M                        ;0F981H Загружаем очередной символ из памяти по адресу в HL
+    ana A                           ;0F982H Проверяем его на 0 (признак конца строки)
+    rz                              ;0F983H Выходим если достигли признака конца строки
     push B                          ;0F984H 
     mov C, A                        ;0F985H 
-    call DisplaySymC_Entry          ;0F986H 
+    call DisplaySymC_Entry          ;0F986H Отображаем очередной символ
     pop B                           ;0F989H 
-    inx H                           ;0F98AH 
+    inx H                           ;0F98AH Переходим к следующему символу
     jmp DisplayTextHL               ;0F98BH 
+
 CalcControlSum:
     lxi B, 0000H                    ;0F98EH Обнуляем BC
 CalcSumLoop:
@@ -373,6 +511,7 @@ CalcSumLoop:
     mov B, A                        ;0F99EH 
     inx H                           ;0F99FH 
     jmp CalcSumLoop                 ;0F9A0H 
+
 DisplayAddr:
     call DisplayNewLine             ;0F9A3H 
     call DisplaySpace               ;0F9A6H 
@@ -384,6 +523,7 @@ DisplayHL:
 DisplaySpace:
     mvi A, 20H                      ;0F9B1H ' '
     jmp DispSymA                    ;0F9B3H 
+
 CheckBlockEnd:
     mov A, H                        ;0F9B6H ----------------------------------------
     cmp D                           ;0F9B7H Проверяем на конец блока
@@ -391,6 +531,7 @@ CheckBlockEnd:
     mov A, L                        ;0F9B9H в DE - конец блока
     cmp E                           ;0F9BAH ----------------------------------------
     ret                             ;0F9BBH 
+
 GetPosCursor:
     lhld X_POS_ADDR                 ;0F9BCH Запрос положения курсора (вых H - номер строки Y, L номер позиции X)
     mov A, L                        ;0F9BFH 0F3D4H -> L (X)
@@ -398,6 +539,7 @@ GetPosCursor:
     rrc                             ;0F9C1H L делим на 4 
     mov L, A                        ;0F9C2H ---------------
     ret                             ;0F9C3H 
+
 SetPosCursor:
     mov A, L                        ;0F9C4H ---------------
     rlc                             ;0F9C5H L умножаем на 4 
@@ -405,11 +547,13 @@ SetPosCursor:
     mov L, A                        ;0F9C7H H -> 0F3D5H (Y)
     shld X_POS_ADDR                 ;0F9C8H ---------------
     ret                             ;0F9CBH 
+
 SaveRamAddr:
     shld USER_MAX_RAM_ADDR          ;0F9CCH 
 LoadRamAddr:
     lhld USER_MAX_RAM_ADDR          ;0F9CFH 
     ret                             ;0F9D2H 
+
 LoadCodePage:
     lxi H, CodePageTable            ;0F9D3H Адрес начала знакогенератора в ПЗУ (0FE48H - 0FFFFH)
     lxi D, 0F000H                   ;0F9D6H Адрес знакогенератора в ОЗУ (0F000H - 0F2FFH)
@@ -441,6 +585,7 @@ LoadCodePage_ExtractLine:
     ana A                           ;0F9F4H 
     jnz LoadCodePage_Extract        ;0F9F5H 
     jmp LoadCodePage_NextSymbol     ;0F9F8H 
+
 LoadByteDisplayPage:
     sta 0F900H                      ;0F9FBH 
     mov C, M                        ;0F9FEH 
@@ -448,10 +593,12 @@ SetZeroDisplayPage:
     xra A                           ;0F9FFH 
     sta 0F900H                      ;0FA00H 
     ret                             ;0FA03H 
+
 SaveByteDisplayPage:
     sta 0F900H                      ;0FA04H 
     mov M, C                        ;0FA07H 
     jmp SetZeroDisplayPage          ;0FA08H 
+
 LoadByteA_WithoutSync:
     mvi A, 08H                      ;0FA0BH 
 LoadByteA:
@@ -518,6 +665,7 @@ Ret_Pop_HDB:
     pop D                           ;0FA6FH 
     pop B                           ;0FA70H 
     ret                             ;0FA71H 
+
 SaveFile_HL:
     mov C, H                        ;0FA72H 
     call SaveByteC                  ;0FA73H 
@@ -546,15 +694,19 @@ SaveByteC_Loop:
 Ret_Pop_PSW:
     pop psw                         ;0FA96H 
     ret                             ;0FA97H 
+
 Pause_Save:
     lda PAUSE_SAVE_ADDR             ;0FA98H Загружаем значение паузы для записи на магнитную ленту
     jmp Pause_Loop                  ;0FA9BH 
+
 Pause_Load:
     lda PAUSE_LOAD_ADDR             ;0FA9EH Загружаем значение паузы для чтения с магнитной ленты
+
 Pause_Loop:
     dcr A                           ;0FAA1H 
     jnz Pause_Loop                  ;0FAA2H 
     ret                             ;0FAA5H 
+
 DisplayNextAddr:
     inx H                           ;0FAA6H 
 EditMemory:
@@ -572,6 +724,7 @@ EditMemory:
     pop H                           ;0FAC1H 
     mov M, E                        ;0FAC2H 
     jmp DisplayNextAddr             ;0FAC3H 
+
 DumpMemory:
     mov B, E                        ;0FAC6H 
 DumpMemory_NextLine:
@@ -584,6 +737,7 @@ DumpMemory_NextByte:
     call LoadByteDisplayPage        ;0FAD2H 
     mov A, C                        ;0FAD5H 
     jmp DumpMemory_HexA             ;0FAD6H 
+
 DumpMemory_HexA_M:
     mov A, M                        ;0FAD9H 
 DumpMemory_HexA:
@@ -597,6 +751,7 @@ DumpMemory_HexA:
     jnz DumpMemory_NextLine         ;0FAE6H 
     call Handle_Loop_Start          ;0FAE9H 
     jmp DumpMemory_NextLine         ;0FAECH 
+
 LoadFile:
     mvi A, 0FFH                     ;0FAEFH Ввод байта с магнитофона (вх: A = 0FFH - с поиском синхробайта)
     call LoadFile_HL_sync           ;0FAF1H Загружаем адрес начала блока
@@ -628,6 +783,7 @@ LoadFile_Loop:
     call CheckBlockEnd              ;0FB1FH Проверяем на совпадение загруженную и посчитанную контрольную сумму
     rz                              ;0FB22H Выходим если контрольная сумма совпала
     jmp Load_Error                  ;0FB23H 
+
 LoadFile_HL:
     mvi A, 08H                      ;0FB26H 
 LoadFile_HL_sync:
@@ -636,6 +792,7 @@ LoadFile_HL_sync:
     call LoadByteA_WithoutSync      ;0FB2CH 
     mov L, A                        ;0FB2FH 
     ret                             ;0FB30H 
+
 SaveFile:
     push H                          ;0FB31H Запись файла на магнитную ленту (вх: HL - нач. адрес массива, DE - конечный адрес)
     call CalcControlSum             ;0FB32H Вычисляем контрольную сумму записываемого блока
@@ -667,6 +824,7 @@ SaveFile_Loop:
     pop H                           ;0FB66H Извлекаем из стека контрольную сумму
     call SaveFile_HL                ;0FB67H Записываем контрольную сумму записываемого блока
     jmp DisplayHL                   ;0FB6AH 
+
 SetColorMode:
     mov C, L                        ;0FB6DH 
     mvi A, 06H                      ;0FB6EH 
@@ -681,6 +839,7 @@ SetColorMode:
     xra A                           ;0FB81H 
     sta 0F900H                      ;0FB82H 
     ret                             ;0FB85H 
+
 GetKeyStateA:
     xra A                           ;0FB86H Опрос состояния клавиатуры (вых: A = 00H - не нажата, A = 0FFH - нажата)
     sta 0F400H                      ;0FB87H 
@@ -689,6 +848,7 @@ GetKeyStateA:
     rz                              ;0FB8FH 
     mvi A, 0FFH                     ;0FB90H 
     ret                             ;0FB92H 
+
 CMD_ROM_BOOT:
     lxi D, 0B800H                   ;0FB93H --------------------------------------------
     mov H, E                        ;0FB96H --------------------------------------------
@@ -705,63 +865,68 @@ ROM_LoopLoad:
     cpi 08H                         ;0FBA7H --------------------------------------------
     jnz ROM_LoopLoad                ;0FBA9H --------------------------------------------
     jmp Run_0BFFDH                  ;0FBACH --------------------------------------------
+
 InputKeyA:
     push B                          ;0FBAFH 
     push D                          ;0FBB0H 
     push H                          ;0FBB1H 
-    call InputKeyCodeA              ;0FBB2H 
+    call InputKeyCodeA              ;0FBB2H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     cpi 0FFH                        ;0FBB5H 
-    jnz 0FBBDH                      ;0FBB7H 
-    sta 0F3E6H                      ;0FBBAH 
+    jnz InputKeyA_WaitStart         ;0FBB7H 
+    sta KEY_CODE                    ;0FBBAH Сохраняем код нажатой клавиши
+InputKeyA_WaitStart:
     mvi D, 00H                      ;0FBBDH 
+InputKeyA_WaitLoop:
     inx D                           ;0FBBFH 
     dcr E                           ;0FBC0H 
     inr E                           ;0FBC1H 
-    cz 0FDF2H                       ;0FBC2H 
-    call InputKeyCodeA              ;0FBC5H 
+    cz _BlinkCurret_                ;0FBC2H 
+    call InputKeyCodeA              ;0FBC5H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     inr A                           ;0FBC8H 
-    jz 0FBBFH                       ;0FBC9H 
+    jz InputKeyA_WaitLoop           ;0FBC9H 
     push PSW                        ;0FBCCH 
     mov A, D                        ;0FBCDH 
     rrc                             ;0FBCEH 
-    cnc 0FDF2H                      ;0FBCFH 
+    cnc _BlinkCurret_               ;0FBCFH 
     pop psw                         ;0FBD2H 
     dcr A                           ;0FBD3H 
     jp 0FBEDH                       ;0FBD4H 
-    lxi H, 0F3E5H                   ;0FBD7H 
+    lxi H, KEY_LED                  ;0FBD7H 
     mov A, M                        ;0FBDAH 
     cma                             ;0FBDBH 
     mov M, A                        ;0FBDCH 
     sta 0F402H                      ;0FBDDH 
-    call InputKeyCodeA              ;0FBE0H 
+    call InputKeyCodeA              ;0FBE0H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     inr A                           ;0FBE3H 
     jnz 0FBE0H                      ;0FBE4H 
-    call 0FDF2H                     ;0FBE7H 
-    jmp 0FBBDH                      ;0FBEAH 
+    call _BlinkCurret_              ;0FBE7H 
+    jmp InputKeyA_WaitStart         ;0FBEAH 
     mov E, A                        ;0FBEDH 
     mvi D, 14H                      ;0FBEEH 
-    lxi H, 0F3E6H                   ;0FBF0H 
+    lxi H, KEY_CODE                 ;0FBF0H 
     cmp M                           ;0FBF3H 
     jz 0FC02H                       ;0FBF4H 
     dcr D                           ;0FBF7H 
     jz 0FC02H                       ;0FBF8H 
-    call InputKeyCodeA              ;0FBFBH 
+    call InputKeyCodeA              ;0FBFBH  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     cmp E                           ;0FBFEH 
     jz 0FBF7H                       ;0FBFFH 
-    call 0FE1BH                     ;0FC02H 
+    call LongPause                  ;0FC02H 
     mov M, E                        ;0FC05H 
-    call 0FDF2H                     ;0FC06H 
+    call _BlinkCurret_              ;0FC06H 
     mov A, E                        ;0FC09H 
     jmp Ret_Pop_HDB                 ;0FC0AH 
+
 InputKeyCodeA:
     push B                          ;0FC0DH 
     push D                          ;0FC0EH 
     push H                          ;0FC0FH 
-    lxi H, Ret_Pop_HDB              ;0FC10H 
-    push H                          ;0FC13H 
+    lxi H, Ret_Pop_HDB              ;0FC10H  Адрес кода для восстановления регистров (pop H; pop D; pop B; ret)
+    push H                          ;0FC13H  Помещаем адрес в стек, имитируя вызов call, для того чтоб выйти из функции просто по команде RET
     mvi B, 00H                      ;0FC14H 
     mvi D, 09H                      ;0FC16H 
     mvi C, 0FEH                     ;0FC18H 
+InputKeyCodeA_Loop:
     mov A, C                        ;0FC1AH 
     sta 0F400H                      ;0FC1BH 
     rlc                             ;0FC1EH 
@@ -778,12 +943,12 @@ InputKeyCodeA:
     adi 08H                         ;0FC34H 
     mov B, A                        ;0FC36H 
     dcr D                           ;0FC37H 
-    jnz 0FC1AH                      ;0FC38H 
-    lda 0F402H                      ;0FC3BH 
-    ani 80H                         ;0FC3EH 
-    mvi A, 0FEH                     ;0FC40H 
+    jnz InputKeyCodeA_Loop          ;0FC38H 
+    lda 0F402H                      ;0FC3BH Читаем из порта C, маски для кнопок: [РУС/ЛАТ] = 0x80, [УС] = 0x40, [СС] = 0x20
+    ani 80H                         ;0FC3EH Проверяем нажатие [РУС/ЛАТ] = 0x80
+    mvi A, 0FEH                     ;0FC40H =0FEH (РУС/ЛАТ)
     rz                              ;0FC42H 
-    inr A                           ;0FC43H 
+    inr A                           ;0FC43H =0FFH (не нажата)
     ret                             ;0FC44H 
     inr B                           ;0FC45H 
     rar                             ;0FC46H 
@@ -791,7 +956,7 @@ InputKeyCodeA:
     mov A, B                        ;0FC4AH 
     ani 3FH                         ;0FC4BH 
     cpi 10H                         ;0FC4DH 
-    jc 0FC8DH                       ;0FC4FH 
+    jc GetKeyCodeMap                ;0FC4FH 
     cpi 3FH                         ;0FC52H 
     mov B, A                        ;0FC54H 
     mvi A, 20H                      ;0FC55H 
@@ -803,7 +968,7 @@ InputKeyCodeA:
     mov A, B                        ;0FC61H 
     ani 1FH                         ;0FC62H 
     ret                             ;0FC64H 
-    lda 0F3E5H                      ;0FC65H 
+    lda KEY_LED                     ;0FC65H 
     ana A                           ;0FC68H 
     jnz 0FCA6H                      ;0FC69H 
     mov A, C                        ;0FC6CH 
@@ -821,12 +986,16 @@ InputKeyCodeA:
     adi 10H                         ;0FC87H 
     pop H                           ;0FC89H 
     jmp Ret_Pop_HDB                 ;0FC8AH 
-    lxi H, 0FC96H                   ;0FC8DH 
+
+GetKeyCodeMap:
+    lxi H, KeyCodeMap               ;0FC8DH 
     mov C, A                        ;0FC90H 
     mvi B, 00H                      ;0FC91H 
     dad B                           ;0FC93H 
     mov A, M                        ;0FC94H 
     ret                             ;0FC95H 
+
+KeyCodeMap:
     DB    12                        ;0FC96H 
     DB    31                        ;0FC97H 
     DB    27                        ;0FC98H 
@@ -853,6 +1022,7 @@ InputKeyCodeA:
     jm 0FC87H                       ;0FCB4H 
     adi 40H                         ;0FCB7H 
     ret                             ;0FCB9H 
+
 InputKey_Delay:
     lxi H, 0B00H                    ;0FCBAH 
 InputKey_DelayLoop:
@@ -861,6 +1031,7 @@ InputKey_DelayLoop:
     ora L                           ;0FCBFH 
     jnz InputKey_DelayLoop          ;0FCC0H 
     ret                             ;0FCC3H 
+
 DisplayNewLine:
     mvi A, 0DH                      ;0FCC4H 
     call DispSymA                   ;0FCC6H 
@@ -869,6 +1040,7 @@ DispSymA:
     push B                          ;0FCCBH 
     mov C, A                        ;0FCCCH 
     jmp DispSymC_0                  ;0FCCDH 
+
 DispSymC:
     push B                          ;0FCD0H 
 DispSymC_0:
@@ -1013,7 +1185,7 @@ DispSymC_Ret:
     inr A                           ;0FDB1H 
     rz                              ;0FDB2H 
     cpi 0EFH                        ;0FDB3H 
-    jz 0FE1BH                       ;0FDB5H 
+    jz LongPause                    ;0FDB5H 
     adi 0BH                         ;0FDB8H 
     jz 0FDC0H                       ;0FDBAH 
     inr A                           ;0FDBDH 
@@ -1024,7 +1196,7 @@ Ret_Zero_HB:
     mov B, D                        ;0FDC1H 
     mov C, D                        ;0FDC2H 
     ret                             ;0FDC3H 
-    lhld X_POS_ADDR                 ;0FDC4H 
+    lhld X_POS_ADDR                 ;0FDC4H Загружаеем координаты курсора L = X, H = Y
     mov A, L                        ;0FDC7H 
     rrc                             ;0FDC8H 
     mov L, A                        ;0FDC9H 
@@ -1057,7 +1229,9 @@ Ret_Zero_HB:
     add L                           ;0FDEFH 
     mov L, A                        ;0FDF0H 
     ret                             ;0FDF1H 
-    call 0FDC4H                     ;0FDF2H 
+
+_BlinkCurret_:
+    call 0FDC4H                     ;0FDF2H  Похоже на курсор (_)
     adi 09H                         ;0FDF5H 
     mov L, A                        ;0FDF7H 
     mov A, B                        ;0FDF8H 
@@ -1068,6 +1242,7 @@ Ret_Zero_HB:
     xra M                           ;0FDFDH 
     mov M, A                        ;0FDFEH 
     ret                             ;0FDFFH 
+
 ClearScreen:
     push PSW                        ;0FE00H 
     push H                          ;0FE01H 
@@ -1088,19 +1263,25 @@ ClearScreen_Loop:
     pop H                           ;0FE18H 
     pop psw                         ;0FE19H 
     ret                             ;0FE1AH 
+
+LongPause:
     lxi B, 4014H                    ;0FE1BH 
+LongPause_Loop:
     mov A, B                        ;0FE1EH 
+LongPause_EI:
     ei                              ;0FE1FH 
     dcr A                           ;0FE20H 
-    jnz 0FE1FH                      ;0FE21H 
+    jnz LongPause_EI                ;0FE21H 
     mov A, B                        ;0FE24H 
+LongPause_DI:
     di                              ;0FE25H 
     dcr A                           ;0FE26H 
-    jnz 0FE25H                      ;0FE27H 
+    jnz LongPause_DI                ;0FE27H 
     dcr C                           ;0FE2AH 
-    jnz 0FE1EH                      ;0FE2BH 
+    jnz LongPause_Loop              ;0FE2BH 
     mov B, C                        ;0FE2EH 
     ret                             ;0FE2FH 
+
 Label_Version:
     DB    1FH                       ;0FE30H 1FH -> Спец. символ для очистки экрана
     DB    ' orion-128.2', 0         ;0FE31H 
@@ -1114,444 +1295,1310 @@ Label_Prompt:
 Unknown_Data:
     DB    53H                       ;0FE46H 
     DB    56H                       ;0FE47H 
+
 CodePageTable:
-    DB    11000000B                 ;0FE48H  ' '
-    DB    10000100B                 ;0FE49H  '!'
-    DB    00000000B                 ;0FE4AH  '!'
-    DB    00000100B                 ;0FE4BH  '!'
-    DB    01001010B                 ;0FE4CH  '"'
-    DB    01100000B                 ;0FE4DH  '"'
-    DB    00101010B                 ;0FE4EH  '#'
-    DB    00011111B                 ;0FE4FH  '#'
-    DB    00001010B                 ;0FE50H  '#'
-    DB    00011111B                 ;0FE51H  '#'
-    DB    00101010B                 ;0FE52H  '#'
-    DB    00000100B                 ;0FE53H  '$'
-    DB    00001111B                 ;0FE54H  '$'
-    DB    00010100B                 ;0FE55H  '$'
-    DB    00001110B                 ;0FE56H  '$'
-    DB    00000101B                 ;0FE57H  '$'
-    DB    00011110B                 ;0FE58H  '$'
-    DB    00000100B                 ;0FE59H  '$'
-    DB    00011000B                 ;0FE5AH  '%'
-    DB    00011001B                 ;0FE5BH  '%'
-    DB    00000010B                 ;0FE5CH  '%'
-    DB    00000100B                 ;0FE5DH  '%'
-    DB    00001000B                 ;0FE5EH  '%'
-    DB    00010011B                 ;0FE5FH  '%'
-    DB    00000011B                 ;0FE60H  '%'
-    DB    00000100B                 ;0FE61H  '&'
-    DB    00101010B                 ;0FE62H  '&'
-    DB    00001100B                 ;0FE63H  '&'
-    DB    00010101B                 ;0FE64H  '&'
-    DB    00010010B                 ;0FE65H  '&'
-    DB    00001101B                 ;0FE66H  '&'
-    DB    00100110B                 ;0FE67H  '&'
-    DB    00000010B                 ;0FE68H  '''
-    DB    00000100B                 ;0FE69H  '''
-    DB    01000000B                 ;0FE6AH  '''
-    DB    00000010B                 ;0FE6BH  '('
-    DB    00000100B                 ;0FE6CH  '('
-    DB    01001000B                 ;0FE6DH  '('
-    DB    00000100B                 ;0FE6EH  '('
-    DB    00000010B                 ;0FE6FH  '('
-    DB    00001000B                 ;0FE70H  ')'
-    DB    00000100B                 ;0FE71H  ')'
-    DB    01000010B                 ;0FE72H  ')'
-    DB    00000100B                 ;0FE73H  ')'
-    DB    00001000B                 ;0FE74H  ')'
-    DB    00000000B                 ;0FE75H  '*'
-    DB    00000100B                 ;0FE76H  '*'
-    DB    00010101B                 ;0FE77H  '*'
-    DB    00001110B                 ;0FE78H  '*'
-    DB    00010101B                 ;0FE79H  '*'
-    DB    00000100B                 ;0FE7AH  '*'
-    DB    00000000B                 ;0FE7BH  '*'
-    DB    00000000B                 ;0FE7CH  '+'
-    DB    00100100B                 ;0FE7DH  '+'
-    DB    00011111B                 ;0FE7EH  '+'
-    DB    00100100B                 ;0FE7FH  '+'
-    DB    00000000B                 ;0FE80H  '+'
-    DB    01000000B                 ;0FE81H  ','
-    DB    00101100B                 ;0FE82H  ','
-    DB    00000100B                 ;0FE83H  ','
-    DB    00001000B                 ;0FE84H  ','
-    DB    01000000B                 ;0FE85H  '-'
-    DB    00011111B                 ;0FE86H  '-'
-    DB    01000000B                 ;0FE87H  '-'
-    DB    10000000B                 ;0FE88H  '.'
-    DB    00101100B                 ;0FE89H  '.'
-    DB    00000000B                 ;0FE8AH  '/'
-    DB    00000001B                 ;0FE8BH  '/'
-    DB    00000010B                 ;0FE8CH  '/'
-    DB    00000100B                 ;0FE8DH  '/'
-    DB    00001000B                 ;0FE8EH  '/'
-    DB    00010000B                 ;0FE8FH  '/'
-    DB    00000000B                 ;0FE90H  '/'
-    DB    00001110B                 ;0FE91H  '0'
-    DB    00010001B                 ;0FE92H  '0'
-    DB    00010011B                 ;0FE93H  '0'
-    DB    00010101B                 ;0FE94H  '0'
-    DB    00011001B                 ;0FE95H  '0'
-    DB    00010001B                 ;0FE96H  '0'
-    DB    00001110B                 ;0FE97H  '0'
-    DB    00000100B                 ;0FE98H  '1'
-    DB    00001100B                 ;0FE99H  '1'
-    DB    01100100B                 ;0FE9AH  '1'
-    DB    00001110B                 ;0FE9BH  '1'
-    DB    00001110B                 ;0FE9CH  '2'
-    DB    00010001B                 ;0FE9DH  '2'
-    DB    00000001B                 ;0FE9EH  '2'
-    DB    00000110B                 ;0FE9FH  '2'
-    DB    00001000B                 ;0FEA0H  '2'
-    DB    00010000B                 ;0FEA1H  '2'
-    DB    00011111B                 ;0FEA2H  '2'
-    DB    00011111B                 ;0FEA3H  '3'
-    DB    00000001B                 ;0FEA4H  '3'
-    DB    00000010B                 ;0FEA5H  '3'
-    DB    00000110B                 ;0FEA6H  '3'
-    DB    00000001B                 ;0FEA7H  '3'
-    DB    00010001B                 ;0FEA8H  '3'
-    DB    00001110B                 ;0FEA9H  '3'
-    DB    00000010B                 ;0FEAAH  '4'
-    DB    00000110B                 ;0FEABH  '4'
-    DB    00001010B                 ;0FEACH  '4'
-    DB    00010010B                 ;0FEADH  '4'
-    DB    00011111B                 ;0FEAEH  '4'
-    DB    00100010B                 ;0FEAFH  '4'
-    DB    00011111B                 ;0FEB0H  '5'
-    DB    00010000B                 ;0FEB1H  '5'
-    DB    00011110B                 ;0FEB2H  '5'
-    DB    00100001B                 ;0FEB3H  '5'
-    DB    00010001B                 ;0FEB4H  '5'
-    DB    00001110B                 ;0FEB5H  '5'
-    DB    00000111B                 ;0FEB6H  '6'
-    DB    00001000B                 ;0FEB7H  '6'
-    DB    00010000B                 ;0FEB8H  '6'
-    DB    00011110B                 ;0FEB9H  '6'
-    DB    00110001B                 ;0FEBAH  '6'
-    DB    00001110B                 ;0FEBBH  '6'
-    DB    00011111B                 ;0FEBCH  '7'
-    DB    00000001B                 ;0FEBDH  '7'
-    DB    00000010B                 ;0FEBEH  '7'
-    DB    00000100B                 ;0FEBFH  '7'
-    DB    01001000B                 ;0FEC0H  '7'
-    DB    00001110B                 ;0FEC1H  '8'
-    DB    00110001B                 ;0FEC2H  '8'
-    DB    00001110B                 ;0FEC3H  '8'
-    DB    00110001B                 ;0FEC4H  '8'
-    DB    00001110B                 ;0FEC5H  '8'
-    DB    00001110B                 ;0FEC6H  '9'
-    DB    00110001B                 ;0FEC7H  '9'
-    DB    00001111B                 ;0FEC8H  '9'
-    DB    00000001B                 ;0FEC9H  '9'
-    DB    00000010B                 ;0FECAH  '9'
-    DB    00011100B                 ;0FECBH  '9'
-    DB    00000000B                 ;0FECCH  двоеточие
-    DB    00101100B                 ;0FECDH  двоеточие
-    DB    00100000B                 ;0FECEH  двоеточие
-    DB    00101100B                 ;0FECFH  двоеточие
-    DB    00101100B                 ;0FED0H  ';'
-    DB    00000000B                 ;0FED1H  ';'
-    DB    00101100B                 ;0FED2H  ';'
-    DB    00000100B                 ;0FED3H  ';'
-    DB    00001000B                 ;0FED4H  ';'
-    DB    00000010B                 ;0FED5H  '<'
-    DB    00000100B                 ;0FED6H  '<'
-    DB    00001000B                 ;0FED7H  '<'
-    DB    00010000B                 ;0FED8H  '<'
-    DB    00001000B                 ;0FED9H  '<'
-    DB    00000100B                 ;0FEDAH  '<'
-    DB    00000010B                 ;0FEDBH  '<'
-    DB    00100000B                 ;0FEDCH  '='
-    DB    00011111B                 ;0FEDDH  '='
-    DB    00000000B                 ;0FEDEH  '='
-    DB    00011111B                 ;0FEDFH  '='
-    DB    00100000B                 ;0FEE0H  '='
-    DB    00001000B                 ;0FEE1H  '>'
-    DB    00000100B                 ;0FEE2H  '>'
-    DB    00000010B                 ;0FEE3H  '>'
-    DB    00000001B                 ;0FEE4H  '>'
-    DB    00000010B                 ;0FEE5H  '>'
-    DB    00000100B                 ;0FEE6H  '>'
-    DB    00001000B                 ;0FEE7H  '>'
-    DB    00001110B                 ;0FEE8H  '?'
-    DB    00010001B                 ;0FEE9H  '?'
-    DB    00000001B                 ;0FEEAH  '?'
-    DB    00000010B                 ;0FEEBH  '?'
-    DB    00000100B                 ;0FEECH  '?'
-    DB    00000000B                 ;0FEEDH  '?'
-    DB    00000100B                 ;0FEEEH  '?'
-    DB    00001110B                 ;0FEEFH  '@'
-    DB    00010001B                 ;0FEF0H  '@'
-    DB    00010011B                 ;0FEF1H  '@'
-    DB    00010101B                 ;0FEF2H  '@'
-    DB    00010111B                 ;0FEF3H  '@'
-    DB    00010000B                 ;0FEF4H  '@'
-    DB    00001110B                 ;0FEF5H  '@'
-    DB    00000100B                 ;0FEF6H  'A'
-    DB    00001010B                 ;0FEF7H  'A'
-    DB    00110001B                 ;0FEF8H  'A'
-    DB    00011111B                 ;0FEF9H  'A'
-    DB    00110001B                 ;0FEFAH  'A'
-    DB    00011110B                 ;0FEFBH  'B'
-    DB    00110001B                 ;0FEFCH  'B'
-    DB    00011110B                 ;0FEFDH  'B'
-    DB    00110001B                 ;0FEFEH  'B'
-    DB    00011110B                 ;0FEFFH  'B'
-    DB    00001110B                 ;0FF00H  'C'
-    DB    00010001B                 ;0FF01H  'C'
-    DB    01010000B                 ;0FF02H  'C'
-    DB    00010001B                 ;0FF03H  'C'
-    DB    00001110B                 ;0FF04H  'C'
-    DB    00011110B                 ;0FF05H  'D'
-    DB    10001001B                 ;0FF06H  'D'
-    DB    00011110B                 ;0FF07H  'D'
-    DB    00011111B                 ;0FF08H  'E'
-    DB    00110000B                 ;0FF09H  'E'
-    DB    00011110B                 ;0FF0AH  'E'
-    DB    00110000B                 ;0FF0BH  'E'
-    DB    00011111B                 ;0FF0CH  'E'
-    DB    00011111B                 ;0FF0DH  'F'
-    DB    00110000B                 ;0FF0EH  'F'
-    DB    00011110B                 ;0FF0FH  'F'
-    DB    01010000B                 ;0FF10H  'F'
-    DB    00001110B                 ;0FF11H  'G'
-    DB    00010001B                 ;0FF12H  'G'
-    DB    00110000B                 ;0FF13H  'G'
-    DB    00010011B                 ;0FF14H  'G'
-    DB    00010001B                 ;0FF15H  'G'
-    DB    00001111B                 ;0FF16H  'G'
-    DB    01010001B                 ;0FF17H  'H'
-    DB    00011111B                 ;0FF18H  'H'
-    DB    01010001B                 ;0FF19H  'H'
-    DB    00001110B                 ;0FF1AH  'I'
-    DB    10000100B                 ;0FF1BH  'I'
-    DB    00001110B                 ;0FF1CH  'I'
-    DB    01100001B                 ;0FF1DH  'J'
-    DB    00110001B                 ;0FF1EH  'J'
-    DB    00001110B                 ;0FF1FH  'J'
-    DB    00010001B                 ;0FF20H  'K'
-    DB    00010010B                 ;0FF21H  'K'
-    DB    00010100B                 ;0FF22H  'K'
-    DB    00011000B                 ;0FF23H  'K'
-    DB    00010100B                 ;0FF24H  'K'
-    DB    00010010B                 ;0FF25H  'K'
-    DB    00010001B                 ;0FF26H  'K'
-    DB    10010000B                 ;0FF27H  'L'
-    DB    00010001B                 ;0FF28H  'L'
-    DB    00011111B                 ;0FF29H  'L'
-    DB    00010001B                 ;0FF2AH  'M'
-    DB    00011011B                 ;0FF2BH  'M'
-    DB    00110101B                 ;0FF2CH  'M'
-    DB    01010001B                 ;0FF2DH  'M'
-    DB    00110001B                 ;0FF2EH  'N'
-    DB    00011001B                 ;0FF2FH  'N'
-    DB    00010101B                 ;0FF30H  'N'
-    DB    00010011B                 ;0FF31H  'N'
-    DB    00110001B                 ;0FF32H  'N'
-    DB    00001110B                 ;0FF33H  'O'
-    DB    10010001B                 ;0FF34H  'O'
-    DB    00001110B                 ;0FF35H  'O'
-    DB    00011110B                 ;0FF36H  'P'
-    DB    00110001B                 ;0FF37H  'P'
-    DB    00011110B                 ;0FF38H  'P'
-    DB    01010000B                 ;0FF39H  'P'
-    DB    00001110B                 ;0FF3AH  'Q'
-    DB    01010001B                 ;0FF3BH  'Q'
-    DB    00010101B                 ;0FF3CH  'Q'
-    DB    00010010B                 ;0FF3DH  'Q'
-    DB    00001101B                 ;0FF3EH  'Q'
-    DB    00011110B                 ;0FF3FH  'R'
-    DB    00110001B                 ;0FF40H  'R'
-    DB    00011110B                 ;0FF41H  'R'
-    DB    00010100B                 ;0FF42H  'R'
-    DB    00010010B                 ;0FF43H  'R'
-    DB    00010001B                 ;0FF44H  'R'
-    DB    00001110B                 ;0FF45H  'S'
-    DB    00010001B                 ;0FF46H  'S'
-    DB    00010000B                 ;0FF47H  'S'
-    DB    00001110B                 ;0FF48H  'S'
-    DB    00000001B                 ;0FF49H  'S'
-    DB    00010001B                 ;0FF4AH  'S'
-    DB    00001110B                 ;0FF4BH  'S'
-    DB    00011111B                 ;0FF4CH  'T'
-    DB    10100100B                 ;0FF4DH  'T'
-    DB    10110001B                 ;0FF4EH  'U'
-    DB    00001110B                 ;0FF4FH  'U'
-    DB    01010001B                 ;0FF50H  'Y'
-    DB    00101010B                 ;0FF51H  'Y'
-    DB    00100100B                 ;0FF52H  'Y'
-    DB    01010001B                 ;0FF53H  'W'
-    DB    01010101B                 ;0FF54H  'W'
-    DB    00001010B                 ;0FF55H  'W'
-    DB    00110001B                 ;0FF56H  'X'
-    DB    00001010B                 ;0FF57H  'X'
-    DB    00000100B                 ;0FF58H  'X'
-    DB    00001010B                 ;0FF59H  'X'
-    DB    00110001B                 ;0FF5AH  'X'
-    DB    00110001B                 ;0FF5BH  'Y'
-    DB    00001010B                 ;0FF5CH  'Y'
-    DB    01100100B                 ;0FF5DH  'Y'
-    DB    00011111B                 ;0FF5EH  'Z'
-    DB    00000001B                 ;0FF5FH  'Z'
-    DB    00000010B                 ;0FF60H  'Z'
-    DB    00001110B                 ;0FF61H  'Z'
-    DB    00001000B                 ;0FF62H  'Z'
-    DB    00010000B                 ;0FF63H  'Z'
-    DB    00011111B                 ;0FF64H  'Z'
-    DB    00001110B                 ;0FF65H  '['
-    DB    10001000B                 ;0FF66H  '['
-    DB    00001110B                 ;0FF67H  '['
-    DB    00000000B                 ;0FF68H  '\'
-    DB    00010000B                 ;0FF69H  '\'
-    DB    00001000B                 ;0FF6AH  '\'
-    DB    00000100B                 ;0FF6BH  '\'
-    DB    00000010B                 ;0FF6CH  '\'
-    DB    00000001B                 ;0FF6DH  '\'
-    DB    00000000B                 ;0FF6EH  '\'
-    DB    00001110B                 ;0FF6FH  ']'
-    DB    10000010B                 ;0FF70H  ']'
-    DB    00001110B                 ;0FF71H  ']'
-    DB    00001110B                 ;0FF72H  '^'
-    DB    00010001B                 ;0FF73H  '^'
-    DB    10000000B                 ;0FF74H  '^'
-    DB    10100000B                 ;0FF75H  '_'
-    DB    00011111B                 ;0FF76H  '_'
-    DB    00010010B                 ;0FF77H  'Ю'
-    DB    00110101B                 ;0FF78H  'Ю'
-    DB    00011101B                 ;0FF79H  'Ю'
-    DB    00110101B                 ;0FF7AH  'Ю'
-    DB    00010010B                 ;0FF7BH  'Ю'
-    DB    00000100B                 ;0FF7CH  'А'
-    DB    00001010B                 ;0FF7DH  'А'
-    DB    00110001B                 ;0FF7EH  'А'
-    DB    00011111B                 ;0FF7FH  'А'
-    DB    00110001B                 ;0FF80H  'А'
-    DB    00011111B                 ;0FF81H  'Б'
-    DB    00110000B                 ;0FF82H  'Б'
-    DB    00011110B                 ;0FF83H  'Б'
-    DB    00110001B                 ;0FF84H  'Б'
-    DB    00011110B                 ;0FF85H  'Б'
-    DB    10010010B                 ;0FF86H  'Ц'
-    DB    00011111B                 ;0FF87H  'Ц'
-    DB    00000001B                 ;0FF88H  'Ц'
-    DB    00000110B                 ;0FF89H  'Д'
-    DB    01101010B                 ;0FF8AH  'Д'
-    DB    00011111B                 ;0FF8BH  'Д'
-    DB    00010001B                 ;0FF8CH  'Д'
-    DB    00011111B                 ;0FF8DH  'Е'
-    DB    00110000B                 ;0FF8EH  'Е'
-    DB    00011110B                 ;0FF8FH  'Е'
-    DB    00110000B                 ;0FF90H  'Е'
-    DB    00011111B                 ;0FF91H  'Е'
-    DB    00000100B                 ;0FF92H  'Ф'
-    DB    00011111B                 ;0FF93H  'Ф'
-    DB    00110101B                 ;0FF94H  'Ф'
-    DB    00011111B                 ;0FF95H  'Ф'
-    DB    00100100B                 ;0FF96H  'Ф'
-    DB    00011111B                 ;0FF97H  'Г'
-    DB    00010001B                 ;0FF98H  'Г'
-    DB    10010000B                 ;0FF99H  'Г'
-    DB    00110001B                 ;0FF9AH  'Х'
-    DB    00001010B                 ;0FF9BH  'Х'
-    DB    00000100B                 ;0FF9CH  'Х'
-    DB    00001010B                 ;0FF9DH  'Х'
-    DB    00110001B                 ;0FF9EH  'Х'
-    DB    00110001B                 ;0FF9FH  'И'
-    DB    00010011B                 ;0FFA0H  'И'
-    DB    00010101B                 ;0FFA1H  'И'
-    DB    00011001B                 ;0FFA2H  'И'
-    DB    00110001B                 ;0FFA3H  'И'
-    DB    00010101B                 ;0FFA4H  'Й'
-    DB    00010001B                 ;0FFA5H  'Й'
-    DB    00010011B                 ;0FFA6H  'Й'
-    DB    00010101B                 ;0FFA7H  'Й'
-    DB    00011001B                 ;0FFA8H  'Й'
-    DB    00110001B                 ;0FFA9H  'Й'
-    DB    00010001B                 ;0FFAAH  'К'
-    DB    00010010B                 ;0FFABH  'К'
-    DB    00010100B                 ;0FFACH  'К'
-    DB    00011000B                 ;0FFADH  'К'
-    DB    00010100B                 ;0FFAEH  'К'
-    DB    00010010B                 ;0FFAFH  'К'
-    DB    00010001B                 ;0FFB0H  'К'
-    DB    00000111B                 ;0FFB1H  'Л'
-    DB    10001001B                 ;0FFB2H  'Л'
-    DB    00011001B                 ;0FFB3H  'Л'
-    DB    00010001B                 ;0FFB4H  'М'
-    DB    00011011B                 ;0FFB5H  'М'
-    DB    00110101B                 ;0FFB6H  'М'
-    DB    01010001B                 ;0FFB7H  'М'
-    DB    01010001B                 ;0FFB8H  'Н'
-    DB    00011111B                 ;0FFB9H  'Н'
-    DB    01010001B                 ;0FFBAH  'Н'
-    DB    00001110B                 ;0FFBBH  'О'
-    DB    10010001B                 ;0FFBCH  'О'
-    DB    00001110B                 ;0FFBDH  'О'
-    DB    00011111B                 ;0FFBEH  'П'
-    DB    10110001B                 ;0FFBFH  'П'
-    DB    00001111B                 ;0FFC0H  'Я'
-    DB    00110001B                 ;0FFC1H  'Я'
-    DB    00001111B                 ;0FFC2H  'Я'
-    DB    00000101B                 ;0FFC3H  'Я'
-    DB    00001001B                 ;0FFC4H  'Я'
-    DB    00010001B                 ;0FFC5H  'Я'
-    DB    00011110B                 ;0FFC6H  'Р'
-    DB    00110001B                 ;0FFC7H  'Р'
-    DB    00011110B                 ;0FFC8H  'Р'
-    DB    01010000B                 ;0FFC9H  'Р'
-    DB    00001110B                 ;0FFCAH  'С'
-    DB    00010001B                 ;0FFCBH  'С'
-    DB    01010000B                 ;0FFCCH  'С'
-    DB    00010001B                 ;0FFCDH  'С'
-    DB    00001110B                 ;0FFCEH  'С'
-    DB    00011111B                 ;0FFCFH  'Т'
-    DB    10100100B                 ;0FFD0H  'Т'
-    DB    01010001B                 ;0FFD1H  'У'
-    DB    00001010B                 ;0FFD2H  'У'
-    DB    00000100B                 ;0FFD3H  'У'
-    DB    00001000B                 ;0FFD4H  'У'
-    DB    00010000B                 ;0FFD5H  'У'
-    DB    00010001B                 ;0FFD6H  'Ж'
-    DB    00110101B                 ;0FFD7H  'Ж'
-    DB    00001110B                 ;0FFD8H  'Ж'
-    DB    00110101B                 ;0FFD9H  'Ж'
-    DB    00010001B                 ;0FFDAH  'Ж'
-    DB    00011110B                 ;0FFDBH  'В'
-    DB    00110001B                 ;0FFDCH  'В'
-    DB    00011110B                 ;0FFDDH  'В'
-    DB    00110001B                 ;0FFDEH  'В'
-    DB    00011110B                 ;0FFDFH  'В'
-    DB    01010000B                 ;0FFE0H  'Ь'
-    DB    00011110B                 ;0FFE1H  'Ь'
-    DB    00110001B                 ;0FFE2H  'Ь'
-    DB    00011110B                 ;0FFE3H  'Ь'
-    DB    01010001B                 ;0FFE4H  'Ы'
-    DB    00011001B                 ;0FFE5H  'Ы'
-    DB    00110101B                 ;0FFE6H  'Ы'
-    DB    00011001B                 ;0FFE7H  'Ы'
-    DB    00001110B                 ;0FFE8H  'З'
-    DB    00010001B                 ;0FFE9H  'З'
-    DB    00000001B                 ;0FFEAH  'З'
-    DB    00000110B                 ;0FFEBH  'З'
-    DB    00000001B                 ;0FFECH  'З'
-    DB    00010001B                 ;0FFEDH  'З'
-    DB    00001110B                 ;0FFEEH  'З'
-    DB    00010001B                 ;0FFEFH  'Ш'
-    DB    10010101B                 ;0FFF0H  'Ш'
-    DB    00011111B                 ;0FFF1H  'Ш'
-    DB    00001110B                 ;0FFF2H  'Э'
-    DB    00010001B                 ;0FFF3H  'Э'
-    DB    00000001B                 ;0FFF4H  'Э'
-    DB    00000111B                 ;0FFF5H  'Э'
-    DB    00000001B                 ;0FFF6H  'Э'
-    DB    00010001B                 ;0FFF7H  'Э'
-    DB    00001110B                 ;0FFF8H  'Э'
-    DB    10010101B                 ;0FFF9H  'Щ'
-    DB    00011111B                 ;0FFFAH  'Щ'
-    DB    00000001B                 ;0FFFBH  'Щ'
-    DB    01010001B                 ;0FFFCH  'Ч'
-    DB    00011111B                 ;0FFFDH  'Ч'
-    DB    01000001B                 ;0FFFEH  'Ч'
-    DB    11011111B                 ;0FFFFH  черный прямоугольник
+;0FE48H-0FE48H ' '
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+    DB    11000000B                 ;0FE48H
+;0FE49H-0FE4BH '!'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░░░░
+;░░░░░█░░
+    DB    10000100B                 ;0FE49H
+    DB    00000000B                 ;0FE4AH 
+    DB    00000100B                 ;0FE4BH 
+;0FE4CH-0FE4DH '"'
+;░░░░░░░░
+;░░░░█░█░
+;░░░░█░█░
+;░░░░█░█░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+    DB    01001010B                 ;0FE4CH
+    DB    01100000B                 ;0FE4DH 
+;0FE4EH-0FE52H '#'
+;░░░░░░░░
+;░░░░█░█░
+;░░░░█░█░
+;░░░█████
+;░░░░█░█░
+;░░░█████
+;░░░░█░█░
+;░░░░█░█░
+    DB    00101010B                 ;0FE4EH
+    DB    00011111B                 ;0FE4FH 
+    DB    00001010B                 ;0FE50H 
+    DB    00011111B                 ;0FE51H 
+    DB    00101010B                 ;0FE52H 
+;0FE53H-0FE59H '$'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░████
+;░░░█░█░░
+;░░░░███░
+;░░░░░█░█
+;░░░████░
+;░░░░░█░░
+    DB    00000100B                 ;0FE53H
+    DB    00001111B                 ;0FE54H 
+    DB    00010100B                 ;0FE55H 
+    DB    00001110B                 ;0FE56H 
+    DB    00000101B                 ;0FE57H 
+    DB    00011110B                 ;0FE58H 
+    DB    00000100B                 ;0FE59H 
+;0FE5AH-0FE60H '%'
+;░░░░░░░░
+;░░░██░░░
+;░░░██░░█
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░█░░██
+;░░░░░░██
+    DB    00011000B                 ;0FE5AH
+    DB    00011001B                 ;0FE5BH 
+    DB    00000010B                 ;0FE5CH 
+    DB    00000100B                 ;0FE5DH 
+    DB    00001000B                 ;0FE5EH 
+    DB    00010011B                 ;0FE5FH 
+    DB    00000011B                 ;0FE60H 
+;0FE61H-0FE67H '&'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░█░█░
+;░░░░█░█░
+;░░░░██░░
+;░░░█░█░█
+;░░░█░░█░
+;░░░░██░█
+    DB    00000100B                 ;0FE61H
+    DB    00101010B                 ;0FE62H 
+    DB    00001100B                 ;0FE63H 
+    DB    00010101B                 ;0FE64H 
+    DB    00010010B                 ;0FE65H 
+    DB    00001101B                 ;0FE66H 
+    DB    00100110B                 ;0FE67H 
+;0FE68H-0FE6AH '''
+;░░░░░░░░
+;░░░░░██░
+;░░░░░██░
+;░░░░░░█░
+;░░░░░█░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+    DB    00000010B                 ;0FE68H
+    DB    00000100B                 ;0FE69H 
+    DB    01000000B                 ;0FE6AH 
+;0FE6BH-0FE6FH '('
+;░░░░░░░░
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░░█░░
+;░░░░░░█░
+    DB    00000010B                 ;0FE6BH
+    DB    00000100B                 ;0FE6CH 
+    DB    01001000B                 ;0FE6DH 
+    DB    00000100B                 ;0FE6EH 
+    DB    00000010B                 ;0FE6FH 
+;0FE70H-0FE74H ')'
+;░░░░░░░░
+;░░░░█░░░
+;░░░░░█░░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+    DB    00001000B                 ;0FE70H
+    DB    00000100B                 ;0FE71H 
+    DB    01000010B                 ;0FE72H 
+    DB    00000100B                 ;0FE73H 
+    DB    00001000B                 ;0FE74H 
+;0FE75H-0FE7BH '*'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░█░░
+;░░░█░█░█
+;░░░░███░
+;░░░█░█░█
+;░░░░░█░░
+;░░░░░░░░
+    DB    00000000B                 ;0FE75H
+    DB    00000100B                 ;0FE76H 
+    DB    00010101B                 ;0FE77H 
+    DB    00001110B                 ;0FE78H 
+    DB    00010101B                 ;0FE79H 
+    DB    00000100B                 ;0FE7AH 
+    DB    00000000B                 ;0FE7BH 
+;0FE7CH-0FE80H '+'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░█████
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░░░░
+    DB    00000000B                 ;0FE7CH
+    DB    00100100B                 ;0FE7DH 
+    DB    00011111B                 ;0FE7EH 
+    DB    00100100B                 ;0FE7FH 
+    DB    00000000B                 ;0FE80H 
+;0FE81H-0FE84H ','
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+;░░░░░█░░
+;░░░░█░░░
+    DB    01000000B                 ;0FE81H
+    DB    00101100B                 ;0FE82H 
+    DB    00000100B                 ;0FE83H 
+    DB    00001000B                 ;0FE84H 
+;0FE85H-0FE87H '-'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░█████
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+    DB    01000000B                 ;0FE85H
+    DB    00011111B                 ;0FE86H 
+    DB    01000000B                 ;0FE87H 
+;0FE88H-0FE89H '.'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+    DB    10000000B                 ;0FE88H
+    DB    00101100B                 ;0FE89H 
+;0FE8AH-0FE90H '/'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░█
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░█░░░░
+;░░░░░░░░
+    DB    00000000B                 ;0FE8AH
+    DB    00000001B                 ;0FE8BH 
+    DB    00000010B                 ;0FE8CH 
+    DB    00000100B                 ;0FE8DH 
+    DB    00001000B                 ;0FE8EH 
+    DB    00010000B                 ;0FE8FH 
+    DB    00000000B                 ;0FE90H 
+;0FE91H-0FE97H '0'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░██
+;░░░█░█░█
+;░░░██░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FE91H
+    DB    00010001B                 ;0FE92H 
+    DB    00010011B                 ;0FE93H 
+    DB    00010101B                 ;0FE94H 
+    DB    00011001B                 ;0FE95H 
+    DB    00010001B                 ;0FE96H 
+    DB    00001110B                 ;0FE97H 
+;0FE98H-0FE9BH '1'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░██░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░███░
+    DB    00000100B                 ;0FE98H
+    DB    00001100B                 ;0FE99H 
+    DB    01100100B                 ;0FE9AH 
+    DB    00001110B                 ;0FE9BH 
+;0FE9CH-0FEA2H '2'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░░░░░█
+;░░░░░██░
+;░░░░█░░░
+;░░░█░░░░
+;░░░█████
+    DB    00001110B                 ;0FE9CH
+    DB    00010001B                 ;0FE9DH 
+    DB    00000001B                 ;0FE9EH 
+    DB    00000110B                 ;0FE9FH 
+    DB    00001000B                 ;0FEA0H 
+    DB    00010000B                 ;0FEA1H 
+    DB    00011111B                 ;0FEA2H 
+;0FEA3H-0FEA9H '3'
+;░░░░░░░░
+;░░░█████
+;░░░░░░░█
+;░░░░░░█░
+;░░░░░██░
+;░░░░░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00011111B                 ;0FEA3H
+    DB    00000001B                 ;0FEA4H 
+    DB    00000010B                 ;0FEA5H 
+    DB    00000110B                 ;0FEA6H 
+    DB    00000001B                 ;0FEA7H 
+    DB    00010001B                 ;0FEA8H 
+    DB    00001110B                 ;0FEA9H 
+;0FEAAH-0FEAFH '4'
+;░░░░░░░░
+;░░░░░░█░
+;░░░░░██░
+;░░░░█░█░
+;░░░█░░█░
+;░░░█████
+;░░░░░░█░
+;░░░░░░█░
+    DB    00000010B                 ;0FEAAH
+    DB    00000110B                 ;0FEABH 
+    DB    00001010B                 ;0FEACH 
+    DB    00010010B                 ;0FEADH 
+    DB    00011111B                 ;0FEAEH 
+    DB    00100010B                 ;0FEAFH 
+;0FEB0H-0FEB5H '5'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░░
+;░░░████░
+;░░░░░░░█
+;░░░░░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00011111B                 ;0FEB0H
+    DB    00010000B                 ;0FEB1H 
+    DB    00011110B                 ;0FEB2H 
+    DB    00100001B                 ;0FEB3H 
+    DB    00010001B                 ;0FEB4H 
+    DB    00001110B                 ;0FEB5H 
+;0FEB6H-0FEBBH '6'
+;░░░░░░░░
+;░░░░░███
+;░░░░█░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00000111B                 ;0FEB6H
+    DB    00001000B                 ;0FEB7H 
+    DB    00010000B                 ;0FEB8H 
+    DB    00011110B                 ;0FEB9H 
+    DB    00110001B                 ;0FEBAH 
+    DB    00001110B                 ;0FEBBH 
+;0FEBCH-0FEC0H '7'
+;░░░░░░░░
+;░░░█████
+;░░░░░░░█
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░█░░░
+    DB    00011111B                 ;0FEBCH
+    DB    00000001B                 ;0FEBDH 
+    DB    00000010B                 ;0FEBEH 
+    DB    00000100B                 ;0FEBFH 
+    DB    01001000B                 ;0FEC0H 
+;0FEC1H-0FEC5H '8'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FEC1H
+    DB    00110001B                 ;0FEC2H 
+    DB    00001110B                 ;0FEC3H 
+    DB    00110001B                 ;0FEC4H 
+    DB    00001110B                 ;0FEC5H 
+;0FEC6H-0FECBH '9'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░████
+;░░░░░░░█
+;░░░░░░█░
+;░░░███░░
+    DB    00001110B                 ;0FEC6H
+    DB    00110001B                 ;0FEC7H 
+    DB    00001111B                 ;0FEC8H 
+    DB    00000001B                 ;0FEC9H 
+    DB    00000010B                 ;0FECAH 
+    DB    00011100B                 ;0FECBH 
+;0FECCH-0FECFH двоеточие
+;░░░░░░░░
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+    DB    00000000B                 ;0FECCH
+    DB    00101100B                 ;0FECDH 
+    DB    00100000B                 ;0FECEH 
+    DB    00101100B                 ;0FECFH 
+;0FED0H-0FED4H '
+;'
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+;░░░░░░░░
+;░░░░██░░
+;░░░░██░░
+;░░░░░█░░
+;░░░░█░░░
+    DB    00101100B                 ;0FED0H
+    DB    00000000B                 ;0FED1H 
+    DB    00101100B                 ;0FED2H 
+    DB    00000100B                 ;0FED3H 
+    DB    00001000B                 ;0FED4H 
+;0FED5H-0FEDBH '<'
+;░░░░░░░░
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░█░░░░
+;░░░░█░░░
+;░░░░░█░░
+;░░░░░░█░
+    DB    00000010B                 ;0FED5H
+    DB    00000100B                 ;0FED6H 
+    DB    00001000B                 ;0FED7H 
+    DB    00010000B                 ;0FED8H 
+    DB    00001000B                 ;0FED9H 
+    DB    00000100B                 ;0FEDAH 
+    DB    00000010B                 ;0FEDBH 
+;0FEDCH-0FEE0H '='
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░█████
+;░░░░░░░░
+;░░░█████
+;░░░░░░░░
+;░░░░░░░░
+    DB    00100000B                 ;0FEDCH
+    DB    00011111B                 ;0FEDDH 
+    DB    00000000B                 ;0FEDEH 
+    DB    00011111B                 ;0FEDFH 
+    DB    00100000B                 ;0FEE0H 
+;0FEE1H-0FEE7H '>'
+;░░░░░░░░
+;░░░░█░░░
+;░░░░░█░░
+;░░░░░░█░
+;░░░░░░░█
+;░░░░░░█░
+;░░░░░█░░
+;░░░░█░░░
+    DB    00001000B                 ;0FEE1H
+    DB    00000100B                 ;0FEE2H 
+    DB    00000010B                 ;0FEE3H 
+    DB    00000001B                 ;0FEE4H 
+    DB    00000010B                 ;0FEE5H 
+    DB    00000100B                 ;0FEE6H 
+    DB    00001000B                 ;0FEE7H 
+;0FEE8H-0FEEEH '?'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░░░░░█
+;░░░░░░█░
+;░░░░░█░░
+;░░░░░░░░
+;░░░░░█░░
+    DB    00001110B                 ;0FEE8H
+    DB    00010001B                 ;0FEE9H 
+    DB    00000001B                 ;0FEEAH 
+    DB    00000010B                 ;0FEEBH 
+    DB    00000100B                 ;0FEECH 
+    DB    00000000B                 ;0FEEDH 
+    DB    00000100B                 ;0FEEEH 
+;0FEEFH-0FEF5H '@'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░██
+;░░░█░█░█
+;░░░█░███
+;░░░█░░░░
+;░░░░███░
+    DB    00001110B                 ;0FEEFH
+    DB    00010001B                 ;0FEF0H 
+    DB    00010011B                 ;0FEF1H 
+    DB    00010101B                 ;0FEF2H 
+    DB    00010111B                 ;0FEF3H 
+    DB    00010000B                 ;0FEF4H 
+    DB    00001110B                 ;0FEF5H 
+;0FEF6H-0FEFAH 'A'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░█░█░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█████
+;░░░█░░░█
+;░░░█░░░█
+    DB    00000100B                 ;0FEF6H
+    DB    00001010B                 ;0FEF7H 
+    DB    00110001B                 ;0FEF8H 
+    DB    00011111B                 ;0FEF9H 
+    DB    00110001B                 ;0FEFAH 
+;0FEFBH-0FEFFH 'B'
+;░░░░░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+    DB    00011110B                 ;0FEFBH
+    DB    00110001B                 ;0FEFCH 
+    DB    00011110B                 ;0FEFDH 
+    DB    00110001B                 ;0FEFEH 
+    DB    00011110B                 ;0FEFFH 
+;0FF00H-0FF04H 'C'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FF00H
+    DB    00010001B                 ;0FF01H 
+    DB    01010000B                 ;0FF02H 
+    DB    00010001B                 ;0FF03H 
+    DB    00001110B                 ;0FF04H 
+;0FF05H-0FF07H 'D'
+;░░░░░░░░
+;░░░████░
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░████░
+    DB    00011110B                 ;0FF05H
+    DB    10001001B                 ;0FF06H 
+    DB    00011110B                 ;0FF07H 
+;0FF08H-0FF0CH 'E'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█████
+    DB    00011111B                 ;0FF08H
+    DB    00110000B                 ;0FF09H 
+    DB    00011110B                 ;0FF0AH 
+    DB    00110000B                 ;0FF0BH 
+    DB    00011111B                 ;0FF0CH 
+;0FF0DH-0FF10H 'F'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+    DB    00011111B                 ;0FF0DH
+    DB    00110000B                 ;0FF0EH 
+    DB    00011110B                 ;0FF0FH 
+    DB    01010000B                 ;0FF10H 
+;0FF11H-0FF16H 'G'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░██
+;░░░█░░░█
+;░░░░████
+    DB    00001110B                 ;0FF11H
+    DB    00010001B                 ;0FF12H 
+    DB    00110000B                 ;0FF13H 
+    DB    00010011B                 ;0FF14H 
+    DB    00010001B                 ;0FF15H 
+    DB    00001111B                 ;0FF16H 
+;0FF17H-0FF19H 'H'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█████
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    01010001B                 ;0FF17H
+    DB    00011111B                 ;0FF18H 
+    DB    01010001B                 ;0FF19H 
+;0FF1AH-0FF1CH 'I'
+;░░░░░░░░
+;░░░░███░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░███░
+    DB    00001110B                 ;0FF1AH
+    DB    10000100B                 ;0FF1BH 
+    DB    00001110B                 ;0FF1CH 
+;0FF1DH-0FF1FH 'J'
+;░░░░░░░░
+;░░░░░░░█
+;░░░░░░░█
+;░░░░░░░█
+;░░░░░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    01100001B                 ;0FF1DH
+    DB    00110001B                 ;0FF1EH 
+    DB    00001110B                 ;0FF1FH 
+;0FF20H-0FF26H 'K'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░█░
+;░░░█░█░░
+;░░░██░░░
+;░░░█░█░░
+;░░░█░░█░
+;░░░█░░░█
+    DB    00010001B                 ;0FF20H
+    DB    00010010B                 ;0FF21H 
+    DB    00010100B                 ;0FF22H 
+    DB    00011000B                 ;0FF23H 
+    DB    00010100B                 ;0FF24H 
+    DB    00010010B                 ;0FF25H 
+    DB    00010001B                 ;0FF26H 
+;0FF27H-0FF29H 'L'
+;░░░░░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░█
+;░░░█████
+    DB    10010000B                 ;0FF27H
+    DB    00010001B                 ;0FF28H 
+    DB    00011111B                 ;0FF29H 
+;0FF2AH-0FF2DH 'M'
+;░░░░░░░░
+;░░░█░░░█
+;░░░██░██
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    00010001B                 ;0FF2AH
+    DB    00011011B                 ;0FF2BH 
+    DB    00110101B                 ;0FF2CH 
+    DB    01010001B                 ;0FF2DH 
+;0FF2EH-0FF32H 'N'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░██░░█
+;░░░█░█░█
+;░░░█░░██
+;░░░█░░░█
+;░░░█░░░█
+    DB    00110001B                 ;0FF2EH
+    DB    00011001B                 ;0FF2FH 
+    DB    00010101B                 ;0FF30H 
+    DB    00010011B                 ;0FF31H 
+    DB    00110001B                 ;0FF32H 
+;0FF33H-0FF35H 'O'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FF33H
+    DB    10010001B                 ;0FF34H 
+    DB    00001110B                 ;0FF35H 
+;0FF36H-0FF39H 'P'
+;░░░░░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+    DB    00011110B                 ;0FF36H
+    DB    00110001B                 ;0FF37H 
+    DB    00011110B                 ;0FF38H 
+    DB    01010000B                 ;0FF39H 
+;0FF3AH-0FF3EH 'Q'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░█░█
+;░░░█░░█░
+;░░░░██░█
+    DB    00001110B                 ;0FF3AH
+    DB    01010001B                 ;0FF3BH 
+    DB    00010101B                 ;0FF3CH 
+    DB    00010010B                 ;0FF3DH 
+    DB    00001101B                 ;0FF3EH 
+;0FF3FH-0FF44H 'R'
+;░░░░░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+;░░░█░█░░
+;░░░█░░█░
+;░░░█░░░█
+    DB    00011110B                 ;0FF3FH
+    DB    00110001B                 ;0FF40H 
+    DB    00011110B                 ;0FF41H 
+    DB    00010100B                 ;0FF42H 
+    DB    00010010B                 ;0FF43H 
+    DB    00010001B                 ;0FF44H 
+;0FF45H-0FF4BH 'S'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░░
+;░░░░███░
+;░░░░░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FF45H
+    DB    00010001B                 ;0FF46H 
+    DB    00010000B                 ;0FF47H 
+    DB    00001110B                 ;0FF48H 
+    DB    00000001B                 ;0FF49H 
+    DB    00010001B                 ;0FF4AH 
+    DB    00001110B                 ;0FF4BH 
+;0FF4CH-0FF4DH 'T'
+;░░░░░░░░
+;░░░█████
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+    DB    00011111B                 ;0FF4CH
+    DB    10100100B                 ;0FF4DH 
+;0FF4EH-0FF4FH 'U'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    10110001B                 ;0FF4EH
+    DB    00001110B                 ;0FF4FH 
+;0FF50H-0FF52H 'Y'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░█░█░
+;░░░░█░█░
+;░░░░░█░░
+;░░░░░█░░
+    DB    01010001B                 ;0FF50H
+    DB    00101010B                 ;0FF51H 
+    DB    00100100B                 ;0FF52H 
+;0FF53H-0FF55H 'W'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░░█░█░
+    DB    01010001B                 ;0FF53H
+    DB    01010101B                 ;0FF54H 
+    DB    00001010B                 ;0FF55H 
+;0FF56H-0FF5AH 'X'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░█░█░
+;░░░░░█░░
+;░░░░█░█░
+;░░░█░░░█
+;░░░█░░░█
+    DB    00110001B                 ;0FF56H
+    DB    00001010B                 ;0FF57H 
+    DB    00000100B                 ;0FF58H 
+    DB    00001010B                 ;0FF59H 
+    DB    00110001B                 ;0FF5AH 
+;0FF5BH-0FF5DH 'Y'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░█░█░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+    DB    00110001B                 ;0FF5BH
+    DB    00001010B                 ;0FF5CH 
+    DB    01100100B                 ;0FF5DH 
+;0FF5EH-0FF64H 'Z'
+;░░░░░░░░
+;░░░█████
+;░░░░░░░█
+;░░░░░░█░
+;░░░░███░
+;░░░░█░░░
+;░░░█░░░░
+;░░░█████
+    DB    00011111B                 ;0FF5EH
+    DB    00000001B                 ;0FF5FH 
+    DB    00000010B                 ;0FF60H 
+    DB    00001110B                 ;0FF61H 
+    DB    00001000B                 ;0FF62H 
+    DB    00010000B                 ;0FF63H 
+    DB    00011111B                 ;0FF64H 
+;0FF65H-0FF67H '['
+;░░░░░░░░
+;░░░░███░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░█░░░
+;░░░░███░
+    DB    00001110B                 ;0FF65H
+    DB    10001000B                 ;0FF66H 
+    DB    00001110B                 ;0FF67H 
+;0FF68H-0FF6EH '\'
+;░░░░░░░░
+;░░░░░░░░
+;░░░█░░░░
+;░░░░█░░░
+;░░░░░█░░
+;░░░░░░█░
+;░░░░░░░█
+;░░░░░░░░
+    DB    00000000B                 ;0FF68H
+    DB    00010000B                 ;0FF69H 
+    DB    00001000B                 ;0FF6AH 
+    DB    00000100B                 ;0FF6BH 
+    DB    00000010B                 ;0FF6CH 
+    DB    00000001B                 ;0FF6DH 
+    DB    00000000B                 ;0FF6EH 
+;0FF6FH-0FF71H ']'
+;░░░░░░░░
+;░░░░███░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░░░█░
+;░░░░███░
+    DB    00001110B                 ;0FF6FH
+    DB    10000010B                 ;0FF70H 
+    DB    00001110B                 ;0FF71H 
+;0FF72H-0FF74H '^'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+    DB    00001110B                 ;0FF72H
+    DB    00010001B                 ;0FF73H 
+    DB    10000000B                 ;0FF74H 
+;0FF75H-0FF76H '_'
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░░░░░░
+;░░░█████
+    DB    10100000B                 ;0FF75H
+    DB    00011111B                 ;0FF76H 
+;0FF77H-0FF7BH 'Ю'
+;░░░░░░░░
+;░░░█░░█░
+;░░░█░█░█
+;░░░█░█░█
+;░░░███░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░░█░
+    DB    00010010B                 ;0FF77H
+    DB    00110101B                 ;0FF78H 
+    DB    00011101B                 ;0FF79H 
+    DB    00110101B                 ;0FF7AH 
+    DB    00010010B                 ;0FF7BH 
+;0FF7CH-0FF80H 'А'
+;░░░░░░░░
+;░░░░░█░░
+;░░░░█░█░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█████
+;░░░█░░░█
+;░░░█░░░█
+    DB    00000100B                 ;0FF7CH
+    DB    00001010B                 ;0FF7DH 
+    DB    00110001B                 ;0FF7EH 
+    DB    00011111B                 ;0FF7FH 
+    DB    00110001B                 ;0FF80H 
+;0FF81H-0FF85H 'Б'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+    DB    00011111B                 ;0FF81H
+    DB    00110000B                 ;0FF82H 
+    DB    00011110B                 ;0FF83H 
+    DB    00110001B                 ;0FF84H 
+    DB    00011110B                 ;0FF85H 
+;0FF86H-0FF88H 'Ц'
+;░░░░░░░░
+;░░░█░░█░
+;░░░█░░█░
+;░░░█░░█░
+;░░░█░░█░
+;░░░█░░█░
+;░░░█████
+;░░░░░░░█
+    DB    10010010B                 ;0FF86H
+    DB    00011111B                 ;0FF87H 
+    DB    00000001B                 ;0FF88H 
+;0FF89H-0FF8CH 'Д'
+;░░░░░░░░
+;░░░░░██░
+;░░░░█░█░
+;░░░░█░█░
+;░░░░█░█░
+;░░░░█░█░
+;░░░█████
+;░░░█░░░█
+    DB    00000110B                 ;0FF89H
+    DB    01101010B                 ;0FF8AH 
+    DB    00011111B                 ;0FF8BH 
+    DB    00010001B                 ;0FF8CH 
+;0FF8DH-0FF91H 'Е'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█████
+    DB    00011111B                 ;0FF8DH
+    DB    00110000B                 ;0FF8EH 
+    DB    00011110B                 ;0FF8FH 
+    DB    00110000B                 ;0FF90H 
+    DB    00011111B                 ;0FF91H 
+;0FF92H-0FF96H 'Ф'
+;░░░░░░░░
+;░░░░░█░░
+;░░░█████
+;░░░█░█░█
+;░░░█░█░█
+;░░░█████
+;░░░░░█░░
+;░░░░░█░░
+    DB    00000100B                 ;0FF92H
+    DB    00011111B                 ;0FF93H 
+    DB    00110101B                 ;0FF94H 
+    DB    00011111B                 ;0FF95H 
+    DB    00100100B                 ;0FF96H 
+;0FF97H-0FF99H 'Г'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░█
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+    DB    00011111B                 ;0FF97H
+    DB    00010001B                 ;0FF98H 
+    DB    10010000B                 ;0FF99H 
+;0FF9AH-0FF9EH 'Х'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░░█░█░
+;░░░░░█░░
+;░░░░█░█░
+;░░░█░░░█
+;░░░█░░░█
+    DB    00110001B                 ;0FF9AH
+    DB    00001010B                 ;0FF9BH 
+    DB    00000100B                 ;0FF9CH 
+    DB    00001010B                 ;0FF9DH 
+    DB    00110001B                 ;0FF9EH 
+;0FF9FH-0FFA3H 'И'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░██
+;░░░█░█░█
+;░░░██░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    00110001B                 ;0FF9FH
+    DB    00010011B                 ;0FFA0H 
+    DB    00010101B                 ;0FFA1H 
+    DB    00011001B                 ;0FFA2H 
+    DB    00110001B                 ;0FFA3H 
+;0FFA4H-0FFA9H 'Й'
+;░░░░░░░░
+;░░░█░█░█
+;░░░█░░░█
+;░░░█░░██
+;░░░█░█░█
+;░░░██░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    00010101B                 ;0FFA4H
+    DB    00010001B                 ;0FFA5H 
+    DB    00010011B                 ;0FFA6H 
+    DB    00010101B                 ;0FFA7H 
+    DB    00011001B                 ;0FFA8H 
+    DB    00110001B                 ;0FFA9H 
+;0FFAAH-0FFB0H 'К'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░█░
+;░░░█░█░░
+;░░░██░░░
+;░░░█░█░░
+;░░░█░░█░
+;░░░█░░░█
+    DB    00010001B                 ;0FFAAH
+    DB    00010010B                 ;0FFABH 
+    DB    00010100B                 ;0FFACH 
+    DB    00011000B                 ;0FFADH 
+    DB    00010100B                 ;0FFAEH 
+    DB    00010010B                 ;0FFAFH 
+    DB    00010001B                 ;0FFB0H 
+;0FFB1H-0FFB3H 'Л'
+;░░░░░░░░
+;░░░░░███
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░░█░░█
+;░░░██░░█
+    DB    00000111B                 ;0FFB1H
+    DB    10001001B                 ;0FFB2H 
+    DB    00011001B                 ;0FFB3H 
+;0FFB4H-0FFB7H 'М'
+;░░░░░░░░
+;░░░█░░░█
+;░░░██░██
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    00010001B                 ;0FFB4H
+    DB    00011011B                 ;0FFB5H 
+    DB    00110101B                 ;0FFB6H 
+    DB    01010001B                 ;0FFB7H 
+;0FFB8H-0FFBAH 'Н'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█████
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    01010001B                 ;0FFB8H
+    DB    00011111B                 ;0FFB9H 
+    DB    01010001B                 ;0FFBAH 
+;0FFBBH-0FFBDH 'О'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FFBBH
+    DB    10010001B                 ;0FFBCH 
+    DB    00001110B                 ;0FFBDH 
+;0FFBEH-0FFBFH 'П'
+;░░░░░░░░
+;░░░█████
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+    DB    00011111B                 ;0FFBEH
+    DB    10110001B                 ;0FFBFH 
+;0FFC0H-0FFC5H 'Я'
+;░░░░░░░░
+;░░░░████
+;░░░█░░░█
+;░░░█░░░█
+;░░░░████
+;░░░░░█░█
+;░░░░█░░█
+;░░░█░░░█
+    DB    00001111B                 ;0FFC0H
+    DB    00110001B                 ;0FFC1H 
+    DB    00001111B                 ;0FFC2H 
+    DB    00000101B                 ;0FFC3H 
+    DB    00001001B                 ;0FFC4H 
+    DB    00010001B                 ;0FFC5H 
+;0FFC6H-0FFC9H 'Р'
+;░░░░░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+    DB    00011110B                 ;0FFC6H
+    DB    00110001B                 ;0FFC7H 
+    DB    00011110B                 ;0FFC8H 
+    DB    01010000B                 ;0FFC9H 
+;0FFCAH-0FFCEH 'С'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FFCAH
+    DB    00010001B                 ;0FFCBH 
+    DB    01010000B                 ;0FFCCH 
+    DB    00010001B                 ;0FFCDH 
+    DB    00001110B                 ;0FFCEH 
+;0FFCFH-0FFD0H 'Т'
+;░░░░░░░░
+;░░░█████
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+;░░░░░█░░
+    DB    00011111B                 ;0FFCFH
+    DB    10100100B                 ;0FFD0H 
+;0FFD1H-0FFD5H 'У'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░░█░█░
+;░░░░░█░░
+;░░░░█░░░
+;░░░█░░░░
+    DB    01010001B                 ;0FFD1H
+    DB    00001010B                 ;0FFD2H 
+    DB    00000100B                 ;0FFD3H 
+    DB    00001000B                 ;0FFD4H 
+    DB    00010000B                 ;0FFD5H 
+;0FFD6H-0FFDAH 'Ж'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░░███░
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░░░█
+    DB    00010001B                 ;0FFD6H
+    DB    00110101B                 ;0FFD7H 
+    DB    00001110B                 ;0FFD8H 
+    DB    00110101B                 ;0FFD9H 
+    DB    00010001B                 ;0FFDAH 
+;0FFDBH-0FFDFH 'В'
+;░░░░░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+    DB    00011110B                 ;0FFDBH
+    DB    00110001B                 ;0FFDCH 
+    DB    00011110B                 ;0FFDDH 
+    DB    00110001B                 ;0FFDEH 
+    DB    00011110B                 ;0FFDFH 
+;0FFE0H-0FFE3H 'Ь'
+;░░░░░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░█░░░░
+;░░░████░
+;░░░█░░░█
+;░░░█░░░█
+;░░░████░
+    DB    01010000B                 ;0FFE0H
+    DB    00011110B                 ;0FFE1H 
+    DB    00110001B                 ;0FFE2H 
+    DB    00011110B                 ;0FFE3H 
+;0FFE4H-0FFE7H 'Ы'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░██░░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░██░░█
+    DB    01010001B                 ;0FFE4H
+    DB    00011001B                 ;0FFE5H 
+    DB    00110101B                 ;0FFE6H 
+    DB    00011001B                 ;0FFE7H 
+;0FFE8H-0FFEEH 'З'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░░░░░█
+;░░░░░██░
+;░░░░░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FFE8H
+    DB    00010001B                 ;0FFE9H 
+    DB    00000001B                 ;0FFEAH 
+    DB    00000110B                 ;0FFEBH 
+    DB    00000001B                 ;0FFECH 
+    DB    00010001B                 ;0FFEDH 
+    DB    00001110B                 ;0FFEEH 
+;0FFEFH-0FFF1H 'Ш'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█████
+    DB    00010001B                 ;0FFEFH
+    DB    10010101B                 ;0FFF0H 
+    DB    00011111B                 ;0FFF1H 
+;0FFF2H-0FFF8H 'Э'
+;░░░░░░░░
+;░░░░███░
+;░░░█░░░█
+;░░░░░░░█
+;░░░░░███
+;░░░░░░░█
+;░░░█░░░█
+;░░░░███░
+    DB    00001110B                 ;0FFF2H
+    DB    00010001B                 ;0FFF3H 
+    DB    00000001B                 ;0FFF4H 
+    DB    00000111B                 ;0FFF5H 
+    DB    00000001B                 ;0FFF6H 
+    DB    00010001B                 ;0FFF7H 
+    DB    00001110B                 ;0FFF8H 
+;0FFF9H-0FFFBH 'Щ'
+;░░░░░░░░
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█░█░█
+;░░░█████
+;░░░░░░░█
+    DB    10010101B                 ;0FFF9H
+    DB    00011111B                 ;0FFFAH 
+    DB    00000001B                 ;0FFFBH 
+;0FFFCH-0FFFEH 'Ч'
+;░░░░░░░░
+;░░░█░░░█
+;░░░█░░░█
+;░░░█░░░█
+;░░░█████
+;░░░░░░░█
+;░░░░░░░█
+;░░░░░░░█
+    DB    01010001B                 ;0FFFCH
+    DB    00011111B                 ;0FFFDH 
+    DB    01000001B                 ;0FFFEH 
+;0FFFFH '█'
+;░░░░░░░░
+;░░░█████
+;░░░█████
+;░░░█████
+;░░░█████
+;░░░█████
+;░░░█████
+;░░░█████
+    DB    11011111B                 ;0FFFFH
