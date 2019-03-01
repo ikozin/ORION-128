@@ -105,6 +105,8 @@
 0FB93H:;CMD_ROM_BOOT
 0FB9DH:ROM_LoopLoad
 0FBAFH:;InputKeyA
+0FBBDH:InputKeyA_WaitStart
+0FBBFH:InputKeyA_WaitLoop
 0FC0DH:;InputKeyCodeA
 0FC1AH:InputKeyCodeA_Loop
 0FC8DH:;GetKeyCodeMap
