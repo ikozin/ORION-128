@@ -109,6 +109,9 @@
 0FBBFH:InputKeyA_WaitLoop
 0FC0DH:;InputKeyCodeA
 0FC1AH:InputKeyCodeA_Loop
+0FC33H:InputKeyCodeA_NextRow
+0FC45H:InputKeyCodeA_NextCol
+0FC46H:InputKeyCodeA_Calc
 0FC8DH:;GetKeyCodeMap
 0FC96H:;KeyCodeMap
 0FCBAH:;InputKey_Delay

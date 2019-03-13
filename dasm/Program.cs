@@ -131,7 +131,7 @@ namespace Dasm
                 }
             }
 #if DEBUG            
-            Console.ReadLine();
+            //Console.ReadLine();
 #endif
         }
     }
