@@ -14,8 +14,11 @@ namespace UnpackCodepage
             if (args.Length != 2)
             {
                 Console.WriteLine(@"UnpackCodepage file start
-  file  - путь к образу ROM
+  file  - путь к образу ROM, например rom/Orion128_M1.rom
   start - начало codepage, указывать в адресном пространстве ROM, т.е. начиная с 0F800H, для M1 = 0FE48H, M2 и M31 = 0FE4AH
+  Пример параметров запуска
+  ../../../rom/Orion128_M1.rom  0FE48H > codepage.txt
+
 ");
                 return;
             }
