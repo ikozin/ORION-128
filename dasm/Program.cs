@@ -67,6 +67,7 @@ namespace Dasm
                 Console.WriteLine("<start> ORG instraction hex format optional");
                 Console.WriteLine("<include> include file name optional");
                 Console.WriteLine("<file> out file name");
+                Console.WriteLine(@"../../../rom/Orion128_M1.rom s:0F800H l:DATA\Orion128_M1\Orion128_M1_Label.txt c:DATA\Orion128_M1\Orion128_M1_Comment.txt d:DATA\Orion128_M1\Orion128_M1_Data.txt i:DATA\Orion128_M1\Orion128_M1_Include.txt o:Orion128_M1_source.asm");
                 Console.ReadLine();
                 return;
             }

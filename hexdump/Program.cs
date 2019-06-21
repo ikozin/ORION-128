@@ -109,10 +109,12 @@ namespace HexDump
         private static void DisplayInfo()
         {
             Console.WriteLine(
-@"hexdump /A /L /F[:value] /B file
+@"hexdump /A /L file
   /A         - в начале строки показывать адрес в HEX формате
   /L         - в конце строки показывать контрольную сумму в HEX формате
-  file       - путь к файлу");
+  file       - путь к файлу
+  Пример командной строки
+  /A /L ..\..\..\rom\Orion128_M1.rom");
         }
     }
 }
