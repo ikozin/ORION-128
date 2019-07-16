@@ -72,8 +72,8 @@ Run_0BFFDH			EQU 0BFFDH
 ;| 0F3D1H | 00 | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
 ;| 0F3D2H | F0 | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
 ;| 0F3D3H | 00 | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
-;| 0F3D4H | XX | X_POS_ADDR        |
-;| 0F3D5H | XX | Y_POS_ADDR        |
+;| 0F3D4H | XX | X_POS_ADDR        | Номер позиции курсора X * 4 (0—3FH << 2)
+;| 0F3D5H | XX | Y_POS_ADDR        | Номер строки  курсора Y     (0—18Н)
 ;| 0F3D6H | -- |                   |
 ;| 0F3D7H | -- |                   |
 ;| 0F3D8H | XX | RESTART_ADDR      | LO - адрес возврата
