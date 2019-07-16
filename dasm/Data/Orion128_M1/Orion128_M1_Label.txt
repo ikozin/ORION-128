@@ -47,6 +47,7 @@
 0F8E1H:Handle_Loop
 0F8FEH:Handle_KeyLeft
 0F901H:Handle_Inverse
+0F908H:Handle_DispSymA
 0F918H:;Handle_Parse_Cmd_Params
 0F92AH:;Handle_ParseParam
 0F92FH:Handle_ParseNextHex
@@ -120,7 +121,7 @@
 0FCCBH:DispSymA
 0FCD0H:;DispSymC
 0FCD1H:DispSymC_0
-0FCE4H:DispSymC_1
+0FCE4H:DispSymC_Not_7FH
 0FD2EH:DispSymC_Hidden
 0FD80H:DispSymC_Ret
 0FDBFH:Ret_Zero_HB
