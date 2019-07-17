@@ -1,16 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2047
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnpackCodepage", "UnpackCodepage.csproj", "{03C79F2F-5A46-4160-9DD8-4D4D654C119E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - M1|Any CPU = Debug - M1|Any CPU
+		Debug - M2|Any CPU = Debug - M2|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug - M1|Any CPU.ActiveCfg = Debug - M1|Any CPU
+		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug - M1|Any CPU.Build.0 = Debug - M1|Any CPU
+		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug - M2|Any CPU.ActiveCfg = Debug - M2|Any CPU
+		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug - M2|Any CPU.Build.0 = Debug - M2|Any CPU
 		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03C79F2F-5A46-4160-9DD8-4D4D654C119E}.Release|Any CPU.ActiveCfg = Release|Any CPU

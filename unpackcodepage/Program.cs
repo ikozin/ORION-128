@@ -65,7 +65,6 @@ namespace UnpackCodepage
             {
                 Console.WriteLine(ex.Message);
             }
-            Console.ReadLine();
         }
 
         static ushort ParseHex(string value)
