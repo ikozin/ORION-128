@@ -13,5 +13,6 @@
 0F82AH:CalcControlsum_Entry
 0F82DH:LoadCodePage_Entry
 0F83CH:SetPosCursor_Entry
-0F842H:StartCode
+0F842H:;StartCode
 0FE4AH:;CodePageTable
+0F8C8H:;Init
