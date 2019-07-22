@@ -13,4 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M2|AnyCPU'">
     <StartArguments>../../../rom/Orion128_M2.rom  0FE4AH &gt; codepage.txt</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
+    <StartArguments>../../../rom/Orion128_M31.rom  0FE4AH &gt; codepage.txt</StartArguments>
+  </PropertyGroup>
 </Project>

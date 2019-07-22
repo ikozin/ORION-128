@@ -13,4 +13,7 @@
   <PropertyGroup>
     <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
+    <StartArguments>/A /L ..\..\..\rom\Orion128_M31.rom</StartArguments>
+  </PropertyGroup>
 </Project>

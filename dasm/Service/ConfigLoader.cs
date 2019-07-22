@@ -45,7 +45,7 @@ namespace Dasm.Service
             if (bounds.Length != 2) throw new ApplicationException("Format error");
             ushort lo = bounds[0].ParseHex();
             ushort hi = bounds[1].ParseHex();
-            if (lo > hi) throw new ApplicationException("Format error");
+            if (lo >= hi) throw new ApplicationException("Format error");
             return (lo, hi);
         }
     }
