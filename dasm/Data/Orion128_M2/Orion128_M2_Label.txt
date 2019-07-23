@@ -30,6 +30,7 @@
 0F8FAH:LoadCodePage_Extract
 0F901H:LoadCodePage_ExtractLine
 0F91CH:;DisplayHexA
+0F925H:DisplayHexA_Nibble
 0F936H:;SaveFile
 0F937H:;DisplayTextHL
 0F941H:;CalcControlSum
