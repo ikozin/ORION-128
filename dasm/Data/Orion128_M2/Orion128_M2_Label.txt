@@ -49,5 +49,6 @@
 0FA53H:;SaveByteC
 0FA78H:;GetKeyStateA
 0FAEEH:;InputkeyCodeA
+0FBA0H:;KeyCodeMap
 0FC34H:;DisplaySymA
 0FE4AH:;CodePageTable
