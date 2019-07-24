@@ -31,9 +31,13 @@
 0F901H:LoadCodePage_ExtractLine
 0F91CH:;DisplayHexA
 0F925H:DisplayHexA_Nibble
+0F92EH:DisplayHexA_Number
+0F930H:DisplaySymC_Call
 0F936H:;SaveFile
 0F937H:;DisplayTextHL
 0F941H:;CalcControlSum
+0F944H:CalcControlSum_Loop
+0F956H:CalcControlSum_HL_DE
 0F95CH:;SetPosCursor
 0F963H:;GetPosCursor
 0F96BH:;SaveRamAddr
