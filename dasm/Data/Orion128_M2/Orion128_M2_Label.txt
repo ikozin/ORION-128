@@ -52,3 +52,4 @@
 0FBA0H:;KeyCodeMap
 0FC34H:;DisplaySymA
 0FE4AH:;CodePageTable
+0FB97H:;GetKeyCodeMap
