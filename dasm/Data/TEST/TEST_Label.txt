@@ -1,6 +1,10 @@
 0F803H:Start
 0F810H:ClearScreen
+0F934H:DrawText
+0F93BH:DrawText_NextColumn
+0F93DH:DrawText_Next8Pixel
 0F987H:PauseDelay
 0F98CH:Delay
 0F99EH:TESTRAM565PY5
+0FA3EH:NextTest
 0FA8DH:Stop
