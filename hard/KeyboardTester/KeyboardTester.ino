@@ -1,14 +1,14 @@
 /*
 
-
-–‡ÒÔËÌÓ‚Í‡ ÔÓ‰ÍÎ˛˜ÂÌËˇ Í ATMEG2560
-		 -------                                                          -------
-		| POWER |                                                        |  USB  |
-	  -----------------------------------------------------------------------------------------
-	 |                                                                                         |---
-	 |                                                                                    AREF |   |
-	 |                                                                                     GND |   |
-	 |                                                                                      13 |   |
+–†–∞—Å–ø–∏–Ω–æ–≤–∫–∞  ATMEG2560
+https://all-arduino.ru/wp-content/uploads/mega2_ret_by_pighixxx-d5yqsht.png
+      -------                                                          -------
+     | POWER |                                                        |  USB  |
+      -----------------------------------------------------------------------------------------
+     |                                                                                         |---
+     |                                                                                    AREF |   |
+     |                                                                                     GND |   |
+     |                                                                                      13 |   |
   ---|                                                                                      12 |   |
  |   | RST                                                                                  11 |   |
  |   | 3V                                                                                   10 |   |
@@ -35,14 +35,15 @@
  |   | A14                                                                                     |---
  |   | A15                                                                                     |
   ---|      SCK MISO                                                                           |
-	 | GND| 52 | 50 | 48 | 46 | 44 | 42 | 40 | 38 | 36 | 34 | 32 | 30 | 28 | 26 | 24 | 22 | +5V|
-	  -----------------------------------------------------------------------------------------
-	 | XX |    |    | C1 | C3 | C5 | C7 |    |    | B1 | B3 | B5 | B7 | A6 | A4 | A2 | A0 | XX |
-	 | XX |    |    | C0 | C2 | C4 | C6 |    |    | B0 | B2 | B4 | B6 | A7 | A5 | A3 | A1 | XX |
-	  -----------------------------------------------------------------------------------------
-	 | GND| 53 | 51 | 49 | 47 | 45 | 43 | 41 | 39 | 37 | 35 | 33 | 31 | 29 | 27 | 25 | 23 | +5V|
-
-
+     | GND| 52 | 50 | 48 | 46 | 44 | 42 | 40 | 38 | 36 | 34 | 32 | 30 | 28 | 26 | 24 | 22 | +5V|
+      -----------------------------------------------------------------------------------------
+     | XX |    |    | C1 | C3 | C5 | C7 |    |    | B1 | B3 | B5 | B7 | A6 | A4 | A2 | A0 | XX |
+     | A9 |    |    | C0 | C2 | C4 | C6 |    |    | B0 | B2 | B4 | B6 | A7 | A5 | A3 | A1 | C9 |
+      -----------------------------------------------------------------------------------------
+     | GND| 53 | 51 | 49 | 47 | 45 | 43 | 41 | 39 | 37 | 35 | 33 | 31 | 29 | 27 | 25 | 23 | +5V|
+                                                                                            ^
+                                                                                            |
+                                                                                           Key
 
 */
 
@@ -50,76 +51,109 @@
 #error "Select board ATMEG2560"
 #endif
 
+#define KEYCODE_ALF     B10000000
+#define KEYCODE_CY      B01000000
+#define KEYCODE_KOM     B00100000
 
-#define x4_A0     (22)   //PA0
-#define x4_A1     (23)   //PA1
-#define x4_A2     (24)   //PA2
-#define x4_A3     (25)   //PA3
-#define x4_A4     (26)   //PA4
-#define x4_A5     (27)   //PA5
-#define x4_A6     (28)   //PA6
-#define x4_A7     (29)   //PA7
+#define LED_ALF         B00000100
+#define LED_REC         B00001000
 
-#define x4_B0     (37)   //PC0
-#define x4_B1     (36)   //PC1
-#define x4_B2     (35)   //PC2
-#define x4_B3     (34)   //PC3
-#define x4_B4     (33)   //PC4
-#define x4_B5     (32)   //PC5
-#define x4_B6     (31)   //PC6
-#define x4_B7     (30)   //PC7
+#define INITIAL_STATE_C B00001111
 
-#define x4_C0     (49)   //PL0
-#define x4_C1     (48)   //PL1
-#define x4_C2     (47)   //PL2
-#define x4_C3     (46)   //PL3
-#define x4_C4     (45)   //PL4
-#define x4_C5     (44)   //PL5
-#define x4_C6     (43)   //PL6
-#define x4_C7     (42)   //PL7
+#define OutputModePortA() DDRA = B11111111
+#define OutputModePortB() DDRC = B11111111
+#define OutputModePortC() DDRL = B11111111
 
+#define InputModePortA()  DDRA = B00000000
+#define InputModePortB()  DDRC = B00000000
+#define InputModePortC()  DDRL = B00000000
+
+#define SetPortA(data)  PORTA = data
+#define SetPortB(data)  PORTC = data
+#define SetPortC(data)  PORTL = data
+
+#define GetPortA()      PINA
+#define GetPortB()      PINC
+#define GetPortC()      PINL
+
+char text[64];
+char *keyNames[]
+{
+  "‚Üñ", "–°–¢–†", "–ê–†2", "F1", "F2", "F3", "F4", "",
+  "–¢–ê–ë", "–ü–°", "–í–ö", "–ó–ë", "‚Üê", "‚Üë", "‚Üí", "‚Üì",
+  "0", "1", "2", "3", "4", "5", "6", "7",
+  "8", "9", ":", ";", "<", "=", ">", "?",
+  "@", "A", "B", "C", "D", "E", "F", "G",
+  "H", "I", "J", "K", "L", "M", "N", "O",
+  "P", "Q", "R", "S", "T", "U", "V", "W",
+  "X", "Y", "Z", "[", "\\", "]", "^", "SPACE",  
+};
+
+byte keyboardState = INITIAL_STATE_C;
+
+void KeyboardModeC()
+{
+  DDRL  = B00001111;  //Output C1-C4,Input C5-C8
+  PORTL = keyboardState;
+}
 
 void setup()
 {
-	// x4_A, ÔËÌ˚ 22-29 (PA0-PA7)
-	DDRA = B11111111;
-	// x4_B, ÔËÌ˚ 30-37 (PC0-PC7)
-	DDRC = B11111111;
-	// x4_C, ÔËÌ˚ 42-49 (PL0-PL7)
-	DDRL = B11111111;
+  Serial.begin(9600);
+	OutputModePortA();
+  InputModePortB();
+  KeyboardModeC();
+  SetPortA(0x00);
 }
 
 void loop()
 {
+  delay(100);
+  uint8_t keyCode = GetPortC();
+  if ((keyCode & KEYCODE_ALF) == 0)
+  {
+    Serial.println("–ê–õ–§");
+    keyboardState = (keyboardState & ~LED_ALF) | ((keyboardState & LED_ALF) ^ LED_ALF);
+    PORTL = keyboardState;
+  }
+  if ((keyCode & KEYCODE_CY) == 0)
+  {
+    Serial.println("–°–£");
+  }
+  if ((keyCode & KEYCODE_KOM) == 0)
+  {
+    Serial.println("–ö–û–ú");
+    keyboardState = (keyboardState & ~LED_REC) | ((keyboardState & LED_REC) ^ LED_REC);
+    PORTL = keyboardState;
+  }
+  
+  keyCode = GetInputKey();
+  if (keyCode == 0xFF) return;
+  sprintf(text, "0x%02X %s", keyCode, keyNames[keyCode]);
+  Serial.println(text);
 }
 
-
-void SetPortA(uint8_t data)
+uint8_t GetInputKey()
 {
-	PORTA = data;
-}
-
-void SetPortB(uint8_t data)
-{
-	PORTC = data;
-}
-
-void SetPortC(uint8_t data)
-{
-	PORTL = data;
-}
-
-uint8_t GetPortA()
-{
-	return PORTA;
-}
-
-uint8_t SetPortB()
-{
-	return PORTC;
-}
-
-uint8_t SetPortC()
-{
-	return PORTL;
+  uint8_t keyCode = 0;
+  uint8_t row = 0x01;
+  while (row != 0)
+  {
+    SetPortA(~row);
+    uint8_t data = ~GetPortB();
+    if (data)
+    {
+      int col = 1;
+      while ((data & 0x01) == 0x00)
+      {
+        data >>= 1;
+        col ++;
+        keyCode ++;
+      }
+      return keyCode;
+    }
+    keyCode += 0x08;
+    row <<= 1;
+  }
+  return 0xFF;
 }
