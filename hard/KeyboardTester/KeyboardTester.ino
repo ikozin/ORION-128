@@ -137,23 +137,20 @@ uint8_t GetInputKey()
 {
   uint8_t keyCode = 0;
   uint8_t row = 0x01;
-  while (row != 0)
+  do
   {
     SetPortA(~row);
     uint8_t data = ~GetPortB();
     if (data)
     {
-      int col = 1;
-      while ((data & 0x01) == 0x00)
+      while (data >>= 1)
       {
-        data >>= 1;
-        col ++;
         keyCode ++;
       }
       return keyCode;
     }
     keyCode += 0x08;
-    row <<= 1;
   }
+  while(row <<= 1);
   return 0xFF;
 }
