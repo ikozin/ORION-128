@@ -18,5 +18,5 @@
 #define GetPortB()      PINC
 #define GetPortC()      PINL
 
-#define PIN_EXT             40
+#define PIN_ROMDISK_SELECT  40
 #define PIN_KEYBOARD_RESET  41
