@@ -115,13 +115,13 @@ void loadData(uint16_t addr)
     if ((addr & 0xF) == 0)
     {
       Serial.println();
-      sprintf(text, "%04X ", addr);
+      sprintf(text, "%04X", addr);
       Serial.print(text);
     }
     SetPortB(lowByte(addr));
     SetPortC(highByte(addr));
     delay(1);
-    sprintf(text, "%02X ", GetPortA());    
+    sprintf(text, " %02X", GetPortA());    
     Serial.print(text);
     addr++;    
   }
