@@ -71,8 +71,7 @@ B10 = LOW диск активный, при работе с одним диск�
 #include <Arduino.h>
 #define ROM_CHIP_SIZE  2048
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   InputModePortA();
   OutputModePortB();
@@ -83,14 +82,18 @@ void setup()
   digitalWrite(PIN_ROMDISK_SELECT, LOW);    // LOW = выбранный ROM Disk
 }
 
-void loop()
-{
-  Serial.println();
+void loop() {
+  Serial.println(F("For test press 0:"));
   Serial.println(F("Select chip [1-8]:"));
   while (!Serial.available());
   char c = Serial.read();
-  switch (c)
-  {
+  switch (c) {
+    case '0':
+      while (1) {
+        checkAddressPort();
+        checkDataPort();
+        checkControlLine();
+      }
     case '1':
     case '2':
     case '3':
@@ -98,8 +101,7 @@ void loop()
     case '5':
     case '6':
     case '7':
-    case '8':
-    {
+    case '8': {
       uint16_t addr = (c - '1') * ROM_CHIP_SIZE;
       loadData(addr);
       break;
@@ -108,12 +110,12 @@ void loop()
 }
 
 char text[128];
-void loadData(uint16_t addr)
-{
-  for (int i = 0; i < ROM_CHIP_SIZE; i++)
-  {
-    if ((addr & 0xF) == 0)
-    {
+void loadData(uint16_t addr) {
+  Serial.print(F("Address:"));
+  sprintf(text, "%04X", addr);
+  Serial.println(text);
+  for (int i = 0; i < ROM_CHIP_SIZE; i++) {
+    if ((addr & 0xF) == 0) {
       Serial.println();
       sprintf(text, "%04X", addr);
       Serial.print(text);
@@ -126,4 +128,103 @@ void loadData(uint16_t addr)
     addr++;    
   }
   Serial.println();
+}
+
+void checkDataPort() {
+  SetPortA(0xFF);
+  delay(1000);
+  SetPortA(0x00);
+  delay(1000);
+  SetPortA(0xFF);
+  delay(1000);
+  SetPortA(0x00);
+  delay(1000);
+  SetPortA(0x01);
+  delay(200);
+  SetPortA(0x02);
+  delay(200);
+  SetPortA(0x04);
+  delay(200);
+  SetPortA(0x08);
+  delay(200);
+  SetPortA(0x10);
+  delay(200);
+  SetPortA(0x20);
+  delay(200);
+  SetPortA(0x40);
+  delay(200);
+  SetPortA(0x80);
+  delay(200);
+  SetPortA(0x00);
+  delay(1000);
+}
+
+void checkAddressPort() {
+  SetPortC(B00000111);
+  SetPortB(B11111111);
+  delay(1000);
+  SetPortC(B00000000);
+  SetPortB(B00000000);
+  delay(1000);
+  SetPortC(B00000111);
+  SetPortB(B11111111);
+  delay(1000);
+  SetPortC(B00000000);
+  SetPortB(B00000000);
+  delay(1000);
+  SetPortC(B00000000);
+  SetPortB(B00000001);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00000010);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00000100);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00001000);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00010000);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00100000);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B01000000);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B10000000);
+  delay(200);
+  SetPortC(B00000001);
+  SetPortB(B00000000);
+  delay(200);
+  SetPortC(B00000010);
+  SetPortB(B00000000);
+  delay(200);
+  SetPortC(B00000100);
+  SetPortB(B00000000);
+  delay(200);
+  SetPortC(B00000000);
+  SetPortB(B00000000);
+  delay(1000);
+}
+
+void checkControlLine() {
+  SetPortC(B00000000);
+  delay(200);
+  SetPortC(B00001000);
+  delay(200);
+  SetPortC(B00010000);
+  delay(200);
+  SetPortC(B00011000);
+  delay(200);
+  SetPortC(B00100000);
+  delay(200);
+  SetPortC(B00101000);
+  delay(200);
+  SetPortC(B00110000);
+  delay(200);
+  SetPortC(B00111000);
+  delay(200);
 }
