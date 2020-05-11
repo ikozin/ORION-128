@@ -13,4 +13,5 @@
 3. [MCS-80\\85](http://board.flatassembler.net/topic.php?t=18448)
 4. [Aссемблер для 8080](http://zx-pk.ru/threads/26144-assembler-dlya-8080.html)
 5. [Подключение к телевизорам и мониторам](http://zxbyte.ru/byte_connection_to_tv_and_monitors.htm)
+6. [Адресация памяти в КР580ВМ80А](https://github.com/ikozin/ORION-128/tree/master/docs/Адресация%20в%20КР580ВМ80А.docx)
  
