@@ -15,3 +15,4 @@
 5. [Подключение к телевизорам и мониторам](http://zxbyte.ru/byte_connection_to_tv_and_monitors.htm)
 6. [Адресация памяти в КР580ВМ80А](https://github.com/ikozin/ORION-128/tree/master/docs/Адресация%20в%20КР580ВМ80А.docx)
 7. [Наиболее общие закономерности в программировании на языке Ассемблер](https://github.com/ikozin/ORION-128/tree/master/docs/Наиболее%20общие%20закономерности%20в%20программировании%20на%20языке%20Ассемблер.docx)
+8. [Блокировочные конденсаторы](https://github.com/ikozin/ORION-128/tree/master/docs/Блокировочные%20конденсаторы.docx)
