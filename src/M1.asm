@@ -72,8 +72,8 @@ Run_0BFFDH			EQU 0BFFDH
 ;| 0F3D1H | 00 | CODEPAGE_ADDR     | LO - адрес CODEPAGE 0F000H 
 ;| 0F3D2H | F0 | CODEPAGE_ADDR     | HI - адрес CODEPAGE 0F000H 
 ;| 0F3D3H | 00 | INVERSE_DISP_ADDR | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
-;| 0F3D4H | XX | X_POS_ADDR        |
-;| 0F3D5H | XX | Y_POS_ADDR        |
+;| 0F3D4H | XX | X_POS_ADDR        | Номер позиции курсора X * 4 (0—3FH << 2)
+;| 0F3D5H | XX | Y_POS_ADDR        | Номер строки  курсора Y     (0—18Н)
 ;| 0F3D6H | -- |                   |
 ;| 0F3D7H | -- |                   |
 ;| 0F3D8H | XX | RESTART_ADDR      | LO - адрес возврата
@@ -125,17 +125,17 @@ Run_0BFFDH			EQU 0BFFDH
 ;|     |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
 ;|_____|_____|_____|_____|_____|_____|_____|_____|_____|
 ;|     |     |     |     |     |     |     |     |     |
-;|  0  |     |     |Space|  0  |  O  |  P  |  Ю  |  П  |
-;|  1  |  F1 |     |  !  |  1  |  A  |  Q  |  А  |  Я  |
-;|  2  |  F2 |     |  "  |  2  |  B  |  R  |  Б  |  Р  |
-;|  3  |  F3 |     |  #  |  3  |  C  |  S  |  Ц  |  С  |
-;|  4  |  F4 |     |  $  |  4  |  D  |  T  |  Д  |  Т  |
+;|  0  |  F1 |     |Space|  0  |  @  |  P  |  Ю  |  П  |
+;|  1  |  F2 |     |  !  |  1  |  A  |  Q  |  А  |  Я  |
+;|  2  |  F3 |     |  "  |  2  |  B  |  R  |  Б  |  Р  |
+;|  3  |  F4 |     |  #  |  3  |  C  |  S  |  Ц  |  С  |
+;|  4  |  F5 |     |  $  |  4  |  D  |  T  |  Д  |  Т  |
 ;|  5  |     |     |  %  |  5  |  E  |  U  |  Е  |  У  |
 ;|  6  |     |     |  &  |  6  |  F  |  V  |  Ф  |  Ж  |
 ;|  7  |     |     |  '  |  7  |  G  |  W  |  Г  |  В  |
-;|  8  |  <- |  -> |  (  |  8  |  H  |  X  |  Х  |  Ь  |
-;|  9  | ТАБ |     |  )  |  9  |  I  |  Y  |  И  |  Ы  |
-;|  A  |  ПС |     |  *  |  :  |  J  |  Z  |  Й  |  Э  |
+;|  8  |  ←  |  →  |  (  |  8  |  H  |  X  |  Х  |  Ь  |
+;|  9  | ТАБ |  ↑  |  )  |  9  |  I  |  Y  |  И  |  Ы  |
+;|  A  |  ПС |  ↓  |  *  |  :  |  J  |  Z  |  Й  |  Э  |
 ;|  B  |     | АР2 |  +  |  ;  |  K  |  [  |  К  |  Ш  |
 ;|  C  |  \  |     |  ,  |  <  |  L  |  \  |  Л  |  З  |
 ;|  D  |  ВК |     |  -  |  =  |  M  |  ]  |  М  |  Щ  |
@@ -143,7 +143,18 @@ Run_0BFFDH			EQU 0BFFDH
 ;|  F  |     | СТР |  /  |  ?  |  O  |  _  |  О  |  ЗБ |
 ;|_____|_____|_____|_____|_____|_____|_____|_____|_____|
 ;
-; -----------------------------------------------------------------------------------------------------------------------------------
+;Коды клавиш    00H 08H 10H 18H 20H 28H 30H 38H
+;               PA0 PA1 PA2 PA3 PA4 PA5 PA6 PA7
+;               01H 02H 04H 08H 10H 20H 40H 80H
+;00H  PB0  01H   \  TAB  0   8   @   H   P   X 
+;01H  PB1  02H  СТР  ПС  1   9   A   I   Q   Y 
+;02H  PB2  04H  АР2  ВК  2   *   B   J   R   Z 
+;03H  PB3  08H   F1  ЗБ  3   +   C   K   S   [ 
+;04H  PB4  10H   F2  ←   4   ,   D   L   T   \ 
+;05H  PB5  20H   F3  ↑   5   -   E   M   U   ] 
+;06H  PB6  40H   F4  →   6   .   F   N   V   ^ 
+;07H  PB7  80H   F5  ↓   7   /   G   O   W   _ 
+;-----------------------------------------------------------------------------------------------------------------------------------
 
 ORG 0F800H
 
@@ -229,8 +240,8 @@ GetPosCursor_Entry:
 ;------------------------------------------
 ; Запрос положения курсора
 ;  вх:  нет
-;  вых: H  = номер строки  Y
-;       L  = номер позиции X
+;  вых: H  = номер строки  Y (0—18Н)
+;       L  = номер позиции X (0—3FH)
 ;------------------------------------------
     jmp GetPosCursor                ;0F81EH
 
@@ -310,8 +321,8 @@ SaveByteDisplayPage_Entry:
 SetPosCursor_Entry:
 ;------------------------------------------
 ; Установить положение курсора
-;  вх:  H  = номер строки  Y
-;       L  = номер позиции X
+;  вх:  H  = номер строки  Y (0—18Н)
+;       L  = номер позиции X (0—3FH)
 ;  вых: нет
 ;------------------------------------------
     jmp SetPosCursor                ;0F83CH
@@ -321,11 +332,11 @@ SetPosCursor_Entry:
 
 StartCode:
     lxi SP, Reserv_JMP_ADDR         ;0F842H 
-    xra A                           ;0F845H 
-    sta 0F800H                      ;0F846H Порт - Управление цветным режимом
-    sta 0F900H                      ;0F849H Порт - Управление переключением страниц памяти
-    sta 0FA00H                      ;0F84CH Порт - Управление переключением экранов
-    sta INVERSE_DISP_ADDR           ;0F84FH 
+    xra A                           ;0F845H Обнуляем A
+    sta 0F800H                      ;0F846H Порт - Управление цветным режимом, записываем 00H
+    sta 0F900H                      ;0F849H Порт - Управление переключением страниц памяти, записываем 00H
+    sta 0FA00H                      ;0F84CH Порт - Управление переключением экранов, записываем 00H
+    sta INVERSE_DISP_ADDR           ;0F84FH Устанавливаем признак инверсионного вывода, записываем 00H (00H - нормальный вывод, 0FFH - инверсионный вывод)
     sta 0F402H                      ;0F852H 
     mvi A, 0C3H                     ;0F855H Код команды безусловного перехода JMP
     sta DispSymC_JMP_ADDR           ;0F857H 
@@ -392,7 +403,7 @@ Handle_Loop:
     cpi 7FH                         ;0F8E9H 7FH -> Спец. символ - инверсия вывода
     jz Handle_Inverse               ;0F8EBH 
     cpi 18H                         ;0F8EEH 18H -> Спец. символ - вправо
-    jz 0F908H                       ;0F8F0H 
+    jz Handle_DispSymA              ;0F8F0H 
     cpi 08H                         ;0F8F3H 08H -> Спец. символ - влево 
     jnz 0F907H                      ;0F8F5H 
     mvi A, 0F0H                     ;0F8F8H 
@@ -405,9 +416,10 @@ Handle_Inverse:
     call DispSymA                   ;0F901H 
     jmp Handle_Loop                 ;0F904H 
     stax D                          ;0F907H 
+Handle_DispSymA:
     call DispSymA                   ;0F908H 
-    cpi 0DH                         ;0F90BH 
-    rz                              ;0F90DH 
+    cpi 0DH                         ;0F90BH Проверяем на код клавиши Enter (0DH)
+    rz                              ;0F90DH Если Enter (0DH) нажали, то выходим, иначе продолжаем обработку
     inx D                           ;0F90EH 
     mov A, E                        ;0F90FH 
     cpi 0FFH                        ;0F910H 
@@ -533,19 +545,31 @@ CheckBlockEnd:
     ret                             ;0F9BBH 
 
 GetPosCursor:
-    lhld X_POS_ADDR                 ;0F9BCH Запрос положения курсора (вых H - номер строки Y, L номер позиции X)
+;------------------------------------------
+; Запрос положения курсора
+;  вх:  нет
+;  вых: H  = номер строки  Y (0—18Н)
+;       L  = номер позиции X (0—3FH)
+;------------------------------------------
+    lhld X_POS_ADDR                 ;0F9BCH
     mov A, L                        ;0F9BFH 0F3D4H -> L (X)
     rrc                             ;0F9C0H 0F3D5H -> H (Y)
     rrc                             ;0F9C1H L делим на 4 
-    mov L, A                        ;0F9C2H ---------------
+    mov L, A                        ;0F9C2H 
     ret                             ;0F9C3H 
 
 SetPosCursor:
-    mov A, L                        ;0F9C4H ---------------
+;------------------------------------------
+; Установить положение курсора
+;  вх:  H  = номер строки  Y (0—18Н)
+;       L  = номер позиции X (0—3FH)
+;  вых: нет
+;------------------------------------------
+    mov A, L                        ;0F9C4H
     rlc                             ;0F9C5H L умножаем на 4 
     rlc                             ;0F9C6H L -> 0F3D4H (X)
     mov L, A                        ;0F9C7H H -> 0F3D5H (Y)
-    shld X_POS_ADDR                 ;0F9C8H ---------------
+    shld X_POS_ADDR                 ;0F9C8H 
     ret                             ;0F9CBH 
 
 SaveRamAddr:
@@ -870,7 +894,7 @@ InputKeyA:
     push B                          ;0FBAFH 
     push D                          ;0FBB0H 
     push H                          ;0FBB1H 
-    call InputKeyCodeA              ;0FBB2H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
+    call InputKeyCodeA              ;0FBB2H A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     cpi 0FFH                        ;0FBB5H 
     jnz InputKeyA_WaitStart         ;0FBB7H 
     sta KEY_CODE                    ;0FBBAH Сохраняем код нажатой клавиши
@@ -881,7 +905,7 @@ InputKeyA_WaitLoop:
     dcr E                           ;0FBC0H 
     inr E                           ;0FBC1H 
     cz _BlinkCurret_                ;0FBC2H 
-    call InputKeyCodeA              ;0FBC5H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
+    call InputKeyCodeA              ;0FBC5H A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     inr A                           ;0FBC8H 
     jz InputKeyA_WaitLoop           ;0FBC9H 
     push PSW                        ;0FBCCH 
@@ -896,7 +920,7 @@ InputKeyA_WaitLoop:
     cma                             ;0FBDBH 
     mov M, A                        ;0FBDCH 
     sta 0F402H                      ;0FBDDH 
-    call InputKeyCodeA              ;0FBE0H  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
+    call InputKeyCodeA              ;0FBE0H A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     inr A                           ;0FBE3H 
     jnz 0FBE0H                      ;0FBE4H 
     call _BlinkCurret_              ;0FBE7H 
@@ -908,7 +932,7 @@ InputKeyA_WaitLoop:
     jz 0FC02H                       ;0FBF4H 
     dcr D                           ;0FBF7H 
     jz 0FC02H                       ;0FBF8H 
-    call InputKeyCodeA              ;0FBFBH  A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
+    call InputKeyCodeA              ;0FBFBH A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     cmp E                           ;0FBFEH 
     jz 0FBF7H                       ;0FBFFH 
     call LongPause                  ;0FC02H 
@@ -921,24 +945,25 @@ InputKeyCodeA:
     push B                          ;0FC0DH 
     push D                          ;0FC0EH 
     push H                          ;0FC0FH 
-    lxi H, Ret_Pop_HDB              ;0FC10H  Адрес кода для восстановления регистров (pop H; pop D; pop B; ret)
-    push H                          ;0FC13H  Помещаем адрес в стек, имитируя вызов call, для того чтоб выйти из функции просто по команде RET
-    mvi B, 00H                      ;0FC14H 
-    mvi D, 09H                      ;0FC16H 
-    mvi C, 0FEH                     ;0FC18H 
+    lxi H, Ret_Pop_HDB              ;0FC10H Адрес кода для восстановления регистров (pop H; pop D; pop B; ret)
+    push H                          ;0FC13H Помещаем адрес в стек, имитируя вызов call, для того чтоб выйти из функции просто по команде RET
+    mvi B, 00H                      ;0FC14H Вычислаемый код из матрицы клавиш
+    mvi D, 09H                      ;0FC16H Счетчик цикла опроса линий - 8 раз, от 9 до 1
+    mvi C, 0FEH                     ;0FC18H Опрашаваемая линия, уровень = 0 опрашиваемая линия
 InputKeyCodeA_Loop:
     mov A, C                        ;0FC1AH 
-    sta 0F400H                      ;0FC1BH 
-    rlc                             ;0FC1EH 
+    sta 0F400H                      ;0FC1BH Записываем в порт опрашиваемую линию
+    rlc                             ;0FC1EH Получаем следующую опрашиваемую линию
     mov C, A                        ;0FC1FH 
-    lda 0F401H                      ;0FC20H 
+    lda 0F401H                      ;0FC20H Считываем код клавиши на опрашиваемой линии, уровень 0 на линии = клавиша нажата
     cpi 0FFH                        ;0FC23H 
-    jz 0FC33H                       ;0FC25H 
+    jz InputKeyCodeA_NextRow        ;0FC25H 
     mov E, A                        ;0FC28H 
-    call InputKey_Delay             ;0FC29H 
-    lda 0F401H                      ;0FC2CH 
-    cmp E                           ;0FC2FH 
-    jz 0FC46H                       ;0FC30H 
+    call InputKey_Delay             ;0FC29H Задержка для исключения дребезга
+    lda 0F401H                      ;0FC2CH Считываем код клавиши на опрашиваемой линии, уровень 0 на линии = клавиша нажата
+    cmp E                           ;0FC2FH Проверяем что код нажатой клавиши не изменился
+    jz InputKeyCodeA_Calc           ;0FC30H Клавиша нажата, переходми к вычислению колонки клавиши в матрице клавиатуры
+InputKeyCodeA_NextRow:
     mov A, B                        ;0FC33H 
     adi 08H                         ;0FC34H 
     mov B, A                        ;0FC36H 
@@ -950,20 +975,22 @@ InputKeyCodeA_Loop:
     rz                              ;0FC42H 
     inr A                           ;0FC43H =0FFH (не нажата)
     ret                             ;0FC44H 
+InputKeyCodeA_NextCol:
     inr B                           ;0FC45H 
+InputKeyCodeA_Calc:
     rar                             ;0FC46H 
-    jc 0FC45H                       ;0FC47H 
-    mov A, B                        ;0FC4AH 
+    jc InputKeyCodeA_NextCol        ;0FC47H 0=признак нажатой клавиши, цикл пока не найдем 0
+    mov A, B                        ;0FC4AH Запоминаем вычисленный код клавиши
     ani 3FH                         ;0FC4BH 
-    cpi 10H                         ;0FC4DH 
+    cpi 10H                         ;0FC4DH Проверяем не явлается ли клавиша управляющей, код меньше 10H
     jc GetKeyCodeMap                ;0FC4FH 
-    cpi 3FH                         ;0FC52H 
+    cpi 3FH                         ;0FC52H Сравниваем с кодом клавиши ЗБ (Del)
     mov B, A                        ;0FC54H 
     mvi A, 20H                      ;0FC55H 
-    rz                              ;0FC57H 
-    lda 0F402H                      ;0FC58H 
+    rz                              ;0FC57H Если была нажата ЗБ, возвращаем код пробела
+    lda 0F402H                      ;0FC58H Читаем из порта C, маски для кнопок: [РУС/ЛАТ] = 0x80, [УС] = 0x40, [СС] = 0x20
     mov C, A                        ;0FC5BH 
-    ani 40H                         ;0FC5CH 
+    ani 40H                         ;0FC5CH Проверяем на нажатие [УС] = 0x40
     jnz 0FC65H                      ;0FC5EH 
     mov A, B                        ;0FC61H 
     ani 1FH                         ;0FC62H 
@@ -972,7 +999,7 @@ InputKeyCodeA_Loop:
     ana A                           ;0FC68H 
     jnz 0FCA6H                      ;0FC69H 
     mov A, C                        ;0FC6CH 
-    ani 20H                         ;0FC6DH 
+    ani 20H                         ;0FC6DH Проверяем на нажатие [СС] = 0x20
     mov A, B                        ;0FC6FH 
     jz 0FC80H                       ;0FC70H 
     cpi 1CH                         ;0FC73H 
@@ -996,22 +1023,22 @@ GetKeyCodeMap:
     ret                             ;0FC95H 
 
 KeyCodeMap:
-    DB    12                        ;0FC96H 
-    DB    31                        ;0FC97H 
-    DB    27                        ;0FC98H 
-    DB    0                         ;0FC99H 
-    DB    1                         ;0FC9AH 
-    DB    2                         ;0FC9BH 
-    DB    3                         ;0FC9CH 
-    DB    4                         ;0FC9DH 
-    DB    9                         ;0FC9EH 
-    DB    10                        ;0FC9FH 
-    DB    13                        ;0FCA0H 
-    DB    127                       ;0FCA1H 
-    DB    8                         ;0FCA2H 
-    DB    25                        ;0FCA3H 
-    DB    24                        ;0FCA4H 
-    DB    26                        ;0FCA5H 
+    DB    12                        ;0FC96H Код клавиши \ (Home)
+    DB    31                        ;0FC97H Код клавиши СТР (Очистить экран)
+    DB    27                        ;0FC98H Код клавиши АР2 (Esc)
+    DB    0                         ;0FC99H Код клавиши F1
+    DB    1                         ;0FC9AH Код клавиши F2
+    DB    2                         ;0FC9BH Код клавиши F3
+    DB    3                         ;0FC9CH Код клавиши F4
+    DB    4                         ;0FC9DH Код клавиши F5
+    DB    9                         ;0FC9EH Код клавиши TAB
+    DB    10                        ;0FC9FH Код клавиши ПС
+    DB    13                        ;0FCA0H Код клавиши ВК
+    DB    127                       ;0FCA1H Код клавиши ЗБ
+    DB    8                         ;0FCA2H Код клавиши ←
+    DB    25                        ;0FCA3H Код клавиши ↑
+    DB    24                        ;0FCA4H Код клавиши →
+    DB    26                        ;0FCA5H Код клавиши ↓
     mov A, C                        ;0FCA6H 
     ani 20H                         ;0FCA7H 
     mov A, B                        ;0FCA9H 
@@ -1049,12 +1076,12 @@ DispSymC_0:
     push PSW                        ;0FCD3H 
     mov A, C                        ;0FCD4H 
     cpi 7FH                         ;0FCD5H ----------------------------------------------------------
-    jnz DispSymC_1                  ;0FCD7H При выводе символа 7F переключаем признак инверсии вывода
+    jnz DispSymC_Not_7FH            ;0FCD7H При выводе символа 7F переключаем признак инверсии вывода
     lda INVERSE_DISP_ADDR           ;0FCDAH Загружаем признак инверсии вывода
     cma                             ;0FCDDH инвертируем (переключаем)
     sta INVERSE_DISP_ADDR           ;0FCDEH Сохраняем признак инверсии вывода
     jmp DispSymC_Ret                ;0FCE1H ----------------------------------------------------------
-DispSymC_1:
+DispSymC_Not_7FH:
     mvi H, 20H                      ;0FCE4H ----------------------------------------------------------
     sub H                           ;0FCE6H Проверяем, что код символа меньше пробела (такие не выводим)
     jc DispSymC_Hidden              ;0FCE7H ----------------------------------------------------------
