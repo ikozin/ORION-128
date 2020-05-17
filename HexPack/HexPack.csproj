@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{03C79F2F-5A46-4160-9DD8-4D4D654C119E}</ProjectGuid>
+    <ProjectGuid>{EAA6A9BA-8FEB-4540-80D9-96F58FD9D1BB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>UnpackCodepage</RootNamespace>
-    <AssemblyName>UnpackCodepage</AssemblyName>
+    <RootNamespace>HexPack</RootNamespace>
+    <AssemblyName>HexPack</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,36 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M1|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug - M1\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M2|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug - M2\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug - M31\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ЮТ-88 Программатор ПЗУ|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -91,7 +61,4 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\bin\" /y</PostBuildEvent>
-  </PropertyGroup>
 </Project>

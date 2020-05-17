@@ -1,0 +1,10 @@
+﻿include "8085.inc"
+
+MonitorF				EQU 0F800H
+MonitorF_GetKeyCode		EQU 0F803H
+MonitorF_LoadByteTape	EQU 0F806H
+MonitorF_PrintChar		EQU 0F809H
+MonitorF_SaveByteTape	EQU 0F80CH
+MonitorF_GetKeyState	EQU 0F812H
+MonitorF_PrintHex		EQU 0F815H
+MonitorF_PrintStr		EQU 0F818H
