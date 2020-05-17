@@ -1,4 +1,8 @@
-﻿0108H:;Begin
+﻿0F8H:PortRomData
+0F9H:PortRomAddrL
+0FAH:PortRomAddrH
+0FBH:PortRomCtrl
+0108H:;Begin
 0148H:;Start_Ram
 0169H:ReadRom_Next
 018CH:;Start_Rom

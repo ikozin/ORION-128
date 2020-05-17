@@ -1,5 +1,10 @@
 ﻿include "8085.inc"
 
+PortRomData				EQU 0F8H
+PortRomAddrL			EQU 0F9H
+PortRomAddrH			EQU 0FAH
+PortRomCtrl				EQU 0FBH
+
 MonitorF				EQU 0F800H
 MonitorF_GetKeyCode		EQU 0F803H
 MonitorF_LoadByteTape	EQU 0F806H

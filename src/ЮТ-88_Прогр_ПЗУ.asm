@@ -1,5 +1,10 @@
 include "8085.inc"
 
+PortRomData				EQU 0F8H
+PortRomAddrL			EQU 0F9H
+PortRomAddrH			EQU 0FAH
+PortRomCtrl				EQU 0FBH
+
 MonitorF				EQU 0F800H
 MonitorF_GetKeyCode		EQU 0F803H
 MonitorF_LoadByteTape	EQU 0F806H
@@ -11,10 +16,10 @@ MonitorF_PrintStr		EQU 0F818H
 
 ORG 0100H
 
-    mvi A, 90H                      ;0100H 
-    out 0FBH                        ;0102H 
-    mvi A, 0C0H                     ;0104H 
-    out 0FAH                        ;0106H 
+    mvi A, 90H                      ;0100H b10010000
+    out PortRomCtrl                 ;0102H 
+    mvi A, 0C0H                     ;0104H b11000000
+    out PortRomAddrH                ;0106H 
 
 Begin:
     lxi H, Msg_Welcom               ;0108H 
@@ -43,8 +48,8 @@ Begin:
     jmp Begin                       ;0145H 
 
 Start_Ram:
-    mvi A, 90H                      ;0148H 
-    out 0FBH                        ;014AH 
+    mvi A, 90H                      ;0148H b10010000
+    out PortRomCtrl                 ;014AH 
     lxi H, Msg_Addr_RAM             ;014CH 
     call PrintString                ;014FH 
     call GetKey                     ;0152H 
@@ -87,10 +92,10 @@ Start_Rom:
     dcr A                           ;019EH 
     jnz Start_Rom                   ;019FH 
     push H                          ;01A2H 
-    mvi A, 80H                      ;01A3H 
-    out 0FBH                        ;01A5H 
-    mvi A, 0DH                      ;01A7H 
-    out 0FBH                        ;01A9H 
+    mvi A, 80H                      ;01A3H b10000000
+    out PortRomCtrl                 ;01A5H 
+    mvi A, 0DH                      ;01A7H b00001101
+    out PortRomCtrl                 ;01A9H 
     lxi H, Msg_TurnOn_26V           ;01ABH 
     call PrintString                ;01AEH 
     call MonitorF_GetKeyCode        ;01B1H 
@@ -100,24 +105,24 @@ Start_Rom:
     pop H                           ;01BDH 
 WriteLoop:
     mov A, M                        ;01BEH 
-    out 0F8H                        ;01BFH 
+    out PortRomData                 ;01BFH 
     mov A, E                        ;01C1H 
-    out 0F9H                        ;01C2H 
+    out PortRomAddrL                ;01C2H 
     mov A, D                        ;01C4H 
     xri 40H                         ;01C5H 
-    out 0FAH                        ;01C7H 
-    mvi A, 0FH                      ;01C9H 
-    out 0FBH                        ;01CBH 
+    out PortRomAddrH                ;01C7H 
+    mvi A, 0FH                      ;01C9H b00001111
+    out PortRomCtrl                 ;01CBH 
     call WriteDelay                 ;01CDH 
-    mvi A, 0EH                      ;01D0H 
-    out 0FBH                        ;01D2H 
-    mvi A, 90H                      ;01D4H 
-    out 0FBH                        ;01D6H 
+    mvi A, 0EH                      ;01D0H b00001110
+    out PortRomCtrl                 ;01D2H 
+    mvi A, 90H                      ;01D4H b10010000
+    out PortRomCtrl                 ;01D6H 
     mov A, E                        ;01D8H 
-    out 0F9H                        ;01D9H 
+    out PortRomAddrL                ;01D9H 
     mov A, D                        ;01DBH 
-    out 0FAH                        ;01DCH 
-    in 0F8H                         ;01DEH 
+    out PortRomAddrH                ;01DCH 
+    in PortRomData                  ;01DEH 
     cmp M                           ;01E0H 
     jz WriteLoop_NoError            ;01E1H 
     push B                          ;01E4H 
@@ -125,19 +130,19 @@ WriteLoop:
     call MonitorF_PrintChar         ;01E7H 
     call PrintNewLine               ;01EAH 
     pop B                           ;01EDH 
-    mvi A, 80H                      ;01EEH 
-    out 0FBH                        ;01F0H 
-    mvi A, 0DH                      ;01F2H 
-    out 0FBH                        ;01F4H 
+    mvi A, 80H                      ;01EEH b10000000
+    out PortRomCtrl                 ;01F0H 
+    mvi A, 0DH                      ;01F2H b00001101
+    out PortRomCtrl                 ;01F4H 
     jmp WriteLoop                   ;01F6H 
 WriteLoop_NoError:
     inx H                           ;01F9H 
     inx D                           ;01FAH 
     dcx B                           ;01FBH 
-    mvi A, 80H                      ;01FCH 
-    out 0FBH                        ;01FEH 
-    mvi A, 0DH                      ;0200H 
-    out 0FBH                        ;0202H 
+    mvi A, 80H                      ;01FCH b10000000
+    out PortRomCtrl                 ;01FEH 
+    mvi A, 0DH                      ;0200H b00001101
+    out PortRomCtrl                 ;0202H 
     mov A, B                        ;0204H 
     ora C                           ;0205H 
     jnz WriteLoop                   ;0206H 
@@ -148,13 +153,13 @@ WriteLoop_NoError:
 
 ReadByteRom:
     mov A, E                        ;0215H 
-    out 0F9H                        ;0216H 
+    out PortRomAddrL                ;0216H 
     mov A, D                        ;0218H 
-    out 0FAH                        ;0219H 
-    in 0F8H                         ;021BH 
+    out PortRomAddrH                ;0219H 
+    in PortRomData                  ;021BH 
     push PSW                        ;021DH 
     mvi A, 0DH                      ;021EH 
-    out 0FBH                        ;0220H 
+    out PortRomCtrl                 ;0220H 
     pop psw                         ;0222H 
     ret                             ;0223H 
 
