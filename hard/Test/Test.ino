@@ -4,7 +4,8 @@
 //#define LA7
 //#define LE1
 //#define LI1
-#define TM2
+//#define TM2
+#define IR13
 
 #define P2         (2)
 #define P3         (3)
@@ -14,10 +15,14 @@
 #define P7         (7)
 #define P8         (8)
 #define P9         (9)
+#define P10        (10)
+#define P11        (11)
+#define P12        (12)
+#define P13        (13)
 
 void setup()
 {
-  setup_Tm2();
+  setup_Ir13();
 
   // Serial
   Serial.begin(9600);
@@ -26,5 +31,5 @@ void setup()
 
 void loop()
 {
-  loop_Tm2();
+  loop_Ir13();
 }
