@@ -1,27 +1,27 @@
 include "8085.inc"
 
-DisplayModePort	    EQU 0F800H
-DisplayPagePort	    EQU 0F900H
-DisplayViewPort	    EQU 0F900H
+DisplayModePort	    EQU 0F800H	    ; Порт видеорежима
+DisplayPagePort	    EQU 0F900H	    ; Порт банков ОЗУ
+DisplayViewPort	    EQU 0FA00H	    ; Порт экранов
 
 Reserv_JMP_ADDR     EQU 0F3C9H      ; XX   =   0C3H (код команды JMP)
-Reserv_ADDR	        EQU 0F3CAH      ; XXXX
+Reserv_ADDR	        EQU 0F3CAH      ; XXXX = Вектор п/п F821h (NotImplemented_Entry)
 DispSymC_JMP_ADDR   EQU 0F3CCH      ; XX   =   0C3H (код команды JMP)
-DispSymC_ADDR       EQU 0F3CDH      ; XXXX
+DispSymC_ADDR       EQU 0F3CDH      ; XXXX = Вектор п/п F809h (DispSymC_JMP_ADDR)
 SCREEN_ADDR_HI		EQU 0F3CFH		; XX   =   0C0H (старший байт начала видеопамяти 0C000H)
-SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H (старший байт размера видеопамяти 3000H = 12К)
-CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H
-INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H
-X_POS_ADDR			EQU 0F3D4H		; XX
-Y_POS_ADDR			EQU 0F3D5H		; XX
-RESTART_ADDR        EQU 0F3D8H		; XXXX
-PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
-PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
-LOADBYTE_ADDR	    EQU 0F3DCH		; XX
+SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H, Ширина экрана (старший байт размера видеопамяти 3000H = 12К)
+CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H, Адрес знакогенератора
+INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H, Признак ввода (00-прямой, FF-инверсный)
+X_POS_ADDR			EQU 0F3D4H		; XX   = Позиция курсора
+Y_POS_ADDR			EQU 0F3D5H		; XX   = Позиция курсора
+RESTART_ADDR        EQU 0F3D8H		; XXXX = Адрес запуска
+PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (константа записи на магнитофон - 1200 бод)
+PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (константа чтения c магнитофонa)
+LOADBYTE_ADDR	    EQU 0F3DCH		; XXXX = Переменная п/п LoadByteA
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
-KEY_LED             EQU 0F3E5H      ; XX
-KEY_CODE            EQU 0F3E6H      ; XX
-Cmd_Param           EQU 0F3EEH      ; XXXX
+KEY_LED             EQU 0F3E5H      ; XX   = 00H - LAT, 0FFH - РУС
+KEY_CODE            EQU 0F3E6H      ; XX   = Автоповтор клавиатуры
+Cmd_Param           EQU 0F3EEH      ; XXXX = Сохранение адреса (CMDL)
 Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
 Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
 Run_0BFFDH			EQU 0BFFDH
@@ -935,7 +935,7 @@ InputKeyA_WaitLoop:
     call InputKeyCodeA              ;0FBFBH A =0FFH (не нажата) =0FEH (РУС/ЛАТ) =код клавиши
     cmp E                           ;0FBFEH 
     jz 0FBF7H                       ;0FBFFH 
-    call LongPause                  ;0FC02H 
+    call Sound                      ;0FC02H 
     mov M, E                        ;0FC05H 
     call _BlinkCurret_              ;0FC06H 
     mov A, E                        ;0FC09H 
@@ -1212,7 +1212,7 @@ DispSymC_Ret:
     inr A                           ;0FDB1H 
     rz                              ;0FDB2H 
     cpi 0EFH                        ;0FDB3H 
-    jz LongPause                    ;0FDB5H 
+    jz Sound                        ;0FDB5H 
     adi 0BH                         ;0FDB8H 
     jz 0FDC0H                       ;0FDBAH 
     inr A                           ;0FDBDH 
@@ -1291,34 +1291,28 @@ ClearScreen_Loop:
     pop psw                         ;0FE19H 
     ret                             ;0FE1AH 
 
-LongPause:
+Sound:
     lxi B, 4014H                    ;0FE1BH 
-LongPause_Loop:
+Sound_Loop:
     mov A, B                        ;0FE1EH 
-LongPause_EI:
+Sound_EI:
     ei                              ;0FE1FH 
     dcr A                           ;0FE20H 
-    jnz LongPause_EI                ;0FE21H 
+    jnz Sound_EI                    ;0FE21H 
     mov A, B                        ;0FE24H 
-LongPause_DI:
+Sound_DI:
     di                              ;0FE25H 
     dcr A                           ;0FE26H 
-    jnz LongPause_DI                ;0FE27H 
+    jnz Sound_DI                    ;0FE27H 
     dcr C                           ;0FE2AH 
-    jnz LongPause_Loop              ;0FE2BH 
+    jnz Sound_Loop                  ;0FE2BH 
     mov B, C                        ;0FE2EH 
     ret                             ;0FE2FH 
 
 Label_Version:
-    DB    1FH                       ;0FE30H 1FH -> Спец. символ для очистки экрана
-    DB    ' orion-128.2', 0         ;0FE31H 
+    DB    31,' orion-128.2', 0      ;0FE30H 31 (1FH) -> Спец. символ для очистки экрана
 Label_Prompt:
-    DB    0DH                       ;0FE3EH 0DH (13) -> Спец. символ в начало строки
-    DB    0AH                       ;0FE3FH 0AH (10) -> Спец. символ новая строка
-    DB    0AH                       ;0FE40H 0AH (10) -> Спец. символ новая строка
-    DB    ' =>'                     ;0FE41H 
-    DB    07H                       ;0FE44H 
-    DB    0                         ;0FE45H 
+    DB    13,10,10,' =>',7, 0       ;0FE3EH 
 Unknown_Data:
     DB    53H                       ;0FE46H 
     DB    56H                       ;0FE47H 
