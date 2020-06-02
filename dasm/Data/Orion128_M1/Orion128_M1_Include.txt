@@ -1,27 +1,27 @@
 ﻿include "8085.inc"
 
-DisplayModePort	    EQU 0F800H
-DisplayPagePort	    EQU 0F900H
-DisplayViewPort	    EQU 0F900H
+DisplayModePort	    EQU 0F800H	    ; Порт видеорежима
+DisplayPagePort	    EQU 0F900H	    ; Порт банков ОЗУ
+DisplayViewPort	    EQU 0FA00H	    ; Порт экранов
 
 Reserv_JMP_ADDR     EQU 0F3C9H      ; XX   =   0C3H (код команды JMP)
-Reserv_ADDR	        EQU 0F3CAH      ; XXXX
+Reserv_ADDR	        EQU 0F3CAH      ; XXXX = Вектор п/п F821h (NotImplemented_Entry)
 DispSymC_JMP_ADDR   EQU 0F3CCH      ; XX   =   0C3H (код команды JMP)
-DispSymC_ADDR       EQU 0F3CDH      ; XXXX
+DispSymC_ADDR       EQU 0F3CDH      ; XXXX = Вектор п/п F809h (DispSymC_JMP_ADDR)
 SCREEN_ADDR_HI		EQU 0F3CFH		; XX   =   0C0H (старший байт начала видеопамяти 0C000H)
-SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H (старший байт размера видеопамяти 3000H = 12К)
-CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H
-INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H
-X_POS_ADDR			EQU 0F3D4H		; XX
-Y_POS_ADDR			EQU 0F3D5H		; XX
-RESTART_ADDR        EQU 0F3D8H		; XXXX
-PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (запись - 1200 бод = 40H)
-PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (чтение - для стандартной скорости = 60H)
-LOADBYTE_ADDR	    EQU 0F3DCH		; XX
+SCREEN_SIZE_HI		EQU 0F3D0H		; XX   =    30H, Ширина экрана (старший байт размера видеопамяти 3000H = 12К)
+CODEPAGE_ADDR		EQU 0F3D1H		; XXXX = 0F000H, Адрес знакогенератора
+INVERSE_DISP_ADDR	EQU 0F3D3H		; XX   =    00H, Признак ввода (00-прямой, FF-инверсный)
+X_POS_ADDR			EQU 0F3D4H		; XX   = Позиция курсора
+Y_POS_ADDR			EQU 0F3D5H		; XX   = Позиция курсора
+RESTART_ADDR        EQU 0F3D8H		; XXXX = Адрес запуска
+PAUSE_SAVE_ADDR		EQU 0F3DAH		; XX   =    40H (константа записи на магнитофон - 1200 бод)
+PAUSE_LOAD_ADDR		EQU 0F3DBH		; XX   =    60H (константа чтения c магнитофонa)
+LOADBYTE_ADDR	    EQU 0F3DCH		; XXXX = Переменная п/п LoadByteA
 USER_MAX_RAM_ADDR   EQU 0F3E3H      ; XXXX = 0BFFFH
-KEY_LED             EQU 0F3E5H      ; XX
-KEY_CODE            EQU 0F3E6H      ; XX
-Cmd_Param           EQU 0F3EEH      ; XXXX
+KEY_LED             EQU 0F3E5H      ; XX   = 00H - LAT, 0FFH - РУС
+KEY_CODE            EQU 0F3E6H      ; XX   = Автоповтор клавиатуры
+Cmd_Param           EQU 0F3EEH      ; XXXX = Сохранение адреса (CMDL)
 Cmd_Buffer_Start    EQU 0F3F0H		; Буфер для ввода команды = 16 символов
 Cmd_Buffer          EQU 0F3F1H		; Буфер для ввода команды = 15 символов
 Run_0BFFDH			EQU 0BFFDH
