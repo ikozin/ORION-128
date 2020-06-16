@@ -17,9 +17,9 @@
 ; Программа записывающая предыдущую программу с адреса 0AFF6H по 0AFFFH и записывает в ячейки 0F3CAH и 0F3CBH адрес перехода 0AFF6H
 include "8085.inc"
 ORG 0H
-M1:
     lxi B, M3                       ;
-    lxi B, 0AFF6H                   ;
+    lxi D, 0AFF6H                   ;
+M1:
     ldax B                          ;
     ana A                           ;
     jz M2                           ;
@@ -30,10 +30,17 @@ M1:
 M2:
     lxi H, 0AFF6H                   ;
     shld 0F3CAH                     ;
-	jmp 0F958H
+
+	;jmp 0F958H; Hot Reset только для M1
+
+	lxi H,M4 
+	call 0F821H
+M0:	jmp M0
+
 M3:
     file 'DisplayText.rom'
     DB    00H                      ;
+M4: DB    1FH, 'HELLO', 0
 
 ;    DB    7EH                      ;
 ;    DB    A7H                      ;
