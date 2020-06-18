@@ -41,14 +41,17 @@ namespace bin2bru
                 return;
             }
 
+            ushort size = 0;
+            byte[] data;
             using (var reader = File.OpenRead(path2bin))
+            {
+                size = (ushort)reader.Length;
+                data = new byte[size];
+                reader.Read(data, 0, data.Length);
+            }
             using (var stream = File.Create(path2bru))
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                ushort size = (ushort)reader.Length;
-                var data = new byte[size];
-                reader.Read(data, 0, data.Length);
-
                 if (size % 0xFF != 0)
                 {
                     size = (ushort)((size & 0xFFF0) + 0x10);
