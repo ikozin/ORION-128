@@ -132,9 +132,12 @@ DrawSpriteLoopRow:
 	ret
 
 WaitAnyKey:
+	lxi	B, 0000H
+WaitAnyKeyLoop:
 	call ROM_GetKeyStateA
+	inx	B
 	ora  A
-	jz   WaitAnyKey
+	jz   WaitAnyKeyLoop
 	ret
 
 
@@ -144,6 +147,10 @@ PressAnyKayMessage:
 
 GameOverMessage:
 	DB	'GAME OVER', 0
+
+DisplayStack:
+	DW	0
+
 
 Starship1:
 
