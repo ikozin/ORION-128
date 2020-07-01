@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexDump", "hexdump\HexDump.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexPack", "HexPack\HexPack.csproj", "{EAA6A9BA-8FEB-4540-80D9-96F58FD9D1BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bin2bru", "bin2bru\bin2bru.csproj", "{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brulist", "brulist\brulist.csproj", "{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - M1|Any CPU = Debug - M1|Any CPU
@@ -69,6 +73,30 @@ Global
 		{EAA6A9BA-8FEB-4540-80D9-96F58FD9D1BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAA6A9BA-8FEB-4540-80D9-96F58FD9D1BB}.ЮТ-88 Программатор ПЗУ|Any CPU.ActiveCfg = ЮТ-88 Программатор ПЗУ|Any CPU
 		{EAA6A9BA-8FEB-4540-80D9-96F58FD9D1BB}.ЮТ-88 Программатор ПЗУ|Any CPU.Build.0 = ЮТ-88 Программатор ПЗУ|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M1|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M1|Any CPU.Build.0 = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M2|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M2|Any CPU.Build.0 = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M31|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug - M31|Any CPU.Build.0 = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.ЮТ-88 Программатор ПЗУ|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF20EC9-3C21-4188-9E43-385CEA28CD2B}.ЮТ-88 Программатор ПЗУ|Any CPU.Build.0 = Release|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M1|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M1|Any CPU.Build.0 = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M2|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M2|Any CPU.Build.0 = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M31|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug - M31|Any CPU.Build.0 = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.ЮТ-88 Программатор ПЗУ|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCFB1E7-BDA5-48E5-94A5-7E5E47DC48F0}.ЮТ-88 Программатор ПЗУ|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
