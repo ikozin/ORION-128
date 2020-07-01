@@ -150,6 +150,13 @@ GameOverMessage:
 
 DisplayStack:
 	DW	0
+	DW	0
+	DW	0
+	DW	0
+	DW	0
+	DW	0
+	DW	0
+	DW	0
 
 
 Starship1:
