@@ -4,9 +4,6 @@
     <StartArguments>
     </StartArguments>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ЮТ-88 Программатор ПЗУ|AnyCPU'">
-    <StartArguments>..\..\..\src\ЮТ-88_Прогр_ПЗУ.txt</StartArguments>
-  </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>

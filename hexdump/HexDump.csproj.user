@@ -16,4 +16,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
     <StartArguments>/A /L ..\..\..\rom\Orion128_M31.rom</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - RamTest|AnyCPU'">
+    <StartArguments>/A /L ..\..\..\rom\Orion128_M1.rom</StartArguments>
+  </PropertyGroup>
 </Project>

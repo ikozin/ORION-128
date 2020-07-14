@@ -3,4 +3,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - RamTest|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M1|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M2|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
 </Project>
