@@ -1,16 +1,27 @@
+;http://www.danbigras.ru/Orion/DspMem/VideoMem.html
+
 include "8085.inc"
 
-MODE0		EQU 0
-MODE1		EQU 1
-MODE2		EQU 2
-MODE3		EQU 3
-MODE4		EQU 4
-MODE5		EQU 5
-MODE6		EQU 6
-MODE7		EQU 7
+PORT_MODE	EQU	0F800H
+PORT_PAGE	EQU	0F900H
+PORT_VIEW	EQU	0FA00H
+
+MODE0		EQU 0	; 2 color
+MODE1		EQU 1	; 2 color
+MODE2		EQU 2	; off
+MODE3		EQU 3	; off
+MODE4		EQU 4	; 4 color
+MODE5		EQU 5	; 4 color
+MODE6		EQU 6	; 8 color
+MODE7		EQU 7	; 8 color
 
 PAGE0		EQU 0
 PAGE1		EQU 1
+
+
+VIEW0		EQU	0	; 0В000Н-0BFFFH
+VIEW1		EQU	1	; 7000Н-7FFFH
+VIEW2		EQU	2	; З000Н-3FFFH
 
 
 ORG 0F800H
@@ -18,45 +29,129 @@ ORG 0F800H
 	jmp  Start
 Start:
 	xra  A
-    sta  0F800H
-    sta  0F900H
-    sta  0FA00H
+    sta  PORT_PAGE
 
     mvi  A, MODE2
-    sta  0F800H
+    sta  PORT_MODE
 
 
 	lxi  B, 0F33H
-	lxi  D, M0
-	jmp  FillScreen
+	lxi  D, M0_V0
+	jmp  FillMemory
 
-M0:
+M0_V0:
     mvi  A, MODE0
-    sta  0F800H
-    lxi  D, M1
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M1_V0
     jmp  Pause
 
-M1:
+M1_V0:
     mvi  A, MODE1
-    sta  0F800H
-    lxi  D, M4
-    jmp  Pause
-M4:
-    mvi  A, MODE4
-    sta  0F800H
-    lxi  D, M5
-    jmp  Pause
-M5:
-    mvi  A, MODE5
-    sta  0F800H
-    lxi  D, Part2
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M0_V1
     jmp  Pause
 
-Part2:	
+M0_V1:
+    mvi  A, MODE0
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M1_V1
+    jmp  Pause
+
+M1_V1:
+    mvi  A, MODE1
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M0_V2
+    jmp  Pause
+
+M0_V2:
+    mvi  A, MODE0
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M1_V2
+    jmp  Pause
+
+M1_V2:
+    mvi  A, MODE1
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M4_V0
+    jmp  Pause
+
+M4_V0:
+    mvi  A, MODE4
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M5_V0
+    jmp  Pause
+M5_V0:
+    mvi  A, MODE5
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M4_V1
+    jmp  Pause
+
+M4_V1:
+    mvi  A, MODE4
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M5_V1
+    jmp  Pause
+M5_V1:
+    mvi  A, MODE5
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M4_V2
+    jmp  Pause
+
+M4_V2:
+    mvi  A, MODE4
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M5_V2
+    jmp  Pause
+
+M5_V2:
+    mvi  A, MODE5
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M3
+    jmp  Pause
+
+M3:	
     mvi  A, MODE3
-    sta  0F800H
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
 	
-	lxi  H, 0C000H
+	lxi  H, 0H
 	mvi  A, 1
     sta  0F900H
 r0:
@@ -88,7 +183,7 @@ r4:
     cpi  0F0H
     jnz  r0
 
-	lxi  H, 0C000H
+	lxi  H, 0H
 	xra  A
     sta  0F900H
 r5:
@@ -110,22 +205,83 @@ r7:
 
 M_0:
     mvi  A, MODE0
-    sta  0F800H
+    sta  PORT_MODE
     lxi  D, M_1
     jmp  Pause
 M_1:
     mvi  A, MODE1
-    sta  0F800H
+    sta  PORT_MODE
     lxi  D, M_4
     jmp  Pause
 M_4:
     mvi  A, MODE4
-    sta  0F800H
+    sta  PORT_MODE
     lxi  D, M_5
     jmp  Pause
 M_5:
     mvi  A, MODE5
-    sta  0F800H
+    sta  PORT_MODE
+    lxi  D, M6_Init
+    jmp  Pause
+
+M6_Init:
+    mvi  A, MODE2
+    sta  PORT_MODE
+
+	lxi  D, M6_V0
+	jmp  FillScreenRow
+
+M6_V0:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M6_V1
+    jmp  Pause
+
+M6_V1:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M6_V2
+    jmp  Pause
+
+M6_V2:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M7_V0
+    jmp  Pause
+
+M7_V0:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M7_V1
+    jmp  Pause
+
+M7_V1:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M7_V2
+    jmp  Pause
+
+M7_V2:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
     lxi  D, Start
     jmp  Pause
 
@@ -135,23 +291,23 @@ M_5:
 ; Вход C = значение для страницы 1
 ; Вход DE = адрес возврата
 ;------------------------------------------ 
-FillScreen:
-	lxi  H, 0C000H
-FillScreen_0_Loop:
+FillMemory:
+	lxi  H, 0H
+FillMemory_0_Loop:
 	mov  M, B
     inx  H
     mov  A, H
     cpi  0F0H
-    jnz  FillScreen_0_Loop
+    jnz  FillMemory_0_Loop
 	mvi  A, 1
     sta  0F900H
     dcx  H			;HL = 0EFFFH
-FillScreen_1_Loop:
+FillMemory_1_Loop:
 	mov  M, C
     dcx  H
     mov  A, H
-    cpi  0BFH
-    jnz  FillScreen_1_Loop
+    cpi  0FFH
+    jnz  FillMemory_1_Loop
 	xra  A
     sta  0F900H
     xchg
@@ -170,6 +326,31 @@ FillScreenBlock_Loop:
     inx  H
     dcr  A
     jnz  FillScreenBlock_Loop
+    xchg
+    pchl
+
+
+;------------------------------------------
+;------------------------------------------
+FillScreenRow:
+	lxi  H, 0H
+FillScreenRow_0_Loop:
+	mvi  M, 0H
+    inx  H
+    mov  A, H
+    cpi  0F0H
+    jnz  FillScreenRow_0_Loop
+	mvi  A, 1
+    sta  0F900H
+    dcx  H			;HL = 0EFFFH
+FillScreenRow_1_Loop:
+	mov  M, L
+    dcx  H
+    mov  A, H
+    cpi  0FFH
+    jnz  FillScreenRow_1_Loop
+	xra  A
+    sta  0F900H
     xchg
     pchl
 	
