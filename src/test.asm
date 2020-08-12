@@ -221,62 +221,123 @@ M_4:
 M_5:
     mvi  A, MODE5
     sta  PORT_MODE
-    lxi  D, M6_Init
+    lxi  D, M6_Init_00
     jmp  Pause
 
-M6_Init:
+M6_Init_00:
     mvi  A, MODE2
     sta  PORT_MODE
 
-	lxi  D, M6_V0
-	jmp  FillScreenRow
+	lxi  D, M6_V0_00
+	jmp  FillScreenRow00
 
-M6_V0:
+M6_V0_00:
     mvi  A, MODE6
     sta  PORT_MODE
     mvi  A, VIEW0
     sta  PORT_VIEW
 
-    lxi  D, M6_V1
+    lxi  D, M6_V1_00
     jmp  Pause
 
-M6_V1:
+M6_V1_00:
     mvi  A, MODE6
     sta  PORT_MODE
     mvi  A, VIEW1
     sta  PORT_VIEW
 
-    lxi  D, M6_V2
+    lxi  D, M6_V2_00
     jmp  Pause
 
-M6_V2:
+M6_V2_00:
     mvi  A, MODE6
     sta  PORT_MODE
     mvi  A, VIEW2
     sta  PORT_VIEW
 
-    lxi  D, M7_V0
+    lxi  D, M7_V0_00
     jmp  Pause
 
-M7_V0:
+M7_V0_00:
     mvi  A, MODE7
     sta  PORT_MODE
     mvi  A, VIEW0
     sta  PORT_VIEW
 
-    lxi  D, M7_V1
+    lxi  D, M7_V1_00
     jmp  Pause
 
-M7_V1:
+M7_V1_00:
     mvi  A, MODE7
     sta  PORT_MODE
     mvi  A, VIEW1
     sta  PORT_VIEW
 
-    lxi  D, M7_V2
+    lxi  D, M7_V2_00
     jmp  Pause
 
-M7_V2:
+M7_V2_00:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M6_Init_FF
+    jmp  Pause
+
+M6_Init_FF:
+    mvi  A, MODE2
+    sta  PORT_MODE
+
+	lxi  D, M6_V0_FF
+	jmp  FillScreenRow00
+
+M6_V0_FF:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M6_V1_FF
+    jmp  Pause
+
+M6_V1_FF:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M6_V2_FF
+    jmp  Pause
+
+M6_V2_FF:
+    mvi  A, MODE6
+    sta  PORT_MODE
+    mvi  A, VIEW2
+    sta  PORT_VIEW
+
+    lxi  D, M7_V0_FF
+    jmp  Pause
+
+M7_V0_FF:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW0
+    sta  PORT_VIEW
+
+    lxi  D, M7_V1_FF
+    jmp  Pause
+
+M7_V1_FF:
+    mvi  A, MODE7
+    sta  PORT_MODE
+    mvi  A, VIEW1
+    sta  PORT_VIEW
+
+    lxi  D, M7_V2_FF
+    jmp  Pause
+
+M7_V2_FF:
     mvi  A, MODE7
     sta  PORT_MODE
     mvi  A, VIEW2
@@ -331,28 +392,50 @@ FillScreenBlock_Loop:
 
 
 ;------------------------------------------
-;------------------------------------------
-FillScreenRow:
+FillScreenRow00:
 	lxi  H, 0H
-FillScreenRow_0_Loop:
+FillScreenRow00_0_Loop:
 	mvi  M, 0H
     inx  H
     mov  A, H
     cpi  0F0H
-    jnz  FillScreenRow_0_Loop
+    jnz  FillScreenRow00_0_Loop
 	mvi  A, 1
     sta  0F900H
     dcx  H			;HL = 0EFFFH
-FillScreenRow_1_Loop:
+FillScreenRow00_1_Loop:
 	mov  M, L
     dcx  H
     mov  A, H
     cpi  0FFH
-    jnz  FillScreenRow_1_Loop
+    jnz  FillScreenRow00_1_Loop
 	xra  A
     sta  0F900H
     xchg
     pchl
+;------------------------------------------
+FillScreenRowFF:
+	lxi  H, 0H
+FillScreenRowFF_0_Loop:
+	mvi  M, 0FFH
+    inx  H
+    mov  A, H
+    cpi  0F0H
+    jnz  FillScreenRowFF_0_Loop
+	mvi  A, 1
+    sta  0F900H
+    dcx  H			;HL = 0EFFFH
+FillScreenRowFF_1_Loop:
+	mov  M, L
+    dcx  H
+    mov  A, H
+    cpi  0FFH
+    jnz  FillScreenRowFF_1_Loop
+	xra  A
+    sta  0F900H
+    xchg
+    pchl
+	
 	
 ;------------------------------------------
 ; Вход DE = адрес возврата
