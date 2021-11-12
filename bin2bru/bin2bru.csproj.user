@@ -15,4 +15,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
     <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Test256|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Test512|AnyCPU'">
+    <StartArguments>../../../src/DisplayTextIstall.rom n:D_TEXT</StartArguments>
+  </PropertyGroup>
 </Project>

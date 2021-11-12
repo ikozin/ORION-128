@@ -35,6 +35,48 @@
 ;
 ;    Служебные ячейки
 ; -----------------------------------------------------------------------------------------------------------------------------------
+;| 0F3C0H | XX | StackHead         | Начало стека, расширяется в сторону уменьшения адреса
+;| 0F3C3H | C3 | Beep_Jmp          | 0C3H (код команды JMP) - Beep
+;| 0F3C4H | XX | Beep_Addr_Lo      | LO - адрес Beep
+;| 0F3C5H | XX | Beep_Addr_Hi      | HI - адрес Beep
+;| 0F3C6H | C3 | KBRD_Jmp          | 0C3H (код команды JMP) - KBRD
+;| 0F3C7H | XX | KBRD_Addr_Lo      | LO - адрес KBRD
+;| 0F3C8H | XX | KBRD_Addr_Hi      | HI - адрес KBRD
+;| 0F3C9H | C3 | WCUR_Jmp          | 0C3H (код команды JMP) - WCUR
+;| 0F3CAH | XX | WCUR_Addr_Lo      | LO - адрес WCUR
+;| 0F3CBH | XX | WCUR_Addr_Hi      | HI - адрес WCUR
+;| 0F3CCH | C3 | TV2_Jmp           | 0C3H (код команды JMP) - TV2
+;| 0F3CDH | XX | TV2_Addr_Lo       | LO - адрес TV2
+;| 0F3CEH | XX | TV2_Addr_Hi       | HI - адрес TV2
+;| 0F3CFH | C0 | SCREEN_Addr_Hi    | старший байт начала видеопамяти 0C000H
+;| 0F3D0H | 30 | SCREEN_Size_Hi    | старший байт размера видеопамяти 3000H = 12К
+;| 0F3D1H | 00 | CODEPAGE_Addr_Lo  | LO - адрес CODEPAGE 0F000H 
+;| 0F3D2H | F0 | CODEPAGE_Addr_Hi  | HI - адрес CODEPAGE 0F000H 
+;| 0F3D3H | 00 | INVERSE_DISPLAY   | Признак инверсионного вывода 00H - нормальный вывод, 0FFH - инверсионный вывод
+
+SZ:EQU    0F3D4H ;wysota okna
+ZAPAS:EQU    0F3D5H ; !
+TVAD:EQU    0F3D6H ;adres stolb. kursora
+TVAD1:EQU    0F3D7H ;adres stroki kursora
+MNJMP:EQU    0F3D8H ;adr.wozw.iz ERR-MGG
+TIM50:EQU    0F3DAH ;konstanta zap. MG
+TIM75:EQU    0F3DBH ;konst.~teniq MG
+FLMN:EQU    0F3DCH ;flag inwers.MG
+TB1:EQU    0F3DDH ;s/q~1 (prog.TV)
+AR2:EQU    0F3DEH ; ESC
+TIMES:EQU    0F3DFH ;s/para N1(prog.tV)
+TIMES2:EQU    0F3E1H ;adres TV2 w monit.
+MEMOR:EQU    0F3E3H ;mah adr.ozu
+FFIX:EQU    0F3E5H ;triger "rus/lat"
+SIMV:EQU    0F3E6H ;posl.wwed.simw.KBRD
+CBEEP:EQU    0F3E7H ;konst.zw.signala
+TSU:EQU    0F3E8H
+TSH:EQU    0F3E9H
+TBT:EQU    0F3EAH
+ZAPAS2:EQU    0F3EBH ; !!!
+LOW:EQU    0F3EEH ;q~. I-operanda
+LOW1:EQU    0F3EFH
+
 ;| 0F3C9H | C3 | Reserv_JMP_ADDR   | 0C3H (код команды JMP) - Резерв 
 ;| 0F3CAH | XX | Reserv_ADDR       | LO - адрес
 ;| 0F3CBH | XX | Reserv_ADDR       | HI - адрес
