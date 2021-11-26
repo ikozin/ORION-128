@@ -14,11 +14,11 @@ namespace Dasm
 
             string text;
             #region Разбор параметров командной строки
-            string includePath = null;
-            string fileName = null;
-            Dictionary<string, string> comments = null;
-            Dictionary<string, string> labels = null;
-            Dictionary<string, string> datas = null;
+            string? includePath = null;
+            string? fileName = null;
+            Dictionary<string, string>? comments = null;
+            Dictionary<string, string>? labels = null;
+            Dictionary<string, string>? datas = null;
             for (int i = 1; i < args.Length; i++)
             {
                 string arg = args[i];

@@ -5,7 +5,7 @@ namespace Dasm.Model
 {
     public class OpCodeArray
     {
-        private static readonly List<OpCode> _list = new List<OpCode>();
+        private static readonly List<OpCode?> _list = new List<OpCode?>();
 
         public OpCodeArray(Dictionary<string, string> constList)
         {
@@ -284,12 +284,12 @@ namespace Dasm.Model
 
         }
 
-        public List<OpCode> List { get { return _list; } }
+        public List<OpCode?> List { get { return _list; } }
 
         public string Handle(byte code, Stream stream)
         {
             var item = _list[code];
-            return item.ToString(stream);
+            return item!.ToString(stream);
         }
     }
 }

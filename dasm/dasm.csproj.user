@@ -1,31 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>
-    </StartArguments>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-M2|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ActiveDebugProfile>TEST512</ActiveDebugProfile>
+    <_LastSelectedProfileId>C:\Repos\ORION-128\dasm\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M1|AnyCPU'">
-    <StartArguments>../../../rom/Orion128_M1.rom  s:0F800H              l:DATA\Orion128_M1\Orion128_M1_Label.txt   c:DATA\Orion128_M1\Orion128_M1_Comment.txt   d:DATA\Orion128_M1\Orion128_M1_Data.txt   i:DATA\Orion128_M1\Orion128_M1_Include.txt    o:Orion128_M1.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M2|AnyCPU'">
-    <StartArguments>../../../rom/Orion128_M2.rom  s:0F800H             l:DATA\Orion128_M2\Orion128_M2_Label.txt   c:DATA\Orion128_M2\Orion128_M2_Comment.txt   d:DATA\Orion128_M2\Orion128_M2_Data.txt   i:DATA\Orion128_M2\Orion128_M2_Include.txt    o:Orion128_M2.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - M31|AnyCPU'">
-    <StartArguments>../../../rom/Orion128_M31.rom  s:0F800H           l:DATA\Orion128_M31\Orion128_M31_Label.txt   c:DATA\Orion128_M31\Orion128_M31_Comment.txt   d:DATA\Orion128_M31\Orion128_M31_Data.txt   i:DATA\Orion128_M31\Orion128_M31_Include.txt    o:Orion128_M31.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - RamTest|AnyCPU'">
-    <StartArguments>../../../rom/RAM_TEST.BIN  s:0F800H   l:DATA\TEST\TEST_Label.txt   c:DATA\TEST\TEST_Comment.txt   d:DATA\TEST\TEST_Data.txt   i:DATA\TEST\TEST_Include.txt    o:RAM_TEST_source.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Test128|AnyCPU'">
-    <StartArguments>../../../rom/TEST128.BIN  s:0F800H                                l:DATA\TEST128\TEST128_Label.txt                                c:DATA\TEST128\TEST128_Comment.txt                        d:DATA\TEST128\TEST128_Data.txt                                i:DATA\TEST128\TEST128_Include.txt                         o:TEST128.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Test256|AnyCPU'">
-    <StartArguments>../../../rom/TEST256.BIN  s:0F800H                                l:DATA\TEST256\TEST256_Label.txt                                c:DATA\TEST256\TEST256_Comment.txt                        d:DATA\TEST256\TEST256_Data.txt                                 i:DATA\TEST256\TEST256_Include.txt                         o:TEST256.asm</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Test512|AnyCPU'">
-    <StartArguments>../../../rom/TEST512.BIN  s:0F800H                                l:DATA\TEST512\TEST512_Label.txt                                c:DATA\TEST512\TEST512_Comment.txt                        d:DATA\TEST512\TEST512_Data.txt                                 i:DATA\TEST512\TEST512_Include.txt                         o:TEST512.asm</StartArguments>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

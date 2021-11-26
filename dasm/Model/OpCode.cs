@@ -1,7 +1,4 @@
 ﻿using Dasm.Service;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Dasm.Model
 {
@@ -28,7 +25,7 @@ namespace Dasm.Model
 
         public string ToString(Stream stream)
         {
-            string param = null;
+            string? param = null;
             if (HasByte)
             {
                 if (stream.Position == stream.Length) throw new IndexOutOfRangeException();
