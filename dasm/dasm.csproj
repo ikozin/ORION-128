@@ -78,7 +78,7 @@
     <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Data.txt" />
     <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Include.txt" />
     <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Label.txt" />
-    <None Remove="run.cmd" />
+    <None Remove="run_dasm.cmd" />
   </ItemGroup>
 
   <ItemGroup>
@@ -166,7 +166,7 @@
     <Content Include="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Label.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="run.cmd">
+    <Content Include="run_dasm.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
