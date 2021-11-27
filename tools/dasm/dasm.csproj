@@ -1,0 +1,154 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject>Dasm.Program</StartupObject>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Data\Orion128_M1\Orion128_M1_Comment.txt" />
+    <None Remove="Data\Orion128_M1\Orion128_M1_Data.txt" />
+    <None Remove="Data\Orion128_M1\Orion128_M1_Include.txt" />
+    <None Remove="Data\Orion128_M1\Orion128_M1_Label.txt" />
+    <None Remove="Data\Orion128_M2\Orion128_M2_Comment.txt" />
+    <None Remove="Data\Orion128_M2\Orion128_M2_Data.txt" />
+    <None Remove="Data\Orion128_M2\Orion128_M2_Include.txt" />
+    <None Remove="Data\Orion128_M2\Orion128_M2_Label.txt" />
+    <None Remove="Data\Orion128_M31\Orion128_M31_Comment.txt" />
+    <None Remove="Data\Orion128_M31\Orion128_M31_Data.txt" />
+    <None Remove="Data\Orion128_M31\Orion128_M31_Include.txt" />
+    <None Remove="Data\Orion128_M31\Orion128_M31_Label.txt" />
+    <None Remove="Data\TEST128\TEST128_Comment.txt" />
+    <None Remove="Data\TEST128\TEST128_Data.txt" />
+    <None Remove="Data\TEST128\TEST128_Include.txt" />
+    <None Remove="Data\TEST128\TEST128_Label.txt" />
+    <None Remove="Data\TEST256\TEST256_Comment.txt" />
+    <None Remove="Data\TEST256\TEST256_Data.txt" />
+    <None Remove="Data\TEST256\TEST256_Include.txt" />
+    <None Remove="Data\TEST256\TEST256_Label.txt" />
+    <None Remove="Data\TEST512\TEST512_Comment.txt" />
+    <None Remove="Data\TEST512\TEST512_Data.txt" />
+    <None Remove="Data\TEST512\TEST512_Include.txt" />
+    <None Remove="Data\TEST512\TEST512_Label.txt" />
+    <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Comment.txt" />
+    <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Data.txt" />
+    <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Include.txt" />
+    <None Remove="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Label.txt" />
+    <None Remove="run_dasm_m1.cmd" />
+    <None Remove="run_dasm_m2.cmd" />
+    <None Remove="run_dasm_m31.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\Orion128_M1\Orion128_M1_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M1\Orion128_M1_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M1\Orion128_M1_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M1\Orion128_M1_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M2\Orion128_M2_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M2\Orion128_M2_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M2\Orion128_M2_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M2\Orion128_M2_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M31\Orion128_M31_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M31\Orion128_M31_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M31\Orion128_M31_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Orion128_M31\Orion128_M31_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST128\TEST128_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST128\TEST128_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST128\TEST128_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST128\TEST128_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST256\TEST256_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST256\TEST256_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST256\TEST256_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST256\TEST256_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST512\TEST512_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST512\TEST512_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST512\TEST512_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TEST512\TEST512_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Comment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Include.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ЮТ-88_Прогр_ПЗУ\ЮТ-88_Прогр_ПЗУ_Label.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="run_dasm_m1.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="run_dasm_m31.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="run_dasm_m2.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    },
+    "Release": {
+      "commandName": "Project"
+    },
+    "M1": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\Orion128_M1.rom"
+    },
+    "M2": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\Orion128_M2.rom"
+    },
+    "M31": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\Orion128_M31.rom"
+    },
+    "TEST128": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\TEST128.BIN"
+    },
+    "TEST256": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\TEST256.BIN"
+    },
+    "TEST512": {
+      "commandName": "Project",
+      "commandLineArgs": "/L:8000 /A /S ..\\..\\..\\..\\..\\rom\\TEST512.BIN"
+    }
+  }
+}

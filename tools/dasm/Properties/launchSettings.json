@@ -1,0 +1,36 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    },
+    "Release": {
+      "commandName": "Project"
+    },
+    "M1": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M1.rom  s:0F800H             l:DATA\\Orion128_M1\\Orion128_M1_Label.txt   c:DATA\\Orion128_M1\\Orion128_M1_Comment.txt   d:DATA\\Orion128_M1\\Orion128_M1_Data.txt   i:DATA\\Orion128_M1\\Orion128_M1_Include.txt    o:Orion128_M1.asm"
+    },
+    "M2": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M2.rom  s:0F800H             l:DATA\\Orion128_M2\\Orion128_M2_Label.txt   c:DATA\\Orion128_M2\\Orion128_M2_Comment.txt   d:DATA\\Orion128_M2\\Orion128_M2_Data.txt   i:DATA\\Orion128_M2\\Orion128_M2_Include.txt    o:Orion128_M2.asm"
+    },
+    "M31": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M31.rom  s:0F800H            l:DATA\\Orion128_M31\\Orion128_M31_Label.txt   c:DATA\\Orion128_M31\\Orion128_M31_Comment.txt   d:DATA\\Orion128_M31\\Orion128_M31_Data.txt   i:DATA\\Orion128_M31\\Orion128_M31_Include.txt    o:Orion128_M31.asm"
+    },
+    "TEST128": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\TEST128.BIN  s:0F800H                                l:DATA\\TEST128\\TEST128_Label.txt                                c:DATA\\TEST128\\TEST128_Comment.txt                        d:DATA\\TEST128\\TEST128_Data.txt                                i:DATA\\TEST128\\TEST128_Include.txt                         o:TEST128.asm"
+    },
+    "TEST256": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\TEST256.BIN  s:0F800H                                l:DATA\\TEST256\\TEST256_Label.txt                                c:DATA\\TEST256\\TEST256_Comment.txt                        d:DATA\\TEST256\\TEST256_Data.txt                                 i:DATA\\TEST256\\TEST256_Include.txt                         o:TEST256.asm"
+    },
+    "TEST512": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\TEST512.BIN  s:0F800H                                l:DATA\\TEST512\\TEST512_Label.txt                                c:DATA\\TEST512\\TEST512_Comment.txt                        d:DATA\\TEST512\\TEST512_Data.txt                                 i:DATA\\TEST512\\TEST512_Include.txt                         o:TEST512.asm"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    },
+    "Release": {
+      "commandName": "Project"
+    },
+    "Debug": {
+      "commandName": "Project",
+      "commandLineArgs": "\"%HOMEDRIVE%%HOMEPATH%\\YandexDisk\\Загрузки\""
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    },
+    "Release": {
+      "commandName": "Project"
+    },
+    "M1": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M1.txt ..\\..\\..\\..\\..\\rom\\M1.bin"
+    },
+    "M2": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M2.txt ..\\..\\..\\..\\..\\rom\\M2.bin"
+    },
+    "M31": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\rom\\Orion128_M31.txt ..\\..\\..\\..\\..\\rom\\M31.bin"
+    }
+  }
+}
