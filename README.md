@@ -2,9 +2,9 @@
 Все мои материалы и все, что к нему относится.
 
 **Мои утилиты**
-1. [dasm - Дизассемблер для i8080](https://github.com/ikozin/ORION-128/tree/master/dasm)
-2. [hexdump - Вывод в HEX формате с подсчетом контрольных сумм](https://github.com/ikozin/ORION-128/tree/master/hexdump)
-3. [unpackcodepage - Распаковка знакогенератора из образа ПЗУ](https://github.com/ikozin/ORION-128/tree/master/unpackcodepage)
+1. [dasm - Дизассемблер для i8080](https://github.com/ikozin/ORION-128/tree/master/tools/dasm)
+2. [hexdump - Вывод в HEX формате с подсчетом контрольных сумм](https://github.com/ikozin/ORION-128/tree/master/tools/hexdump)
+3. [unpackcodepage - Распаковка знакогенератора из образа ПЗУ](https://github.com/ikozin/ORION-128/tree/master/tools/unpackcodepage)
 
 **Полезные ссылки**
 
