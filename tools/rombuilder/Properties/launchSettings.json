@@ -1,0 +1,27 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Size": {
+      "commandName": "Project",
+      "commandLineArgs": "/s:32"
+    },
+    "File": {
+      "commandName": "Project",
+      "commandLineArgs": "/o:\"..\\..\\..\\..\\bin\\DUMP.BIN\""
+    },
+    "Size & File": {
+      "commandName": "Project",
+      "commandLineArgs": "/s:32 /o:\"..\\..\\..\\..\\bin\\DUMP.BIN\""
+    },
+    "Full": {
+      "commandName": "Project",
+      "commandLineArgs": "/s:32 /o:\"..\\..\\..\\..\\bin\\DUMP.BIN\" 0,4,5,6,1,2,3"
+    },
+    "Debug": {
+      "commandName": "Project"
+    }
+  }
+}

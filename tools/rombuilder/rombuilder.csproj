@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject>rombuilder.Program</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="run_rombuilder.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="run_rombuilder.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ROM\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\rom\Orion128_M1.rom" Link="ROM\Orion128_M1.rom" />
+    <EmbeddedResource Include="..\..\rom\Orion128_M2.rom" Link="ROM\Orion128_M2.rom" />
+    <EmbeddedResource Include="..\..\rom\Orion128_M31.rom" Link="ROM\Orion128_M31.rom" />
+    <EmbeddedResource Include="..\..\rom\TEST128.BIN" Link="ROM\TEST128.BIN" />
+    <EmbeddedResource Include="..\..\rom\TEST256.bin" Link="ROM\TEST256.bin" />
+    <EmbeddedResource Include="..\..\rom\TEST512.bin" Link="ROM\TEST512.bin" />
+  </ItemGroup>
+
+</Project>
