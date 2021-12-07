@@ -10,12 +10,14 @@ namespace rombuilder
             try
             {
                 int romSize = 32 * 1024;
+                string[] files = Array.Empty<string>(); ;
                 string romName = "DUMP.BIN";
                 string? romValues = null;
                 if (args.Length == 0)
                 {
-                    Console.WriteLine("Перечень параметров: /s:<size> /o:<file> <values>");
+                    Console.WriteLine("Перечень параметров: /s:<size> /a:<rom>,<rom> /o:<file> <values>");
                     Console.WriteLine("<size>\t\tразмер в килобайтах, по умолчанию: 32кБ");
+                    Console.WriteLine("<rom>\t\tдополнительный образ");
                     Console.WriteLine("<file>\t\tимя образа, по умолчанию: DUMP.BIN");
                     Console.WriteLine("<values>\tперечень образов");
                     Console.WriteLine();
@@ -31,6 +33,11 @@ namespace rombuilder
                                 {
                                     if (!int.TryParse(argument.Substring(3), out romSize)) throw new ArgumentException(argument);
                                     romSize *= 1024;
+                                    break;
+                                }
+                            case "/a:":
+                                {
+                                    files = argument.Substring(3).Trim('"').Split(',', StringSplitOptions.RemoveEmptyEntries);
                                     break;
                                 }
                             case "/o:":
@@ -64,6 +71,11 @@ namespace rombuilder
                     var title = String.Join('.', name.Split('.', StringSplitOptions.RemoveEmptyEntries).TakeLast(2));
                     Console.WriteLine("{0}\t{1}", count++, title);
                 }
+                foreach (var name in files)
+                {
+                    Console.WriteLine("{0}\t{1}", count++, name);
+                }
+
                 Console.WriteLine("Укажите порядок следования образов через запятую:");
                 if (String.IsNullOrEmpty(romValues))
                 {
@@ -86,17 +98,32 @@ namespace rombuilder
                     }
                     else
                     {
+                        string title;
+                        Stream stream;
                         num--;
-                        if (num >= list.Length) throw new IndexOutOfRangeException();
-                        string resourceName = list[num];
+                        if (num >= list.Length)
+                        {
+                            num -= list.Length;
+                            if (num >= files.Length) throw new IndexOutOfRangeException();
+                            string fileName = files[num];
+                            if (!File.Exists(fileName)) throw new FileNotFoundException(fileName);
+                            stream = File.OpenRead(fileName);
+                            if (stream == null) throw new NullReferenceException(fileName);
+                            title = fileName;
+                        }
+                        else
+                        {
+                            string resourceName = list[num];
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                        using Stream stream = assembly.GetManifestResourceStream(resourceName);
+                            stream = assembly.GetManifestResourceStream(resourceName);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                        if (stream == null) throw new NullReferenceException(resourceName);
+                            if (stream == null) throw new NullReferenceException(resourceName);
+                            title = String.Join('.', resourceName.Split('.', StringSplitOptions.RemoveEmptyEntries).TakeLast(2));
+                        }
                         using BinaryReader reader = new BinaryReader(stream);
                         int size = reader!.Read(rom!.Slice(address, 2048));
+                        stream.Dispose();
                         if (size != 2048) throw new ApplicationException(String.Format("Ошибка в размере: {0}", size));
-                        var title = String.Join('.', resourceName.Split('.', StringSplitOptions.RemoveEmptyEntries).TakeLast(2));
                         Console.WriteLine(title);
                     }
                     address += 2048;

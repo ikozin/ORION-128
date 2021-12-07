@@ -18,7 +18,7 @@
     },
     "Full": {
       "commandName": "Project",
-      "commandLineArgs": "/s:32 /o:\"..\\..\\..\\..\\bin\\DUMP.BIN\" 0,4,5,6,1,2,3"
+      "commandLineArgs": "/s:32 /a:testvideo.bin /o:\"..\\..\\..\\..\\bin\\DUMP.BIN\" 0,4,5,6,1,2,3,7"
     },
     "Debug": {
       "commandName": "Project"
