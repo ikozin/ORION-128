@@ -2,7 +2,8 @@
 
 namespace fileinfo.Views
 {
-    internal abstract class ViewComponent<T> where T : Control, new()
+    internal abstract class ViewComponent<T>: IViewComponent
+        where T : Control, new()
     {
         protected readonly T _control = new T();
 
@@ -17,6 +18,7 @@ namespace fileinfo.Views
             return _control;
         }
 
-        public abstract void ReloadData(FileDetails detail, Func<byte, bool, char> encoding);
+        public abstract void ReloadView(FileDetails detail, Func<byte, bool, char> encoding);
+        public abstract void ClearView();
     }
 }

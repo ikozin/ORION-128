@@ -40,8 +40,6 @@
             this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBoxFile = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.statusStripView = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelCrc = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSum = new System.Windows.Forms.ToolStripStatusLabel();
@@ -57,6 +55,7 @@
             this.toolStripSplitButtonGroupByPath = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByHash = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelViewComponent = new System.Windows.Forms.Panel();
             columnHeaderName = new System.Windows.Forms.ColumnHeader();
             columnHeaderSize = new System.Windows.Forms.ColumnHeader();
             columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
@@ -66,7 +65,6 @@
             this.splitContainerInfo.Panel2.SuspendLayout();
             this.splitContainerInfo.SuspendLayout();
             this.contextMenuStripFile.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.statusStripView.SuspendLayout();
             this.toolStripFileView.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -105,8 +103,7 @@
             // 
             // splitContainerInfo.Panel2
             // 
-            this.splitContainerInfo.Panel2.Controls.Add(this.textBoxFile);
-            this.splitContainerInfo.Panel2.Controls.Add(this.pictureBox1);
+            this.splitContainerInfo.Panel2.Controls.Add(this.panelViewComponent);
             this.splitContainerInfo.Panel2.Controls.Add(this.statusStripView);
             this.splitContainerInfo.Panel2.Controls.Add(this.toolStripFileView);
             this.splitContainerInfo.Size = new System.Drawing.Size(800, 423);
@@ -161,28 +158,6 @@
             this.directoryToolStripMenuItem.Size = new System.Drawing.Size(304, 24);
             this.directoryToolStripMenuItem.Text = "Открыть расположение файла ...";
             this.directoryToolStripMenuItem.Click += new System.EventHandler(this.directoryToolStripMenuItem_Click);
-            // 
-            // textBoxFile
-            // 
-            this.textBoxFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxFile.Font = new System.Drawing.Font("Cascadia Mono", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBoxFile.Location = new System.Drawing.Point(0, 27);
-            this.textBoxFile.Multiline = true;
-            this.textBoxFile.Name = "textBoxFile";
-            this.textBoxFile.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxFile.Size = new System.Drawing.Size(182, 374);
-            this.textBoxFile.TabIndex = 0;
-            this.textBoxFile.WordWrap = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox1.Location = new System.Drawing.Point(182, 27);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(348, 374);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
             // 
             // statusStripView
             // 
@@ -303,6 +278,14 @@
             this.toolStripSplitButtonGroupByHash.Text = "Группировка дублей";
             this.toolStripSplitButtonGroupByHash.Click += new System.EventHandler(this.toolStripSplitButtonGroupByHash_Click);
             // 
+            // panelViewComponent
+            // 
+            this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelViewComponent.Location = new System.Drawing.Point(0, 27);
+            this.panelViewComponent.Name = "panelViewComponent";
+            this.panelViewComponent.Size = new System.Drawing.Size(530, 374);
+            this.panelViewComponent.TabIndex = 4;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -318,7 +301,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).EndInit();
             this.splitContainerInfo.ResumeLayout(false);
             this.contextMenuStripFile.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.statusStripView.ResumeLayout(false);
             this.statusStripView.PerformLayout();
             this.toolStripFileView.ResumeLayout(false);
@@ -335,7 +317,6 @@
         private SplitContainer splitContainerInfo;
         private ListView listViewFile;
         private FolderBrowserDialog folderBrowserDialog;
-        private TextBox textBoxFile;
         private ToolStrip toolStripFileView;
         private ColumnHeader columnHeaderFileName;
         private ContextMenuStrip contextMenuStripFile;
@@ -354,6 +335,6 @@
         private StatusStrip statusStripView;
         private ToolStripStatusLabel toolStripStatusLabelCrc;
         private ToolStripStatusLabel toolStripStatusLabelSum;
-        private PictureBox pictureBox1;
+        private Panel panelViewComponent;
     }
 }

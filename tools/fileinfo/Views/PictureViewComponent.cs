@@ -1,34 +1,37 @@
-﻿using fileinfo.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using fileinfo.Helpers;
+using fileinfo.Models;
+using fileinfo.Views.Picture;
 
 namespace fileinfo.Views
 {
-    internal class PictureViewComponent : ViewComponent<PictureBox>
+    internal class PictureViewComponent : ViewComponent<PictureViewUserControl>
     {
         public PictureViewComponent() : base()
         {
-            _control.Font = new System.Drawing.Font("Cascadia Mono", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            //_control.Location = new Point(0, 0);
-            //_control.Size = new Size(182, 374);
             _control.TabIndex = 0;
-            _control.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            _control.TabStop = false;
+            _control.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            _control.pictureBox.TabStop = false;
         }
 
-        public override void ReloadData(FileDetails detail, Func<byte, bool, char> encoding)
+        public override void ReloadView(FileDetails detail, Func<byte, bool, char> encoding)
         {
-            var image = _control.Image;
-            _control.Image = GetImage(detail, encoding);
+            var image = _control.pictureBox.Image;
+            SetImage(detail, encoding);
+            image?.Dispose();
+        }
+        public override void ClearView()
+        {
+            _control.textBoxAddress.Text = String.Empty;
+            _control.textBoxWidth.Text = String.Empty;
+            _control.textBoxHeight.Text = String.Empty;
+
+            var image = _control.pictureBox.Image;
+            _control.pictureBox.Image = new Bitmap(1, 1);
             image?.Dispose();
         }
 
-        protected Bitmap GetImage(FileDetails detail, Func<byte, bool, char> encoding)
+        protected void SetImage(FileDetails detail, Func<byte, bool, char> encoding)
         {
-            if (detail.Content.Length == 0) return new Bitmap(1, 1);
             try
             {
                 using (MemoryStream stream = new MemoryStream(detail.Content))
@@ -38,7 +41,9 @@ namespace fileinfo.Views
                     var height = reader.ReadByte();
                     var width = reader.ReadByte();
                     var size = height * width;
-
+                    _control.textBoxAddress.Text = addr.ToHexAsm();
+                    _control.textBoxWidth.Text = width.ToString();
+                    _control.textBoxHeight.Text = height.ToString();
 
                     var image = new Bitmap(width * 8 + 1, height + 1);
 
@@ -61,12 +66,12 @@ namespace fileinfo.Views
                         }
 
                     }
-                    return image;
+                    _control.pictureBox.Image = image;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new Bitmap(1, 1);
+                _control.pictureBox.Image = new Bitmap(1, 1);
             }
         }
 

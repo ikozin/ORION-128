@@ -29,14 +29,15 @@ namespace fileinfo
             _encoding.CurrentHandler = EncodingExtension.Convert_Koi7N2;
 
             _format = new TextFormatTool(toolStripDropDownButtonFormat,
-                IsSelectedItem, RefreshFileView);
-            _format.Add("HEX с адреса", ContentToHexWithAddr.Process);
-            _format.Add("HEX", ContentToHex.Process);
-            _format.Add("Текст", ContentToText.Process);
-            _format.Add("Картинка", ContentToPicture.Process);
-            _format.Add("Дизассемблер", ContentToDisAssembler.Process);
-            _format.Add("Дизассемблер (Dump)", ContentToDisAsmDump.Process);
-            _format.CurrentHandler = ContentToHexWithAddr.Process;
+                IsSelectedItem, SetCurrentView);
+            _format.Add("HEX с адреса", new HexWithAddrViewComponent());
+            _format.Add("HEX", new HexViewComponent());
+            _format.Add("Текст", new TextViewComponent());
+            _format.Add("Картинка", new PictureViewComponent());
+            _format.Add("Дизассемблер", new DisAssemblerViewComponent());
+            _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent());
+            _format.CurrentView = _format.GetViews().First();
+            SetCurrentView();
         }
 
         private void toolStripButtonSelectDirectory_Click(object sender, EventArgs e)
@@ -57,9 +58,6 @@ namespace fileinfo
             listViewFile.Groups.Clear();
             listViewFile.Items.Clear();
 
-            textBoxFile.Text = string.Empty;
-
-
             foreach (var f in _listDetails)
             {
                 var item = listViewFile.Items.Add(Path.GetFileName(f.FileName));
@@ -77,6 +75,7 @@ namespace fileinfo
             _actionGroupFinish(listViewFile);
             listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listViewFile.EndUpdate();
+            RefreshFileView();
         }
 
         private static void LoadFiles<T>(List<FileDetails> list, string path, string extension)
@@ -118,21 +117,31 @@ namespace fileinfo
             return listViewFile.SelectedItems.Count > 0;
         }
 
+        private void SetCurrentView()
+        {
+            var control = _format.CurrentView!.GetViewControl();
+            if (!panelViewComponent.Controls.Contains(control))
+            {
+                panelViewComponent.SuspendLayout();
+                panelViewComponent.Controls.Clear();
+                panelViewComponent.Controls.Add(control);
+                panelViewComponent.ResumeLayout();
+            }
+            RefreshFileView();
+        }
+
         private void RefreshFileView()
         {
-            var item = listViewFile.SelectedItems.Count > 0 ? listViewFile.SelectedItems[0] : null;
+            var item = IsSelectedItem() ? listViewFile.SelectedItems[0] : null;
             if (item == null)
             {
+                _format.CurrentView!.ClearView();
                 toolStripStatusLabelSum.Text = String.Empty;
-                textBoxFile.Text = String.Empty;
                 return;
             }
             var detail = (FileDetails)item.Tag;
-            textBoxFile.Text = _format.CurrentHandler!(detail, _encoding.CurrentHandler!);
+            _format.CurrentView!.ReloadView(detail, _encoding.CurrentHandler!);
             toolStripStatusLabelSum.Text = ContentToCheckSum.Process(detail, _encoding.CurrentHandler!);
-            pictureBox1.Image = (Image)ContentToPicture.GetImage(detail, _encoding.CurrentHandler!);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            //pictureBox1.ClientSize = pictureBox1.Image.Size;
         }
 
         private void toolStripSplitButtonGroupByExec_Click(object sender, EventArgs e)

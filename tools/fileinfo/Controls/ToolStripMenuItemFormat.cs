@@ -1,20 +1,21 @@
 ﻿using fileinfo.Models;
+using fileinfo.Views;
 
 namespace fileinfo.Controls
 {
     internal class ToolStripMenuItemFormat: ToolStripMenuItem
     {
-        public Func<FileDetails, Func<byte, bool, char>, string> Handler { get; private set; }
+        public IViewComponent Component { get; private set; }
         private readonly TextFormatTool _tool;
-        public ToolStripMenuItemFormat(TextFormatTool tool, string text, Func<FileDetails, Func<byte, bool, char>, string> handler) :
+        public ToolStripMenuItemFormat(TextFormatTool tool, string text, IViewComponent component) :
             base(text)
         {
             _tool = tool;
-            Handler = handler;
+            Component = component;
         }
         protected override void OnClick(EventArgs e)
         {
-            _tool.CurrentHandler = Handler;
+            _tool.CurrentView = Component;
             _tool?.ClickAction();
         }
     }

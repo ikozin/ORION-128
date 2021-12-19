@@ -7,10 +7,10 @@ namespace fileinfo.Views
 {
     internal class DisAssemblerViewComponent : TextViewComponent
     {
-        public override void ReloadData(FileDetails detail, Func<byte, bool, char> encoding)
+        public override void ReloadView(FileDetails detail, Func<byte, bool, char> encoding)
         {
             _control.Text = String.Empty;
-            if (detail.Content == null || detail.Content.Length == 0) return String.Empty;
+            if (detail.Content == null || detail.Content.Length == 0) return;
 
             var text = new StringBuilder();
 

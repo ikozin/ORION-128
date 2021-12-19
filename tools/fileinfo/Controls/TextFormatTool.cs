@@ -1,4 +1,5 @@
 ﻿using fileinfo.Models;
+using fileinfo.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace fileinfo.Controls
 {
     internal class TextFormatTool
     {
-        public Func<FileDetails, Func<byte, bool, char>, string>? CurrentHandler { get; set; }
+        public IViewComponent? CurrentView { get; set; }
         public Action ClickAction { get; private set; }
 
         private readonly ToolStripDropDownButton _tool;
@@ -20,15 +21,15 @@ namespace fileinfo.Controls
         {
             _enableFunc = enableFunc;
             ClickAction = clickAction;
-            CurrentHandler = null;
+            CurrentView = null;
             _tool = parent;
             _tool.DropDownItems.Clear();
             _tool.DropDownOpening += ToolStripMenuItemDropDownOpening;
         }
 
-        public void Add(string text, Func<FileDetails, Func<byte, bool, char>, string> handler)
+        public void Add(string text, IViewComponent component)
         {
-            var item = new ToolStripMenuItemFormat(this, text, handler);
+            var item = new ToolStripMenuItemFormat(this, text, component);
             _tool.DropDownItems.Add(item);
         }
 
@@ -39,8 +40,17 @@ namespace fileinfo.Controls
             {
                 var itemExt = (ToolStripMenuItemFormat)item;
                 itemExt.Enabled = isEnable;
-                itemExt.Checked = itemExt.Handler == CurrentHandler;
+                itemExt.Checked = itemExt.Component == CurrentView;
             }
+        }
+        public IViewComponent[] GetViews()
+        {
+            var result = new List<IViewComponent>();
+            foreach (ToolStripMenuItemFormat item in _tool.DropDownItems)
+            {
+                result.Add(item.Component);
+            }
+            return result.ToArray();
         }
     }
 }
