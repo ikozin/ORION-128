@@ -1,24 +1,21 @@
 ﻿<doc>
-	<style name="Green" color="Green" />
-	<style name="Maroon" color="Maroon" fontStyle="Bold,Italic" />
-	<style name="Blue" color="Blue" fontStyle="Bold"/>
-	<style name="Red" color="Red" backColor="#f5f5e5" />
-
+	<style name="Comment" color="Green" />
 	<style name="System" color="Blue" fontStyle="Bold" />
 	<style name="CommandJmpCall" color="Blue" fontStyle="Bold" />
 	<style name="Command" color="Blue" fontStyle="Bold" />
-	<style name="CommandChangeFlags" color="Blue" fontStyle="Bold" />
+	<style name="CommandChangeFlags" color="Blue" fontStyle="Bold,Italic" />
+	<style name="Register" color="Red" fontStyle="Bold" />
 	<style name="Number" color="Brown" fontStyle="Bold" />
 	<style name="String" color="Brown" fontStyle="Bold" />
-	<style name="Label" color="Maroon" fontStyle="Bold,Italic,Underline" />
+	<style name="Label" color="Maroon" fontStyle="Bold,Underline" />
 
-	<!--<rule style="Green" >(?&lt;range&gt;;.*$)</rule>-->
+	<rule style="Comment" options="Multiline">;.*$</rule>
 	<rule style="Number">\b\d+?\b|\b\d[a-fA-F\d]+?[hH]\b|\b0[a-fA-F\d]+[hH]\b</rule>
 	<rule style="String">&apos;(?&gt;(?:\\[^\r\n]|[^&apos;\r\n])*)&apos;?|(?&lt;verbatimIdentifier&gt;@)?&quot;&quot;(?&gt;(?:(?(verbatimIdentifier)&quot;&quot;&quot;&quot;|\\.)|[^&quot;&quot;])*)</rule>
-	<rule style="Label">\w+?[\w\d]*?:\s</rule>
-
-	<rule style="System">\b(DB|DW|EQU|ORG|db|dw|equ|org)\b</rule>
-	<rule style="CommandJmpCall">\b(CALL|CNC|CNZ|CP|CPО|JMP|JNC|JNZ|JZ|JP|JPО|PCHL|RET|RNC|RNZ|RST|RZ|RP|RPО|call|cnc|cnz|cp|cpо|jmp|jnc|jnz|jz|jp|jpо|pchl|ret|rnc|rnz|rst|rz|rp|rpо)\b</rule>
+	<rule style="Label">\w+?\b[\w\d]*?\b:\s</rule>
+	<rule style="Register">[\s|,]+?\b(?&lt;range&gt;A|B|C|D|E|H|L|PSW|M|a|b|c|d|e|h|l|psw|m|)\b</rule>
+	<rule style="System">\b(DB|DW|EQU|INCLUDE|ORG|db|dw|equ|include|org)\b</rule>
+	<rule style="CommandJmpCall">\b(CALL|CNC|CNZ|CP|CPО|CZ|CM|CР|CРЕ|CРО|CС|JMP|JNC|JNZ|JP|JPО|JZ|JM|JР|JРЕ|JРО|JС|PCHL|RET|RNC|RNZ|RP|RPО|RST|RZ|RM|RР|RРЕ|RРО|RС|call|cnc|cnz|cp|cpо|cz|cm|cр|cре|cро|cс|jmp|jnc|jnz|jp|jpо|jz|jm|jр|jре|jро|jс|pchl|ret|rnc|rnz|rp|rpо|rst|rz|rm|rр|rре|rро|rс)\b</rule>
 	<rule style="Command">\b(DCX|DI|EI|HLT|IN|INX|LDA|LDAX|LHLD|LXI|MOV|MVI|NOP|OUT|POP|PUSH|SHLD|SPHL|STA|STAX|XCHG|XTHL|dcx|di|ei|hlt|in|inx|lda|ldax|lhld|lxi|mov|mvi|nop|out|pop|push|shld|sphl|sta|stax|xchg|xthl)\b</rule>
 	<rule style="CommandChangeFlags">\b(ACI|ADC|ADD|ADI|ANA|ANI|CMA|CMC|CMP|CPI|DAA|DAD|DCR|INR|ORA|ORI|RAL|RAR|RLC|RRC|SBB|SBI|STC|SUB|SUI|XRA|XRI|aci|adc|add|adi|ana|ani|cma|cmc|cmp|cpi|daa|dad|dcr|inr|ora|ori|ral|rar|rlc|rrc|sbb|sbi|stc|sub|sui|xra|xri)\b</rule>
 </doc>

@@ -229,7 +229,7 @@
             _list.Add(new OpCode("rst  1"));
 
             _list.Add(new OpCode("rnc"));
-            _list.Add(new OpCode("pop D"));
+            _list.Add(new OpCode("pop  D"));
             _list.Add(new OpCode("jnc  {0}", false, true));
             _list.Add(new OpCode("out  {0}", true, false));
             _list.Add(new OpCode("cnc  {0}", false, true));

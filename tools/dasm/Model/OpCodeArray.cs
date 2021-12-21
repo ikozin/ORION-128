@@ -232,7 +232,7 @@ namespace Dasm.Model
             _list.Add(new OpCode("rst  1", constList));
 
             _list.Add(new OpCode("rnc", constList));
-            _list.Add(new OpCode("pop D", constList));
+            _list.Add(new OpCode("pop  D", constList));
             _list.Add(new OpCode("jnc  {0}", false, true, constList));
             _list.Add(new OpCode("out  {0}", true, false, constList));
             _list.Add(new OpCode("cnc  {0}", false, true, constList));
