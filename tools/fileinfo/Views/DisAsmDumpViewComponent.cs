@@ -17,12 +17,12 @@ namespace fileinfo.Views
 
         public override void ClearView()
         {
-            _control.textBoxView.Text = string.Empty;
+            _control.fastColoredTextBoxView.Text = string.Empty;
         }
 
         protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
         {
-            _control.textBoxView.Text = String.Empty;
+            _control.fastColoredTextBoxView.Text = String.Empty;
 
             if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
 
@@ -38,7 +38,7 @@ namespace fileinfo.Views
                 do
                 {
                     var line = detail.Content.Skip(pos).Take(_count).Select(b => b.ToHexAsm());
-                    if (line.Count() > 0)
+                    if (line.Any())
                     {
                         text.Append("DB   ");
                         text.AppendLine(String.Join(", ", line));
@@ -52,7 +52,7 @@ namespace fileinfo.Views
                 text.AppendLine(ex.Message);
             }
 
-            _control.textBoxView.Text = text.ToString();
+            _control.fastColoredTextBoxView.Text = text.ToString();
         }
 
         private void ComboBoxCount_SelectedIndexChanged(object? sender, EventArgs e)

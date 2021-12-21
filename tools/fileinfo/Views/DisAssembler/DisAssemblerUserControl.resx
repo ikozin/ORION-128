@@ -57,6 +57,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="tableLayoutPanel.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="textBoxData.ToolTip" xml:space="preserve">
+    <value>Задание блоков с данными
+Формат:
+&lt;Адрес в HEX формате&gt;:&lt;Тип данных&gt;
+&lt;Адрес в HEX формате&gt;-&lt;Адрес в HEX формате&gt;:&lt;Тип данных&gt;
+Поддерживаемые типы данных:
+B - один байт в двоичном формате
+C - один байт в символьном формате
+H - один байт в HEX формате
+D - один байт
+WB - слово (2 байта) в двоичном формате
+WC - слово (2 байта) в символьном формате
+WH - слово (2 байта) в HEX формате
+WD - слово (2 байта)
+S  - строка в символьном формате (конец строки байт со значением 0)
+Пример:
+0FC96H-0FCA5H:D
+0FE30H:S
+0FE3EH:S
+0FE46H:H
+0FE47H:H
+0FE48H-0FFFFH:B</value>
+  </data>
   <data name="fastColoredTextBoxView.ServiceColors" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAC5maWxlaW5mbywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlU

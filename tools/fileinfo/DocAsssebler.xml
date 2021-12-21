@@ -13,9 +13,9 @@
 	<rule style="Number">\b\d+?\b|\b\d[a-fA-F\d]+?[hH]\b|\b0[a-fA-F\d]+[hH]\b</rule>
 	<rule style="String">&apos;(?&gt;(?:\\[^\r\n]|[^&apos;\r\n])*)&apos;?|(?&lt;verbatimIdentifier&gt;@)?&quot;&quot;(?&gt;(?:(?(verbatimIdentifier)&quot;&quot;&quot;&quot;|\\.)|[^&quot;&quot;])*)</rule>
 	<rule style="Label">\w+?\b[\w\d]*?\b:\s</rule>
-	<rule style="Register">[\s|,]+?\b(?&lt;range&gt;A|B|C|D|E|H|L|PSW|M|a|b|c|d|e|h|l|psw|m|)\b</rule>
+	<rule style="Register">[\s|,]+?\b(?&lt;range&gt;A|B|C|D|E|H|L|PSW|SP|M|a|b|c|d|e|h|l|psw|sp|m|)\b</rule>
 	<rule style="System">\b(DB|DW|EQU|INCLUDE|ORG|db|dw|equ|include|org)\b</rule>
-	<rule style="CommandJmpCall">\b(CALL|CNC|CNZ|CP|CPО|CZ|CM|CР|CРЕ|CРО|CС|JMP|JNC|JNZ|JP|JPО|JZ|JM|JР|JРЕ|JРО|JС|PCHL|RET|RNC|RNZ|RP|RPО|RST|RZ|RM|RР|RРЕ|RРО|RС|call|cnc|cnz|cp|cpо|cz|cm|cр|cре|cро|cс|jmp|jnc|jnz|jp|jpо|jz|jm|jр|jре|jро|jс|pchl|ret|rnc|rnz|rp|rpо|rst|rz|rm|rр|rре|rро|rс)\b</rule>
+	<rule style="CommandJmpCall">\b(CALL|CNC|CNZ|CP|CPO|CZ|CM|CP|CPE|CPO|CC|JMP|JNC|JNZ|JP|JPO|JZ|JM|JP|JPE|JPO|JC|PCHL|RET|RNC|RNZ|RP|RPO|RST|RZ|RM|RP|RPE|RPO|RC|call|cnc|cnz|cp|cpo|cz|cm|cp|cpe|cpo|cc|jmp|jnc|jnz|jp|jpo|jz|jm|jp|jpe|jpo|jc|pchl|ret|rnc|rnz|rp|rpo|rst|rz|rm|rp|rpe|rpo|rc)\b</rule>
 	<rule style="Command">\b(DCX|DI|EI|HLT|IN|INX|LDA|LDAX|LHLD|LXI|MOV|MVI|NOP|OUT|POP|PUSH|SHLD|SPHL|STA|STAX|XCHG|XTHL|dcx|di|ei|hlt|in|inx|lda|ldax|lhld|lxi|mov|mvi|nop|out|pop|push|shld|sphl|sta|stax|xchg|xthl)\b</rule>
 	<rule style="CommandChangeFlags">\b(ACI|ADC|ADD|ADI|ANA|ANI|CMA|CMC|CMP|CPI|DAA|DAD|DCR|INR|ORA|ORI|RAL|RAR|RLC|RRC|SBB|SBI|STC|SUB|SUI|XRA|XRI|aci|adc|add|adi|ana|ani|cma|cmc|cmp|cpi|daa|dad|dcr|inr|ora|ori|ral|rar|rlc|rrc|sbb|sbi|stc|sub|sui|xra|xri)\b</rule>
 </doc>

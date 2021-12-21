@@ -1,4 +1,5 @@
 ﻿using fileinfo.Helpers;
+using fileinfo.Services.Dasm.Model;
 using System.Text;
 
 namespace fileinfo.Services
@@ -11,9 +12,9 @@ namespace fileinfo.Services
 
         public static HashSet<ushort> Alalyze(byte[] content, ushort address)
         {
-            OpCodeArray opCodes = new OpCodeArray();
-            HashSet<ushort> codeAddress = new HashSet<ushort>();
-            using (MemoryStream memory = new MemoryStream(content))
+            OpCodeArray opCodes = new();
+            HashSet<ushort> codeAddress = new();
+            using (MemoryStream memory = new(content))
             {
                 AlalyzeBlock(memory, address, opCodes, codeAddress);
             }
@@ -75,30 +76,28 @@ namespace fileinfo.Services
 
         public static void DisAssembleCode(StringBuilder text, byte[] content, ushort address, HashSet<ushort> codeAddress, Func<byte, bool, char> encoding)
         {
-            OpCodeArray opCodes = new OpCodeArray();
-            using (MemoryStream memory = new MemoryStream(content))
+            OpCodeArray opCodes = new();
+            using MemoryStream memory = new(content);
+            while (true)
             {
-                while (true)
+                ushort addr = (ushort)(address + memory.Position);
+                if (codeAddress.Contains(addr))
                 {
-                    ushort addr = (ushort)(address + memory.Position);
-                    if (codeAddress.Contains(addr))
-                    {
-                        var code = memory.ReadByte();
-                        if (code == -1) return;
-                        var item = opCodes.List[code];
-                        if (item == null) throw new IndexOutOfRangeException();
-                        item.Parse(memory);
-                        text.AppendFormat("{0, -32};{1}", item.ToString(), addr.ToHexAsm());
-                        text.AppendLine();
-                    }
-                    else
-                    {
-                        var data = memory.ReadByte();
-                        if (data == -1) return;
-                        var line = String.Format("DB   {0}", ((byte)data).ToHexAsm());
-                        text.AppendFormat("{0, -32};{1} '{2}'", line, addr.ToHexAsm(), encoding((byte)data, false));
-                        text.AppendLine();
-                    }
+                    var code = memory.ReadByte();
+                    if (code == -1) return;
+                    var item = opCodes.List[code];
+                    if (item == null) throw new IndexOutOfRangeException();
+                    item.Parse(memory);
+                    text.AppendFormat("{0, -32};{1}", item.ToString(), addr.ToHexAsm());
+                    text.AppendLine();
+                }
+                else
+                {
+                    var data = memory.ReadByte();
+                    if (data == -1) return;
+                    var line = String.Format("DB   {0}", ((byte)data).ToHexAsm());
+                    text.AppendFormat("{0, -32};{1} '{2}'", line, addr.ToHexAsm(), encoding((byte)data, false));
+                    text.AppendLine();
                 }
             }
         }

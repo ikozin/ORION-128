@@ -1,8 +1,6 @@
-﻿using fileinfo.Helpers;
-using fileinfo.Models;
-using fileinfo.Services;
+﻿using fileinfo.Models;
+using fileinfo.Services.Dasm.Service;
 using fileinfo.Views.DisAssembler;
-using System.Text;
 
 namespace fileinfo.Views
 {
@@ -12,36 +10,49 @@ namespace fileinfo.Views
         {
             if (!File.Exists(_control.fastColoredTextBoxView.DescriptionFile))
                 _control.fastColoredTextBoxView.DescriptionFile = "";
+            _control.btnRun.Click += BtnRun_Click;
         }
 
         public override void ClearView()
         {
             _control.fastColoredTextBoxView.Text = string.Empty;
+            _control.textBoxLabel.Text = String.Empty;
+            _control.textBoxData.Text = String.Empty;
+            _control.textBoxComment.Text = String.Empty;
+            _control.btnRun.Enabled = false;
         }
 
         protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
         {
             _control.fastColoredTextBoxView.Text = String.Empty;
+            _control.textBoxLabel.Text = String.Empty;
+            _control.textBoxData.Text = String.Empty;
+            _control.textBoxComment.Text = String.Empty;
+            _control.btnRun.Enabled = false;
 
             if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
 
-            var text = new StringBuilder();
-
-            text.Append("ORG ");
-            text.AppendLine(detail.Address!.Value.ToHexAsm());
-            text.AppendLine();
-
             try
             {
-                HashSet<ushort> codeAddress = DisAssemblerAlalyzer.Alalyze(detail.Content, detail.Address!.Value);
-                DisAssemblerAlalyzer.DisAssembleCode(text, detail.Content, detail.Address!.Value, codeAddress, encoding!);
+                BtnRun_Click(_control.btnRun, EventArgs.Empty);
             }
             catch (Exception ex)
             {
-                text.AppendLine(ex.Message);
+                _control.fastColoredTextBoxView.Text += Environment.NewLine;
+                _control.fastColoredTextBoxView.Text += ex.Message;
             }
 
-            _control.fastColoredTextBoxView.Text = text.ToString();
+            _control.btnRun.Enabled = true;
+        }
+
+        private void BtnRun_Click(object? sender, EventArgs e)
+        {
+            if (_detail == null) return;
+            Dictionary<string, string> labels = ConfigLoader.LoadDictionary(_control.textBoxLabel.Text);
+            Dictionary< string, string> datas = ConfigLoader.LoadDictionary(_control.textBoxData.Text);
+            Dictionary<string, string> comments = ConfigLoader.LoadDictionary(_control.textBoxComment.Text);
+            using MemoryStream stream = new(_detail.Content);
+            _control.fastColoredTextBoxView.Text = Services.Dasm.Program.Main(stream, _detail.Address!.Value, labels, datas, comments, _encoding!);
         }
     }
 }

@@ -60,4 +60,22 @@
   <metadata name="labelCount.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
+  <data name="fastColoredTextBoxView.ServiceColors" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAC5maWxlaW5mbywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlU
+        b2tlbj1udWxsDAMAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0
+        cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAiRmFzdENvbG9yZWRUZXh0Qm94
+        TlMuU2VydmljZUNvbG9ycwYAAAAoPENvbGxhcHNlTWFya2VyRm9yZUNvbG9yPmtfX0JhY2tpbmdGaWVs
+        ZCg8Q29sbGFwc2VNYXJrZXJCYWNrQ29sb3I+a19fQmFja2luZ0ZpZWxkKjxDb2xsYXBzZU1hcmtlckJv
+        cmRlckNvbG9yPmtfX0JhY2tpbmdGaWVsZCY8RXhwYW5kTWFya2VyRm9yZUNvbG9yPmtfX0JhY2tpbmdG
+        aWVsZCY8RXhwYW5kTWFya2VyQmFja0NvbG9yPmtfX0JhY2tpbmdGaWVsZCg8RXhwYW5kTWFya2VyQm9y
+        ZGVyQ29sb3I+a19fQmFja2luZ0ZpZWxkBAQEBAQEFFN5c3RlbS5EcmF3aW5nLkNvbG9yAwAAABRTeXN0
+        ZW0uRHJhd2luZy5Db2xvcgMAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IDAAAAFFN5c3RlbS5EcmF3aW5n
+        LkNvbG9yAwAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgMAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IDAAAA
+        AgAAAAX8////FFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAARuYW1lBXZhbHVlCmtub3duQ29sb3IFc3Rh
+        dGUBAAAACQcHAwAAAAoAAAAAAAAAAJYAAQAB+/////z///8KAAAAAAAAAACkAAEAAfr////8////CgAA
+        AAAAAAAAlgABAAH5/////P///woAAAAAAAAAAI0AAQAB+P////z///8KAAAAAAAAAACkAAEAAff////8
+        ////CgAAAAAAAAAAlgABAAs=
+</value>
+  </data>
 </root>

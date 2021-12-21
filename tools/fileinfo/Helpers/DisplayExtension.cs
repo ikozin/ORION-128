@@ -4,7 +4,7 @@ namespace fileinfo.Helpers
 {
     internal static class DisplayExtension
     {
-        private static StringBuilder _text = new StringBuilder(256);
+        private static readonly StringBuilder _text = new(256);
 
         public static string ToHex(this byte? value)
         {
@@ -28,11 +28,23 @@ namespace fileinfo.Helpers
             return value.ToString("X4");
         }
 
+        public static string ToHexAsm(this byte? value)
+        {
+            if (!value.HasValue) return String.Empty;
+            return value.Value.ToHexAsm();
+        }
+
         public static string ToHexAsm(this byte value)
         {
             string data = String.Format("{0:X2}H", value);
             if (data[0] >= 'A') data = '0' + data;
             return data;
+        }
+
+        public static string ToHexAsm(this ushort? value)
+        {
+            if (!value.HasValue) return String.Empty;
+            return value.Value.ToHexAsm();
         }
 
         public static string ToHexAsm(this ushort value)
