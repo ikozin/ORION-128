@@ -1,16 +1,23 @@
 ﻿using fileinfo.Helpers;
 using fileinfo.Models;
 using fileinfo.Services;
+using fileinfo.Views.DisAssembler;
 using System.Text;
 
 namespace fileinfo.Views
 {
-    internal class DisAssemblerViewComponent : TextViewComponent
+    internal class DisAssemblerViewComponent : ViewComponent<DisAssemblerUserControl>
     {
-        public override void ReloadView(FileDetails detail, Func<byte, bool, char> encoding)
+        public override void ClearView()
         {
-            _control.Text = String.Empty;
-            if (detail.Content == null || detail.Content.Length == 0) return;
+            _control.fastColoredTextBoxView.Text = string.Empty;
+        }
+
+        protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
+        {
+            _control.fastColoredTextBoxView.Text = String.Empty;
+
+            if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
 
             var text = new StringBuilder();
 
@@ -21,14 +28,14 @@ namespace fileinfo.Views
             try
             {
                 HashSet<ushort> codeAddress = DisAssemblerAlalyzer.Alalyze(detail.Content, detail.Address!.Value);
-                DisAssemblerAlalyzer.DisAssembleCode(text, detail.Content, detail.Address!.Value, codeAddress, encoding);
+                DisAssemblerAlalyzer.DisAssembleCode(text, detail.Content, detail.Address!.Value, codeAddress, encoding!);
             }
             catch (Exception ex)
             {
                 text.AppendLine(ex.Message);
             }
 
-            _control.Text = text.ToString();
+            _control.fastColoredTextBoxView.Text = text.ToString();
         }
     }
 }

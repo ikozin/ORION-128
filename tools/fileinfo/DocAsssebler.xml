@@ -1,0 +1,11 @@
+﻿<doc>
+	<style name="Green" color="Green" />
+	<style name="Maroon" color="Maroon" fontStyle="Bold,Italic" />
+	<style name="Blue" color="Blue"/>
+	<style name="Red" color="Red" backColor="#f5f5e5" />
+
+	<rule style="Green" >(?&lt;range&gt;;.*$)</rule>
+	<rule style="Maroon">\W(?&lt;range&gt;\d[0-9a-fA-F]+?[hH])[\W\s]?</rule>
+	<rule style="Maroon">\W(?&lt;range&gt;\d+?)[\W\s]+?</rule>
+
+</doc>
