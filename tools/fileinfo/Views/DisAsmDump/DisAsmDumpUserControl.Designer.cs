@@ -101,7 +101,6 @@
         #endregion
 
         private Panel panelInfo;
-        private Label labelCount;
         public ComboBox comboBoxCount;
         public TextBox textBoxView;
     }

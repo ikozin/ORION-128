@@ -2,7 +2,7 @@
 
 namespace fileinfo.Helpers
 {
-    internal static  class GroupByExtension
+    internal static class GroupByExtension
     {
         public static ListViewGroup GetGroup(this ListView control, string key, string text)
         {
@@ -24,13 +24,13 @@ namespace fileinfo.Helpers
             }
             return control.GetGroup("LIST", "Остальные");
         }
-        
+
         public static ListViewGroup GetGroupByPath(ListView control, FileDetails detail)
         {
             string key = Path.GetDirectoryName(detail.FileName)!;
             return control.GetGroup(key, key);
         }
-        
+
         public static ListViewGroup GetGroupByCustom(ListView control, FileDetails detail)
         {
             if (detail.Name.EndsWith("$"))
@@ -78,7 +78,7 @@ namespace fileinfo.Helpers
             string key = detail.Hash.ToHex();
             return control.GetGroup(key, key);
         }
-        
+
         public static void GetGroupByCommonFinish(ListView control)
         {
             foreach (ListViewGroup group in control.Groups)
@@ -86,7 +86,7 @@ namespace fileinfo.Helpers
                 group.Subtitle = String.Format("{0} шт.", group.Items.Count);
             }
         }
-        
+
         public static void GetGroupByHashFinish(ListView control)
         {
             List<ListViewItem> list = new List<ListViewItem>();

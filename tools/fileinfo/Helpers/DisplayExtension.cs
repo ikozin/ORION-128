@@ -47,7 +47,7 @@ namespace fileinfo.Helpers
             if (!value.HasValue) return String.Empty;
             return String.Format("{0:X4} ({0})", value.Value);
         }
-        
+
         public static string ToHex(this byte[] value)
         {
             _text.Clear();

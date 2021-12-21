@@ -1,10 +1,10 @@
 ﻿namespace fileinfo.Controls
 {
-    internal class ToolStripMenuItemEncoding: ToolStripMenuItem
+    internal class ToolStripMenuItemEncoding : ToolStripMenuItem
     {
         public Func<byte, bool, char> Handler { get; private set; }
         private readonly TextEncodingTool _tool;
-        public ToolStripMenuItemEncoding(TextEncodingTool tool, string text, Func<byte, bool, char> handler):
+        public ToolStripMenuItemEncoding(TextEncodingTool tool, string text, Func<byte, bool, char> handler) :
             base(text)
         {
             _tool = tool;

@@ -1,8 +1,8 @@
-using System.Diagnostics;
 using fileinfo.Controls;
 using fileinfo.Helpers;
 using fileinfo.Models;
 using fileinfo.Views;
+using System.Diagnostics;
 
 namespace fileinfo
 {
@@ -36,7 +36,7 @@ namespace fileinfo
             _format.Add("Картинка", new PictureViewComponent());
             _format.Add("Дизассемблер", new DisAssemblerViewComponent());
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent());
-            _format.CurrentView = _format.GetViews().First();
+            _format.CurrentView = _format.GetViews()[3];//.Last();
             SetCurrentView();
         }
 
@@ -79,7 +79,7 @@ namespace fileinfo
         }
 
         private static void LoadFiles<T>(List<FileDetails> list, string path, string extension)
-            where T: FileDetails, new()
+            where T : FileDetails, new()
         {
             var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
             foreach (var file in files)
@@ -92,7 +92,7 @@ namespace fileinfo
 
         private void directoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
             var path = listViewFile.SelectedItems[0].SubItems[columnHeaderPath.Index].Text;
             //Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + @"C:\Repos\Temp\orion_all_prog\Orion-Tech\Texts\TXT2\z80cardII.txt"));
             Process explorer = new Process();

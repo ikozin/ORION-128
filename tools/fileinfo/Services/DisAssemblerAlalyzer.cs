@@ -30,15 +30,15 @@ namespace fileinfo.Services
                 var code = memory.ReadByte();
                 if (code == -1) return;
                 var item = opCodes.List[code];
-                if (item == null)  return;
+                if (item == null) return;
                 item.Parse(memory);
                 codeAddress.Add(addr);
                 string command = item.ToString();
 
-                 // Обрабатываем команды переходов jmp
+                // Обрабатываем команды переходов jmp
                 if (jumpOpCodes.Any(c => command.StartsWith(c)))
                 {
-                     // При выходе за пределы код прекращаем анализ
+                    // При выходе за пределы код прекращаем анализ
                     if (item.ParamWord!.Value < address || item.ParamWord!.Value > address + memory.Length)
                         return;
                     // Если анализа еще не было, то делаем его.
@@ -86,7 +86,7 @@ namespace fileinfo.Services
                         var code = memory.ReadByte();
                         if (code == -1) return;
                         var item = opCodes.List[code];
-                        if (item == null)  throw new IndexOutOfRangeException();
+                        if (item == null) throw new IndexOutOfRangeException();
                         item.Parse(memory);
                         text.AppendFormat("{0, -32};{1}", item.ToString(), addr.ToHexAsm());
                         text.AppendLine();

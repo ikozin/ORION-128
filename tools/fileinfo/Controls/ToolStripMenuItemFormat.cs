@@ -1,9 +1,8 @@
-﻿using fileinfo.Models;
-using fileinfo.Views;
+﻿using fileinfo.Views;
 
 namespace fileinfo.Controls
 {
-    internal class ToolStripMenuItemFormat: ToolStripMenuItem
+    internal class ToolStripMenuItemFormat : ToolStripMenuItem
     {
         public IViewComponent Component { get; private set; }
         private readonly TextFormatTool _tool;

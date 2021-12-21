@@ -1,10 +1,4 @@
-﻿using fileinfo.Models;
-using fileinfo.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using fileinfo.Views;
 
 namespace fileinfo.Controls
 {

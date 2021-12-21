@@ -1,6 +1,5 @@
 ﻿using fileinfo.Helpers;
 using fileinfo.Models;
-using fileinfo.Services;
 using fileinfo.Views.DisAsmDump;
 using System.Text;
 
@@ -8,12 +7,9 @@ namespace fileinfo.Views
 {
     internal class DisAsmDumpViewComponent : ViewComponent<DisAsmDumpUserControl>
     {
-        private FileDetails _detail;
-        private Func<byte, bool, char> _encoding;
+        private int _count;
 
-        private int  _count = 1;
-
-        public DisAsmDumpViewComponent(): base()
+        public DisAsmDumpViewComponent() : base()
         {
             _control.comboBoxCount.SelectedIndexChanged += ComboBoxCount_SelectedIndexChanged;
             _count = int.Parse(_control.comboBoxCount.SelectedItem!.ToString()!);
@@ -24,13 +20,11 @@ namespace fileinfo.Views
             _control.textBoxView.Text = string.Empty;
         }
 
-        public override void ReloadView(FileDetails detail, Func<byte, bool, char> encoding)
+        protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
         {
-            _detail = detail;
-            _encoding = encoding;
-
             _control.textBoxView.Text = String.Empty;
-            if (detail.Content == null || detail.Content.Length == 0) return;
+
+            if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
 
             var text = new StringBuilder();
 
@@ -60,10 +54,11 @@ namespace fileinfo.Views
 
             _control.textBoxView.Text = text.ToString();
         }
+
         private void ComboBoxCount_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            _count = int.Parse(((ComboBox)sender).SelectedItem!.ToString()!);
-            ReloadView(_detail, _encoding);
+            _count = int.Parse(_control.comboBoxCount.SelectedItem!.ToString()!);
+            LoadData(_detail, _encoding);
         }
-}
+    }
 }

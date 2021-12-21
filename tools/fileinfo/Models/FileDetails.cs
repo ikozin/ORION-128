@@ -2,7 +2,7 @@
 
 namespace fileinfo.Models
 {
-    internal abstract class FileDetails: IComparable<FileDetails>
+    internal abstract class FileDetails : IComparable<FileDetails>
     {
         public bool IsError { get; protected set; }
         public string FileName { get; protected set; }

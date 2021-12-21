@@ -31,16 +31,17 @@
             System.Windows.Forms.Label labelAddress;
             System.Windows.Forms.Label labelWidth;
             System.Windows.Forms.Label labelHeight;
+            System.Windows.Forms.Button btnSaveAs;
             this.panelInfo = new System.Windows.Forms.Panel();
             this.textBoxHeight = new System.Windows.Forms.TextBox();
             this.textBoxWidth = new System.Windows.Forms.TextBox();
             this.textBoxAddress = new System.Windows.Forms.TextBox();
-            this.btnSaveAs = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             labelAddress = new System.Windows.Forms.Label();
             labelWidth = new System.Windows.Forms.Label();
             labelHeight = new System.Windows.Forms.Label();
+            btnSaveAs = new System.Windows.Forms.Button();
             this.panelInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
@@ -72,6 +73,16 @@
             labelHeight.TabIndex = 4;
             labelHeight.Text = "Высота";
             // 
+            // btnSaveAs
+            // 
+            btnSaveAs.Location = new System.Drawing.Point(388, 8);
+            btnSaveAs.Name = "btnSaveAs";
+            btnSaveAs.Size = new System.Drawing.Size(137, 29);
+            btnSaveAs.TabIndex = 6;
+            btnSaveAs.Text = "Сохранить как ...";
+            btnSaveAs.UseVisualStyleBackColor = true;
+            btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
+            // 
             // panelInfo
             // 
             this.panelInfo.Controls.Add(this.textBoxHeight);
@@ -80,7 +91,7 @@
             this.panelInfo.Controls.Add(labelWidth);
             this.panelInfo.Controls.Add(this.textBoxAddress);
             this.panelInfo.Controls.Add(labelAddress);
-            this.panelInfo.Controls.Add(this.btnSaveAs);
+            this.panelInfo.Controls.Add(btnSaveAs);
             this.panelInfo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelInfo.Location = new System.Drawing.Point(0, 0);
             this.panelInfo.Name = "panelInfo";
@@ -111,27 +122,20 @@
             this.textBoxAddress.Size = new System.Drawing.Size(66, 27);
             this.textBoxAddress.TabIndex = 1;
             // 
-            // btnSaveAs
-            // 
-            this.btnSaveAs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveAs.Location = new System.Drawing.Point(444, 7);
-            this.btnSaveAs.Name = "btnSaveAs";
-            this.btnSaveAs.Size = new System.Drawing.Size(137, 29);
-            this.btnSaveAs.TabIndex = 6;
-            this.btnSaveAs.Text = "Сохранить как ...";
-            this.btnSaveAs.UseVisualStyleBackColor = true;
-            this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
-            // 
             // saveFileDialog
             // 
+            this.saveFileDialog.DefaultExt = "bmp";
+            this.saveFileDialog.Filter = "Bitmap files|*.bmp";
             this.saveFileDialog.Title = "Сохранить как ...";
             // 
             // pictureBox
             // 
+            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Location = new System.Drawing.Point(0, 47);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(593, 412);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
@@ -147,18 +151,18 @@
             this.panelInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private Panel panelInfo;
-        private Label labelAddress;
-        private Button btnSaveAs;
         private SaveFileDialog saveFileDialog;
         public TextBox textBoxAddress;
         public TextBox textBoxHeight;
         public TextBox textBoxWidth;
         public PictureBox pictureBox;
+        public Button btnSaveAs;
+        public Panel panelInfo;
     }
 }
