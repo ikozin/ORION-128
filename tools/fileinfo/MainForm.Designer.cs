@@ -40,6 +40,7 @@
             this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelViewComponent = new System.Windows.Forms.Panel();
             this.statusStripView = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelCrc = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSum = new System.Windows.Forms.ToolStripStatusLabel();
@@ -55,7 +56,6 @@
             this.toolStripSplitButtonGroupByPath = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByHash = new System.Windows.Forms.ToolStripMenuItem();
-            this.panelViewComponent = new System.Windows.Forms.Panel();
             columnHeaderName = new System.Windows.Forms.ColumnHeader();
             columnHeaderSize = new System.Windows.Forms.ColumnHeader();
             columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
@@ -120,6 +120,7 @@
             columnHeaderHash,
             this.columnHeaderPath});
             this.listViewFile.ContextMenuStrip = this.contextMenuStripFile;
+            this.listViewFile.Cursor = System.Windows.Forms.Cursors.Default;
             this.listViewFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFile.FullRowSelect = true;
             this.listViewFile.GridLines = true;
@@ -158,6 +159,15 @@
             this.directoryToolStripMenuItem.Size = new System.Drawing.Size(304, 24);
             this.directoryToolStripMenuItem.Text = "Открыть расположение файла ...";
             this.directoryToolStripMenuItem.Click += new System.EventHandler(this.directoryToolStripMenuItem_Click);
+            // 
+            // panelViewComponent
+            // 
+            this.panelViewComponent.Cursor = System.Windows.Forms.Cursors.Default;
+            this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelViewComponent.Location = new System.Drawing.Point(0, 27);
+            this.panelViewComponent.Name = "panelViewComponent";
+            this.panelViewComponent.Size = new System.Drawing.Size(530, 374);
+            this.panelViewComponent.TabIndex = 4;
             // 
             // statusStripView
             // 
@@ -277,14 +287,6 @@
             this.toolStripSplitButtonGroupByHash.Size = new System.Drawing.Size(309, 26);
             this.toolStripSplitButtonGroupByHash.Text = "Группировка дублей";
             this.toolStripSplitButtonGroupByHash.Click += new System.EventHandler(this.toolStripSplitButtonGroupByHash_Click);
-            // 
-            // panelViewComponent
-            // 
-            this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelViewComponent.Location = new System.Drawing.Point(0, 27);
-            this.panelViewComponent.Name = "panelViewComponent";
-            this.panelViewComponent.Size = new System.Drawing.Size(530, 374);
-            this.panelViewComponent.TabIndex = 4;
             // 
             // MainForm
             // 

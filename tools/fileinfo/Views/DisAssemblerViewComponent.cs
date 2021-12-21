@@ -8,6 +8,12 @@ namespace fileinfo.Views
 {
     internal class DisAssemblerViewComponent : ViewComponent<DisAssemblerUserControl>
     {
+        public DisAssemblerViewComponent() : base()
+        {
+            if (!File.Exists(_control.fastColoredTextBoxView.DescriptionFile))
+                _control.fastColoredTextBoxView.DescriptionFile = "";
+        }
+
         public override void ClearView()
         {
             _control.fastColoredTextBoxView.Text = string.Empty;

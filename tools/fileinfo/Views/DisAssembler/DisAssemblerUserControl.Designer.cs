@@ -50,16 +50,17 @@
         '\''};
             this.fastColoredTextBoxView.AutoIndentCharsPatterns = "^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;=]+);\n^\\s*(case|default)\\s*[^:]*(" +
     "?<range>:)\\s*(?<range>[^;]+);";
-            this.fastColoredTextBoxView.AutoScrollMinSize = new System.Drawing.Size(151, 54);
+            this.fastColoredTextBoxView.AutoScrollMinSize = new System.Drawing.Size(31, 18);
             this.fastColoredTextBoxView.BackBrush = null;
             this.fastColoredTextBoxView.CharHeight = 18;
             this.fastColoredTextBoxView.CharWidth = 10;
             this.fastColoredTextBoxView.CommentPrefix = ";";
             this.fastColoredTextBoxView.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.fastColoredTextBoxView.DefaultMarkerSize = 8;
-            this.fastColoredTextBoxView.DescriptionFile = "C:\\Repos\\ORION-128\\tools\\fileinfo\\DocAsssebler.xml";
+            this.fastColoredTextBoxView.DescriptionFile = "DocAsssebler.xml";
             this.fastColoredTextBoxView.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.fastColoredTextBoxView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fastColoredTextBoxView.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.fastColoredTextBoxView.IsReplaceMode = false;
             this.fastColoredTextBoxView.Location = new System.Drawing.Point(0, 0);
             this.fastColoredTextBoxView.Name = "fastColoredTextBoxView";
@@ -68,7 +69,6 @@
             this.fastColoredTextBoxView.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("fastColoredTextBoxView.ServiceColors")));
             this.fastColoredTextBoxView.Size = new System.Drawing.Size(653, 496);
             this.fastColoredTextBoxView.TabIndex = 0;
-            this.fastColoredTextBoxView.Text = " 0100H\r\n hshdtsth\r\nlgkjhgkklkhk";
             this.fastColoredTextBoxView.Zoom = 100;
             // 
             // DisAssemblerUserControl
