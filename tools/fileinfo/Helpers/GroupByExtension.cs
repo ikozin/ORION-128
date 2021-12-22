@@ -16,7 +16,7 @@ namespace fileinfo.Helpers
             return group;
         }
 
-        public static ListViewGroup GetGroupByExec(ListView control, FileDetails detail)
+        public static ListViewGroup GetGroupByExec(ListView control, IFileDetail detail)
         {
             if (detail.Name.EndsWith("$"))
             {
@@ -25,13 +25,13 @@ namespace fileinfo.Helpers
             return control.GetGroup("LIST", "Остальные");
         }
 
-        public static ListViewGroup GetGroupByPath(ListView control, FileDetails detail)
+        public static ListViewGroup GetGroupByPath(ListView control, IFileDetail detail)
         {
             string key = Path.GetDirectoryName(detail.FileName)!;
             return control.GetGroup(key, key);
         }
 
-        public static ListViewGroup GetGroupByCustom(ListView control, FileDetails detail)
+        public static ListViewGroup GetGroupByCustom(ListView control, IFileDetail detail)
         {
             if (detail.Name.EndsWith("$"))
             {
@@ -73,7 +73,7 @@ namespace fileinfo.Helpers
             //return control.GetGroup("OTHER", "Остальные");
         }
 
-        public static ListViewGroup GetGroupByHash(ListView control, FileDetails detail)
+        public static ListViewGroup GetGroupByHash(ListView control, IFileDetail detail)
         {
             string key = detail.Hash.ToHex();
             return control.GetGroup(key, key);

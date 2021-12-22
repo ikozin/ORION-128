@@ -2,12 +2,12 @@
 
 namespace fileinfo.Views
 {
-    internal interface IViewComponent
+    public interface IViewComponent
     {
-        Control GetViewControl();
+        void SetEncoding(Func<byte, bool, char> encoding);
 
-        void ReloadView(FileDetails detail, Func<byte, bool, char> encoding);
+        IFileDetail? Current { get; set; }
 
-        void ClearView();
+        UserControl Control { get; }
     }
 }

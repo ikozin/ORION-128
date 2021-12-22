@@ -28,7 +28,7 @@ namespace fileinfo.Services.Dasm.Service
             int len = hi - lo;
             for (int i = 0; i <= len; lo++, i++) // ushort при переполнении станет 0, поэтому с ним сравнивать бесполезно
             {
-                string addr = lo.ToHex();
+                string addr = lo.ToHexAsm();
                 list.Add(addr, value);
             }
             return true;

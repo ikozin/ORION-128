@@ -2,9 +2,9 @@
 
 namespace fileinfo.Models
 {
-    internal class OrdFileDetails : FileDetails
+    public class BruFileDetail : FileDetail
     {
-        public override void LoadData(string fileName)
+        public override IFileDetail LoadData(string fileName)
         {
             try
             {
@@ -17,7 +17,7 @@ namespace fileinfo.Models
                     Size = reader.ReadUInt16();
                     var attribute = reader.ReadByte();
                     var reserv = reader.ReadBytes(3);
-                    Content = reader.ReadBytes(Size.Value);
+                    Content = reader.ReadBytes(Size);
                     ComputeHash();
                 }
             }
@@ -26,6 +26,8 @@ namespace fileinfo.Models
                 Message = ex.Message;
                 IsError = true;
             }
+            return this;
         }
+
     }
 }

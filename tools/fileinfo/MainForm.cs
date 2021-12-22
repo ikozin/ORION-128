@@ -8,11 +8,11 @@ namespace fileinfo
 {
     public partial class MainForm : Form
     {
-        private Func<ListView, FileDetails, ListViewGroup> _actionGroup;
+        private Func<ListView, IFileDetail, ListViewGroup> _actionGroup;
         private Action<ListView> _actionGroupFinish;
         private readonly TextEncodingTool _encoding;
         private readonly TextFormatTool _format;
-        private readonly List<FileDetails> _listDetails = new List<FileDetails>(1024);
+        private readonly List<IFileDetail> _listDetails = new(1024);
 
         public MainForm()
         {
@@ -22,34 +22,71 @@ namespace fileinfo
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
 
             _encoding = new TextEncodingTool(toolStripDropDownButtonEncoding,
-                IsSelectedItem, RefreshFileView);
+                IsSelectedItem, SetFileViewEncoding);
             _encoding.Add("КОИ-7 Н2", EncodingExtension.Convert_Koi7N2);
             _encoding.Add("КОИ-8R", EncodingExtension.Convert_Koi8R);
             _encoding.Add("CP866", EncodingExtension.Convert_Cp866);
             _encoding.CurrentHandler = EncodingExtension.Convert_Koi7N2;
 
             _format = new TextFormatTool(toolStripDropDownButtonFormat,
-                IsSelectedItem, SetCurrentView);
-            _format.Add("HEX с адреса", new HexWithAddrViewComponent());
-            _format.Add("HEX", new HexViewComponent());
-            _format.Add("Текст", new TextViewComponent());
-            _format.Add("Картинка", new PictureViewComponent());
-            _format.Add("Дизассемблер", new DisAssemblerViewComponent());
-            _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent());
-            _format.CurrentView = _format.GetViews()[3];//.Last();
-            SetCurrentView();
+                IsSelectedItem, SetFileViewCurrent);
+            _format.Add("HEX с адреса", new HexWithAddrViewComponent(_encoding.CurrentHandler));
+            _format.Add("HEX", new HexViewComponent(_encoding.CurrentHandler));
+            _format.Add("Текст", new TextViewComponent(_encoding.CurrentHandler));
+            _format.Add("Картинка", new PictureViewComponent(_encoding.CurrentHandler));
+            _format.Add("Дизассемблер", new DisAssemblerViewComponent(_encoding.CurrentHandler));
+            _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));
+            _format.Add("Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler));
+            _format.CurrentView = _format.GetViews().First();
         }
 
         private void toolStripButtonSelectDirectory_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK) return;
             _listDetails.Clear();
-            LoadFiles<BruFileDetails>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
-            //LoadFiles<OrdFileDetails>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
-            //LoadFiles<RkoFileDetails>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
+            LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
+            //LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
+            //LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
             _listDetails.Sort();
 
             RefreshGroupView();
+        }
+
+        private static void LoadFiles<T>(List<IFileDetail> list, string path, string extension)
+            where T : IFileDetail, new()
+        {
+            var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                IFileDetail detail = new T();
+                list.Add(detail.LoadData(file));
+            }
+        }
+
+        private bool IsSelectedItem()
+        {
+            return listViewFile.SelectedItems.Count > 0;
+        }
+
+        private void SetFileViewEncoding()
+        {
+            _format.CurrentView?.SetEncoding(_encoding.CurrentHandler!);
+        }
+
+        private void SetFileViewCurrent()
+        {
+            panelViewComponent.SuspendLayout();
+            panelViewComponent.Controls.Clear();
+            var control = _format.CurrentView;
+            if (control != null)
+            {
+                panelViewComponent.Controls.Add(control.Control);
+                control.Control.Dock = DockStyle.Fill;
+                control.Current = IsSelectedItem() ?
+                    ((ListViewItemExt)listViewFile.SelectedItems[0]).Detail :
+                    null;
+            }
+            panelViewComponent.ResumeLayout();
         }
 
         private void RefreshGroupView()
@@ -58,36 +95,16 @@ namespace fileinfo
             listViewFile.Groups.Clear();
             listViewFile.Items.Clear();
 
-            foreach (var f in _listDetails)
+            foreach (var file in _listDetails)
             {
-                var item = listViewFile.Items.Add(Path.GetFileName(f.FileName));
-                item.SubItems.Add(f.Name);
-                item.SubItems.Add(f.Size.ToHexWithNumber());
-                item.SubItems.Add(f.Address.ToHex());
-                item.SubItems.Add(f.Hash.ToHex());
-                item.SubItems.Add(f.FileName);
-
-                item.Tag = f;
-                item.ToolTipText = f.Message;
-
-                item.Group = _actionGroup(listViewFile, f);
+                ListViewItemExt item = new(file);
+                listViewFile.Items.Add(item);
+                item.Group = _actionGroup(listViewFile, file);
             }
             _actionGroupFinish(listViewFile);
             listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listViewFile.EndUpdate();
-            RefreshFileView();
-        }
-
-        private static void LoadFiles<T>(List<FileDetails> list, string path, string extension)
-            where T : FileDetails, new()
-        {
-            var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                T f = new T();
-                f.LoadData(file);
-                list.Add(f);
-            }
+            //RefreshFileView();
         }
 
         private void directoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -95,7 +112,7 @@ namespace fileinfo
 
             var path = listViewFile.SelectedItems[0].SubItems[columnHeaderPath.Index].Text;
             //Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + @"C:\Repos\Temp\orion_all_prog\Orion-Tech\Texts\TXT2\z80cardII.txt"));
-            Process explorer = new Process();
+            Process explorer = new();
             explorer.StartInfo.UseShellExecute = true;
             explorer.StartInfo.FileName = "explorer.exe";
             explorer.StartInfo.Arguments = String.Format("/select, \"{0}\"", path);
@@ -109,39 +126,14 @@ namespace fileinfo
 
         private void listViewFile_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            RefreshFileView();
-        }
-
-        private bool IsSelectedItem()
-        {
-            return listViewFile.SelectedItems.Count > 0;
-        }
-
-        private void SetCurrentView()
-        {
-            var control = _format.CurrentView!.GetViewControl();
-            if (!panelViewComponent.Controls.Contains(control))
+            var control = _format.CurrentView;
+            if (control != null)
             {
-                panelViewComponent.SuspendLayout();
-                panelViewComponent.Controls.Clear();
-                panelViewComponent.Controls.Add(control);
-                panelViewComponent.ResumeLayout();
+                if (e.IsSelected)
+                {
+                    control.Current = ((ListViewItemExt)e.Item).Detail;
+                }
             }
-            RefreshFileView();
-        }
-
-        private void RefreshFileView()
-        {
-            var item = IsSelectedItem() ? listViewFile.SelectedItems[0] : null;
-            if (item == null)
-            {
-                _format.CurrentView!.ClearView();
-                toolStripStatusLabelSum.Text = String.Empty;
-                return;
-            }
-            var detail = (FileDetails)item.Tag;
-            _format.CurrentView!.ReloadView(detail, _encoding.CurrentHandler!);
-            toolStripStatusLabelSum.Text = ContentToCheckSum.Process(detail, _encoding.CurrentHandler!);
         }
 
         private void toolStripSplitButtonGroupByExec_Click(object sender, EventArgs e)

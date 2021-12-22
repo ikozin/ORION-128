@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DocAsssebler.xml" />
+    <None Remove="SyntaxHighlighterAsssebler.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="DocAsssebler.xml">
+    <Content Include="SyntaxHighlighterAsssebler.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

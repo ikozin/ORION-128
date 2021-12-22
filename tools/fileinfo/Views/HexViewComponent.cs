@@ -1,16 +1,19 @@
-﻿using fileinfo.Models;
-
-namespace fileinfo.Views
+﻿namespace fileinfo.Views
 {
-    internal class HexViewComponent : HexWithAddrViewComponent
+    public partial class HexViewComponent : HexWithAddrViewComponent
     {
-        protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
+        public HexViewComponent() : base()
         {
-            _control.Text = String.Empty;
+        }
 
-            if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
+        public HexViewComponent(Func<byte, bool, char> encoding) : base(encoding)
+        {
+        }
 
-            _control.Text = ByteArrayToHex(detail.Content, 0, encoding!);
+        protected override void LoadView()
+        {
+            textBoxView.Text = ByteArrayToHex(0);
+            textBoxView.Enabled = true;
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Text;
-using System.Collections;
-using System.Drawing;
-using System.IO;
 
 namespace FastColoredTextBoxNS
 {
@@ -11,7 +7,7 @@ namespace FastColoredTextBoxNS
     /// This class contains the source text (chars and styles).
     /// It stores a text lines, the manager of commands, undo/redo stack, styles.
     /// </summary>
-    public class TextSource: IList<Line>, IDisposable
+    public class TextSource : IList<Line>, IDisposable
     {
         readonly protected List<Line> lines = new List<Line>();
         protected LinesAccessor linesAccessor;
@@ -53,22 +49,24 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Current focused FastColoredTextBox
         /// </summary>
-        public FastColoredTextBox CurrentTB {
+        public FastColoredTextBox CurrentTB
+        {
             get { return currentTB; }
-            set {
+            set
+            {
                 if (currentTB == value)
                     return;
                 currentTB = value;
-                OnCurrentTBChanged(); 
+                OnCurrentTBChanged();
             }
         }
 
         public virtual void ClearIsChanged()
         {
-            foreach(var line in lines)
+            foreach (var line in lines)
                 line.IsChanged = false;
         }
-        
+
         public virtual Line CreateLine()
         {
             return new Line(GenerateUniqueLineId());
@@ -107,10 +105,12 @@ namespace FastColoredTextBoxNS
 
         public virtual Line this[int i]
         {
-            get{
-                 return lines[i];
+            get
+            {
+                return lines[i];
             }
-            set {
+            set
+            {
                 throw new NotImplementedException();
             }
         }
@@ -135,7 +135,7 @@ namespace FastColoredTextBoxNS
 
         IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return (lines  as IEnumerator);
+            return (lines as IEnumerator);
         }
 
         public virtual int BinarySearch(Line item, IComparer<Line> comparer)
@@ -199,7 +199,7 @@ namespace FastColoredTextBoxNS
         public virtual void OnTextChanged(int fromLine, int toLine)
         {
             if (TextChanged != null)
-                TextChanged(this, new TextChangedEventArgs(Math.Min(fromLine, toLine), Math.Max(fromLine, toLine) ));
+                TextChanged(this, new TextChangedEventArgs(Math.Min(fromLine, toLine), Math.Max(fromLine, toLine)));
         }
 
         public class TextChangedEventArgs : EventArgs
@@ -328,10 +328,10 @@ namespace FastColoredTextBoxNS
         {
             using (StreamWriter sw = new StreamWriter(fileName, false, enc))
             {
-                for (int i = 0; i < Count - 1;i++ )
+                for (int i = 0; i < Count - 1; i++)
                     sw.WriteLine(lines[i].Text);
 
-                sw.Write(lines[Count-1].Text);
+                sw.Write(lines[Count - 1].Text);
             }
         }
     }

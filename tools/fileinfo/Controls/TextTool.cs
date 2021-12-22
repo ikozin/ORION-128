@@ -6,9 +6,9 @@ namespace fileinfo.Controls
     {
         internal class ToolStripMenuItemTool : ToolStripMenuItem
         {
-            public Func<FileDetails, Func<byte, bool, char>, string> Handler { get; private set; }
+            public Func<FileDetail, Func<byte, bool, char>, string> Handler { get; private set; }
             private readonly TextTool _tool;
-            public ToolStripMenuItemTool(TextTool tool, string text, Func<FileDetails, Func<byte, bool, char>, string> handler) :
+            public ToolStripMenuItemTool(TextTool tool, string text, Func<FileDetail, Func<byte, bool, char>, string> handler) :
                 base(text)
             {
                 _tool = tool;
@@ -21,7 +21,7 @@ namespace fileinfo.Controls
             }
         }
 
-        public Func<FileDetails, Func<byte, bool, char>, string>? CurrentHandler { get; set; }
+        public Func<FileDetail, Func<byte, bool, char>, string>? CurrentHandler { get; set; }
         public Action ClickAction { get; private set; }
 
         private readonly ToolStripDropDownButton _parent;
@@ -38,7 +38,7 @@ namespace fileinfo.Controls
             _parent.DropDownOpening += ToolStripMenuItemDropDownOpening;
         }
 
-        public void Add(string text, Func<FileDetails, Func<byte, bool, char>, string> handler)
+        public void Add(string text, Func<FileDetail, Func<byte, bool, char>, string> handler)
         {
             var item = new ToolStripMenuItemTool(this, text, handler);
             _parent.DropDownItems.Add(item);

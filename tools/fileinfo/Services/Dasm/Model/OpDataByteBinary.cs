@@ -2,7 +2,7 @@
 {
     public class OpDataByteBinary : OpDataBinary
     {
-        public OpDataByteBinary(string fmtBlank): base("DB", 1, fmtBlank)
+        public OpDataByteBinary(string fmtBlank) : base("DB", 1, fmtBlank)
         {
         }
     }

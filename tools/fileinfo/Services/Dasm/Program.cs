@@ -1,14 +1,13 @@
 ﻿using fileinfo.Helpers;
 using fileinfo.Services.Dasm.Model;
-using fileinfo.Services.Dasm.Service;
 using System.Text;
 
 namespace fileinfo.Services.Dasm
 {
     public class Program
     {
-        public static string Main(Stream stream, ushort org,
-            Dictionary<string, string> labels, 
+        public static string Process(Stream stream, ushort org,
+            Dictionary<string, string> labels,
             Dictionary<string, string> datas,
             Dictionary<string, string> comments,
             Func<byte, bool, char> encoding)
@@ -24,7 +23,7 @@ namespace fileinfo.Services.Dasm
             {
                 try
                 {
-                    string text;
+                    string? text;
                     ushort current = (ushort)(org + stream.Position);
                     string addr = current.ToHexAsm();
 
@@ -43,7 +42,7 @@ namespace fileinfo.Services.Dasm
                         }
                     }
 
-                    text = $"{text, -32}"; // Форматируем строку
+                    text = $"{text,-32}"; // Форматируем строку
                     string note = comments.ContainsKey(addr) ? comments[addr] : "";
                     if (labels.ContainsKey(addr))
                     {

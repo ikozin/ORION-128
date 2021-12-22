@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
+﻿using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS
 {
@@ -43,7 +40,7 @@ namespace FastColoredTextBoxNS
             if (cbWholeWord.Checked)
                 pattern = "\\b" + pattern + "\\b";
             //
-            var range = tb.Selection.IsEmpty? tb.Range.Clone() : tb.Selection.Clone();
+            var range = tb.Selection.IsEmpty ? tb.Range.Clone() : tb.Selection.Clone();
             //
             var list = new List<Range>();
             foreach (var r in range.GetRangesByLines(pattern, opt))
@@ -124,8 +121,8 @@ namespace FastColoredTextBoxNS
             try
             {
                 if (tb.SelectionLength != 0)
-                if (!tb.Selection.ReadOnly)
-                    tb.InsertText(tbReplace.Text);
+                    if (!tb.Selection.ReadOnly)
+                        tb.InsertText(tbReplace.Text);
                 btFindNext_Click(sender, null);
             }
             catch (Exception ex)
@@ -152,11 +149,11 @@ namespace FastColoredTextBoxNS
                     }
                 //replace
                 if (!ro)
-                if (ranges.Count > 0)
-                {
-                    tb.TextSource.Manager.ExecuteCommand(new ReplaceTextCommand(tb.TextSource, ranges, tbReplace.Text));
-                    tb.Selection.Start = new Place(0, 0);
-                }
+                    if (ranges.Count > 0)
+                    {
+                        tb.TextSource.Manager.ExecuteCommand(new ReplaceTextCommand(tb.TextSource, ranges, tbReplace.Text));
+                        tb.Selection.Start = new Place(0, 0);
+                    }
                 //
                 tb.Invalidate();
                 MessageBox.Show(ranges.Count + " occurrence(s) replaced");

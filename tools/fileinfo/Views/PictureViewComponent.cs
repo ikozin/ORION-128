@@ -1,98 +1,93 @@
 ﻿using fileinfo.Helpers;
-using fileinfo.Models;
-using fileinfo.Views.Picture;
 
 namespace fileinfo.Views
 {
-    internal class PictureViewComponent : ViewComponent<PictureViewUserControl>
+    public partial class PictureViewComponent : ViewComponent
     {
-        public PictureViewComponent() : base()
+        public PictureViewComponent()
         {
-            _control.TabIndex = 0;
-            _control.pictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
-            _control.pictureBox.TabStop = false;
+            InitializeComponent();
         }
 
-        public override void ClearView()
+        public PictureViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
-            _control.textBoxAddress.Text = String.Empty;
-            _control.textBoxWidth.Text = String.Empty;
-            _control.textBoxHeight.Text = String.Empty;
-            _control.panelInfo.Enabled = false;
+            InitializeComponent();
+            ClearView();
+        }
 
-            var image = _control.pictureBox.Image;
-            _control.pictureBox.Image = null;
+        private void ButtonSave_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxView.Image == null) return;
+            if (saveFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            pictureBoxView.Image.Save(saveFileDialog.FileName);
+        }
+
+        protected override void ClearView()
+        {
+            textBoxAddress.Text = String.Empty;
+            textBoxWidth.Text = String.Empty;
+            textBoxHeight.Text = String.Empty;
+            panelTool.Enabled = false;
+            pictureBoxView.Enabled = false;
+
+            var image = pictureBoxView.Image;
+            pictureBoxView.Image = null;
             image?.Dispose();
         }
 
-        protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
+        protected override void LoadView()
         {
-            var image = _control.pictureBox.Image;
-            SetImage(detail, encoding);
-            image?.Dispose();
-        }
-
-        protected void SetImage(FileDetails? detail, Func<byte, bool, char>? encoding)
-        {
+            var content = pictureBoxView.Image;
             try
             {
-                _control.textBoxAddress.Text = String.Empty;
-                _control.textBoxWidth.Text = String.Empty;
-                _control.textBoxHeight.Text = String.Empty;
-                _control.pictureBox.Image = null;
+                using MemoryStream stream = new(_detail!.Content);
+                using BinaryReader reader = new(stream);
+                ushort addr = reader.ReadUInt16();
+                ushort height = reader.ReadByte();
+                ushort width = reader.ReadByte();   // Ширина в байтах
+                var size = height * width;
+                width <<= 3;                        // Ширина в битах
+                textBoxAddress.Text = addr.ToHexAsm();
+                textBoxWidth.Text = width.ToString();
+                textBoxHeight.Text = height.ToString();
 
-                if (detail == null || detail.Content == null || detail.Content.Length == 0)
+                var image = new Bitmap(width, height);
+
+                byte[] colors = Decompress(stream, size);
+                byte[] bitmap = Decompress(stream, size);
+
+                int posX = 0, posY = 0;
+                for (int index = 0; index < bitmap.Length; index++)
                 {
-                    return;
-                }
+                    byte value = bitmap[index];
+                    byte color = colors[index];
+                    (Color foreColor, Color backColor) = GetColors(color);
 
-                using (MemoryStream stream = new MemoryStream(detail.Content))
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    ushort addr = reader.ReadUInt16();
-                    ushort height = reader.ReadByte();
-                    ushort width = reader.ReadByte();   // Ширина в байтах
-                    var size = height * width;
-                    width <<= 3;                        // Ширина в битах
-                    _control.textBoxAddress.Text = addr.ToHexAsm();
-                    _control.textBoxWidth.Text = width.ToString();
-                    _control.textBoxHeight.Text = height.ToString();
-
-                    var image = new Bitmap(width, height);
-
-                    byte[] colors = Decompress(stream, size);
-                    byte[] bitmap = Decompress(stream, size);
-
-                    int posX = 0, posY = 0;
-                    for (int index = 0; index < bitmap.Length; index++)
+                    for (int i = 0, n = 7; n >= 0; i++, n--)
                     {
-                        byte value = bitmap[index];
-                        byte color = colors[index];
-                        (Color foreColor, Color backColor) = GetColors(color);
-
-                        for (int i = 0, n = 7; n >= 0; i++, n--)
-                        {
-                            Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
-                            image.SetPixel(posX + i, posY, pixel);
-                        }
-                        posY++;
-                        if (posY == height)
-                        {
-                            posX += 8;
-                            posY = 0;
-                        }
-
+                        Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
+                        image.SetPixel(posX + i, posY, pixel);
                     }
-                    _control.pictureBox.Image = image;
-                    _control.panelInfo.Enabled = true;
+                    posY++;
+                    if (posY == height)
+                    {
+                        posX += 8;
+                        posY = 0;
+                    }
+
                 }
+                pictureBoxView.Image = image;
+                pictureBoxView.Enabled = true;
+                panelTool.Enabled = true;
             }
             catch (Exception)
             {
             }
+            content?.Dispose();
         }
 
-        protected byte[] Decompress(MemoryStream stream, int size)
+
+        protected static byte[] Decompress(MemoryStream stream, int size)
         {
             byte[] result = new byte[size];
             int pos = 0;
@@ -128,35 +123,35 @@ namespace fileinfo.Views
             return result;
         }
 
-        protected (Color foreColor, Color backColor) GetColors(byte color)
+        protected static (Color foreColor, Color backColor) GetColors(byte color)
         {
             Color foreColor = GetColor((byte)(color & 0x0F));
             Color backColor = GetColor((byte)((color >> 4) & 0x0F));
             return (foreColor, backColor);
         }
 
-        protected Color GetColor(byte color)
+        protected static Color GetColor(byte color)
         {
-            switch (color)
-            { 
-                case 0:  return Color.FromArgb(0x00, 0x00, 0x00);
-                case 1:  return Color.FromArgb(0x00, 0x00, 0xC0);
-                case 2:  return Color.FromArgb(0x00, 0xC0, 0x00);
-                case 3:  return Color.FromArgb(0x00, 0xC0, 0xC0);
-                case 4:  return Color.FromArgb(0xC0, 0x00, 0x00);
-                case 5:  return Color.FromArgb(0xC0, 0x00, 0xC0);
-                case 6:  return Color.FromArgb(0xC0, 0xC0, 0x00);
-                case 7:  return Color.FromArgb(0xC0, 0xC0, 0xC0);
-                case 8:  return Color.FromArgb(0x00, 0x00, 0x00);
-                case 9:  return Color.FromArgb(0x00, 0x00, 0xFF);
-                case 10: return Color.FromArgb(0x00, 0xFF, 0x00);
-                case 11: return Color.FromArgb(0x00, 0xFF, 0xFF);
-                case 12: return Color.FromArgb(0xFF, 0x00, 0x00);
-                case 13: return Color.FromArgb(0xFF, 0x00, 0xFF);
-                case 14: return Color.FromArgb(0xFF, 0xFF, 0x00);
-                case 15: return Color.FromArgb(0xFF, 0xFF, 0xFF);
-                default: throw new ArgumentOutOfRangeException();
-            }
+            return color switch
+            {
+                0 => Color.FromArgb(0x00, 0x00, 0x00),
+                1 => Color.FromArgb(0x00, 0x00, 0xC0),
+                2 => Color.FromArgb(0x00, 0xC0, 0x00),
+                3 => Color.FromArgb(0x00, 0xC0, 0xC0),
+                4 => Color.FromArgb(0xC0, 0x00, 0x00),
+                5 => Color.FromArgb(0xC0, 0x00, 0xC0),
+                6 => Color.FromArgb(0xC0, 0xC0, 0x00),
+                7 => Color.FromArgb(0xC0, 0xC0, 0xC0),
+                8 => Color.FromArgb(0x00, 0x00, 0x00),
+                9 => Color.FromArgb(0x00, 0x00, 0xFF),
+                10 => Color.FromArgb(0x00, 0xFF, 0x00),
+                11 => Color.FromArgb(0x00, 0xFF, 0xFF),
+                12 => Color.FromArgb(0xFF, 0x00, 0x00),
+                13 => Color.FromArgb(0xFF, 0x00, 0xFF),
+                14 => Color.FromArgb(0xFF, 0xFF, 0x00),
+                15 => Color.FromArgb(0xFF, 0xFF, 0xFF),
+                _ => throw new IndexOutOfRangeException(),
+            };
         }
     }
 }

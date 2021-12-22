@@ -2,34 +2,58 @@
 
 namespace fileinfo.Views
 {
-    internal abstract class ViewComponent<T> : IViewComponent
-        where T : Control, new()
+    public class ViewComponent : UserControl, IViewComponent
     {
-        protected readonly T _control = new T();
-
-        protected FileDetails? _detail;
-        protected Func<byte, bool, char>? _encoding;
+        protected Func<byte, bool, char> _encoding;
+        protected IFileDetail? _detail;
 
         public ViewComponent()
         {
-            _control.Name = GetType().Name;
-            _control.Dock = DockStyle.Fill;
+            _encoding = (_, _) => { return ' '; };
         }
 
-        public virtual Control GetViewControl()
+        public ViewComponent(Func<byte, bool, char> encoding)
         {
-            return _control;
-        }
-
-        public virtual void ReloadView(FileDetails detail, Func<byte, bool, char> encoding)
-        {
-            _detail = detail;
             _encoding = encoding;
-            LoadData(_detail, _encoding);
         }
 
-        public abstract void ClearView();
+        public UserControl Control => this;
 
-        protected abstract void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding);
+        public void SetEncoding(Func<byte, bool, char> encoding)
+        {
+            _encoding = encoding;
+            LoadView();
+        }
+
+        public IFileDetail? Current
+        {
+            get => _detail;
+            set
+            {
+                if (value == null)
+                {
+                    _detail = value;
+                    ClearView();
+                }
+                else
+                {
+                    if (_detail != value)
+                    {
+                        _detail = value;
+                        LoadView();
+                    }
+                }
+            }
+        }
+
+        protected virtual void ClearView()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual void LoadView()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,8 +1,4 @@
-﻿using fileinfo.Services.Dasm.Model;
-using System;
-using System.Collections.Generic;
-
-namespace fileinfo.Services.Dasm.Model
+﻿namespace fileinfo.Services.Dasm.Model
 {
     public static class OpDataArray
     {

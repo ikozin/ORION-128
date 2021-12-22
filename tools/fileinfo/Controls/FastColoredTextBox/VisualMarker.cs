@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace FastColoredTextBoxNS
+﻿namespace FastColoredTextBoxNS
 {
     public class VisualMarker
     {
@@ -25,7 +19,7 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    public class CollapseFoldingMarker: VisualMarker
+    public class CollapseFoldingMarker : VisualMarker
     {
         public readonly int iLine;
 
@@ -54,7 +48,7 @@ namespace FastColoredTextBoxNS
             this.iLine = iLine;
         }
 
-        public void Draw(Graphics gr, Pen pen,  Brush backgroundBrush, Pen forePen)
+        public void Draw(Graphics gr, Pen pen, Brush backgroundBrush, Pen forePen)
         {
             //draw plus
             gr.FillRectangle(backgroundBrush, rectangle);
@@ -82,7 +76,7 @@ namespace FastColoredTextBoxNS
 
     public class StyleVisualMarker : VisualMarker
     {
-        public Style Style{get;private set;}
+        public Style Style { get; private set; }
 
         public StyleVisualMarker(Rectangle rectangle, Style style)
             : base(rectangle)

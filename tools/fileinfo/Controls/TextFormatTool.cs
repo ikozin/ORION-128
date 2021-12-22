@@ -4,9 +4,9 @@ namespace fileinfo.Controls
 {
     internal class TextFormatTool
     {
-        public IViewComponent? CurrentView { get; set; }
         public Action ClickAction { get; private set; }
 
+        private IViewComponent? _сurrentView;
         private readonly ToolStripDropDownButton _tool;
         private readonly Func<bool> _enableFunc;
 
@@ -15,10 +15,22 @@ namespace fileinfo.Controls
         {
             _enableFunc = enableFunc;
             ClickAction = clickAction;
-            CurrentView = null;
+            _сurrentView = null;
             _tool = parent;
             _tool.DropDownItems.Clear();
             _tool.DropDownOpening += ToolStripMenuItemDropDownOpening;
+        }
+        public IViewComponent? CurrentView
+        {
+            get
+            {
+                return _сurrentView;
+            }
+            set
+            {
+                _сurrentView = value;
+                ClickAction();
+            }
         }
 
         public void Add(string text, IViewComponent component)

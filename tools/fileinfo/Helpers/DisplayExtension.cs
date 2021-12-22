@@ -57,7 +57,12 @@ namespace fileinfo.Helpers
         public static string ToHexWithNumber(this ushort? value)
         {
             if (!value.HasValue) return String.Empty;
-            return String.Format("{0:X4} ({0})", value.Value);
+            return value.Value.ToHexWithNumber();
+        }
+
+        public static string ToHexWithNumber(this ushort value)
+        {
+            return String.Format("{0:X4} ({0})", value);
         }
 
         public static string ToHex(this byte[] value)

@@ -1,58 +1,52 @@
-﻿using fileinfo.Models;
-using fileinfo.Services.Dasm.Service;
-using fileinfo.Views.DisAssembler;
+﻿using fileinfo.Services.Dasm.Service;
 
 namespace fileinfo.Views
 {
-    internal class DisAssemblerViewComponent : ViewComponent<DisAssemblerUserControl>
+    public partial class DisAssemblerViewComponent : ViewComponent
     {
-        public DisAssemblerViewComponent() : base()
+        public DisAssemblerViewComponent()
         {
-            if (!File.Exists(_control.fastColoredTextBoxView.DescriptionFile))
-                _control.fastColoredTextBoxView.DescriptionFile = "";
-            _control.btnRun.Click += BtnRun_Click;
+            InitializeComponent();
         }
 
-        public override void ClearView()
+        public DisAssemblerViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
-            _control.fastColoredTextBoxView.Text = string.Empty;
-            _control.textBoxLabel.Text = String.Empty;
-            _control.textBoxData.Text = String.Empty;
-            _control.textBoxComment.Text = String.Empty;
-            _control.btnRun.Enabled = false;
+            InitializeComponent();
+            if (!File.Exists(fastColoredTextBoxView.DescriptionFile))
+                fastColoredTextBoxView.DescriptionFile = "";
+            ClearView();
         }
 
-        protected override void LoadData(FileDetails? detail, Func<byte, bool, char>? encoding)
+        private void ButtonDasm_Click(object? sender, EventArgs e)
         {
-            _control.fastColoredTextBoxView.Text = String.Empty;
-            _control.textBoxLabel.Text = String.Empty;
-            _control.textBoxData.Text = String.Empty;
-            _control.textBoxComment.Text = String.Empty;
-            _control.btnRun.Enabled = false;
+            Dictionary<string, string> labels = ConfigLoader.LoadDictionary(textBoxLabel.Text);
+            Dictionary<string, string> datas = ConfigLoader.LoadDictionary(textBoxData.Text);
+            Dictionary<string, string> comments = ConfigLoader.LoadDictionary(textBoxComment.Text);
+            using MemoryStream stream = new(_detail!.Content);
+            fastColoredTextBoxView.Text = Services.Dasm.Program.Process(stream, _detail.Address, labels, datas, comments, _encoding!);
+        }
 
-            if (detail == null || detail.Content == null || detail.Content.Length == 0) return;
+        protected override void ClearView()
+        {
+            splitContainerView.Enabled = false;
+            fastColoredTextBoxView.Text = String.Empty;
+            textBoxLabel.Text = String.Empty;
+            textBoxData.Text = String.Empty;
+            textBoxComment.Text = String.Empty;
+        }
 
+        protected override void LoadView()
+        {
             try
             {
-                BtnRun_Click(_control.btnRun, EventArgs.Empty);
+                ButtonDasm_Click(null, EventArgs.Empty);
             }
             catch (Exception ex)
             {
-                _control.fastColoredTextBoxView.Text += Environment.NewLine;
-                _control.fastColoredTextBoxView.Text += ex.Message;
+                fastColoredTextBoxView.Text += Environment.NewLine;
+                fastColoredTextBoxView.Text += ex.Message;
             }
-
-            _control.btnRun.Enabled = true;
-        }
-
-        private void BtnRun_Click(object? sender, EventArgs e)
-        {
-            if (_detail == null) return;
-            Dictionary<string, string> labels = ConfigLoader.LoadDictionary(_control.textBoxLabel.Text);
-            Dictionary< string, string> datas = ConfigLoader.LoadDictionary(_control.textBoxData.Text);
-            Dictionary<string, string> comments = ConfigLoader.LoadDictionary(_control.textBoxComment.Text);
-            using MemoryStream stream = new(_detail.Content);
-            _control.fastColoredTextBoxView.Text = Services.Dasm.Program.Main(stream, _detail.Address!.Value, labels, datas, comments, _encoding!);
+            splitContainerView.Enabled = true;
         }
     }
 }

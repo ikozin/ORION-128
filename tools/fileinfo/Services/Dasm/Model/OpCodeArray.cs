@@ -3,7 +3,7 @@
     public class OpCodeArray
     {
         private readonly List<OpCode?> _list = new();
-        public OpCodeArray() : this (new Dictionary<string, string>())
+        public OpCodeArray() : this(new Dictionary<string, string>())
         {
 
         }
@@ -286,7 +286,7 @@
 
         public List<OpCode?> List { get { return _list; } }
 
-        public (byte code, string text) Handle(byte code, Stream stream, bool includeComment = false)
+        public (byte code, string? text) Handle(byte code, Stream stream, bool includeComment = false)
         {
             var item = _list[code];
             if (item == null) return (code, null);

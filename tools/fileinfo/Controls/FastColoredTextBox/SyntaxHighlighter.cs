@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -102,7 +98,7 @@ namespace FastColoredTextBoxNS
 
         protected Regex SQLCommentRegex1,
                       SQLCommentRegex2,
-                      SQLCommentRegex3, 
+                      SQLCommentRegex3,
                       SQLCommentRegex4;
 
         protected Regex SQLFunctionsRegex;
@@ -131,7 +127,8 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public SyntaxHighlighter(FastColoredTextBox currentTb) {
+        public SyntaxHighlighter(FastColoredTextBox currentTb)
+        {
             this.currentTb = currentTb;
         }
 
@@ -899,7 +896,7 @@ namespace FastColoredTextBoxNS
         protected void InitXMLRegex()
         {
             XMLCommentRegex1 = new Regex(@"(<!--.*?-->)|(<!--.*)", RegexOptions.Singleline | RegexCompiledOption);
-            XMLCommentRegex2 = new Regex(@"(<!--.*?-->)|(.*-->)",  RegexOptions.Singleline | RegexOptions.RightToLeft | RegexCompiledOption);
+            XMLCommentRegex2 = new Regex(@"(<!--.*?-->)|(.*-->)", RegexOptions.Singleline | RegexOptions.RightToLeft | RegexCompiledOption);
 
             XMLTagRegex = new Regex(@"<\?|</|>|<|/>|\?>", RegexCompiledOption);
             XMLTagNameRegex = new Regex(@"<[?](?<range1>[x][m][l]{1})|<(?<range>[!\w:\-\.]+)", RegexCompiledOption);

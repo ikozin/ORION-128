@@ -2,23 +2,20 @@
 
 namespace fileinfo.Views
 {
-    public partial class TextViewComponent : ViewComponent
+    public partial class AssemblerViewComponent : ViewComponent
     {
-        public TextViewComponent() : base()
+        public AssemblerViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
             InitializeComponent();
-        }
-
-        public TextViewComponent(Func<byte, bool, char> encoding) : base(encoding)
-        {
-            InitializeComponent();
+            if (!File.Exists(fastColoredTextBoxView.DescriptionFile))
+                fastColoredTextBoxView.DescriptionFile = "";
             ClearView();
         }
 
         protected override void ClearView()
         {
-            textBoxView.Text = String.Empty;
-            textBoxView.Enabled = false;
+            fastColoredTextBoxView.Text = String.Empty;
+            fastColoredTextBoxView.Enabled = false;
         }
 
         protected override void LoadView()
@@ -29,8 +26,8 @@ namespace fileinfo.Views
                 text.Append(_encoding!(item, true));
             }
             text.Replace("\r", Environment.NewLine);
-            textBoxView.Text = text.ToString();
-            textBoxView.Enabled = true;
+            fastColoredTextBoxView.Text = text.ToString();
+            fastColoredTextBoxView.Enabled = true;
         }
     }
 }

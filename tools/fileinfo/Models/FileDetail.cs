@@ -2,32 +2,32 @@
 
 namespace fileinfo.Models
 {
-    internal abstract class FileDetails : IComparable<FileDetails>
+    public abstract class FileDetail : IFileDetail
     {
         public bool IsError { get; protected set; }
         public string FileName { get; protected set; }
         public string Name { get; protected set; }
-        public ushort? Size { get; protected set; }
-        public ushort? Address { get; protected set; }
+        public ushort Size { get; protected set; }
+        public ushort Address { get; protected set; }
         public byte[] Hash { get; protected set; }
         public byte[] Content { get; protected set; }
         public string Message { get; protected set; }
 
-        public FileDetails()
+        public FileDetail()
         {
             FileName = String.Empty;
             Name = String.Empty;
-            Size = null;
-            Address = null;
+            Size = 0;
+            Address = 0;
             Hash = Array.Empty<byte>();
             Content = Array.Empty<byte>();
             IsError = false;
             Message = String.Empty;
         }
 
-        public abstract void LoadData(string fileName);
+        public abstract IFileDetail LoadData(string fileName);
 
-        public int CompareTo(FileDetails? other)
+        public int CompareTo(IFileDetail? other)
         {
             return FileName.CompareTo(other!.FileName);
         }

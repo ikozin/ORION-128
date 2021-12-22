@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace FastColoredTextBoxNS
+﻿namespace FastColoredTextBoxNS
 {
     public partial class GoToForm : Form
     {
@@ -12,7 +9,7 @@ namespace FastColoredTextBoxNS
         {
             InitializeComponent();
         }
-        
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -48,6 +45,6 @@ namespace FastColoredTextBoxNS
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
-         }
+        }
     }
 }

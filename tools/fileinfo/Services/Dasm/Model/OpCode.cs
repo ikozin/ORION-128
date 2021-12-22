@@ -1,5 +1,4 @@
 ﻿using fileinfo.Helpers;
-using fileinfo.Services.Dasm.Service;
 
 namespace fileinfo.Services.Dasm.Model
 {
@@ -26,7 +25,7 @@ namespace fileinfo.Services.Dasm.Model
         {
         }
 
- 
+
         public override string ToString()
         {
             if (HasByte) return String.Format(Command, ParamByte.ToHex());
