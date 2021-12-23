@@ -32,12 +32,10 @@
             System.Windows.Forms.Label labelWidth;
             System.Windows.Forms.Label labelHeight;
             this.panelTool = new System.Windows.Forms.Panel();
-            this.btnSave = new System.Windows.Forms.Button();
             this.textBoxHeight = new System.Windows.Forms.TextBox();
             this.textBoxWidth = new System.Windows.Forms.TextBox();
             this.textBoxAddress = new System.Windows.Forms.TextBox();
             this.pictureBoxView = new System.Windows.Forms.PictureBox();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             labelAddress = new System.Windows.Forms.Label();
             labelWidth = new System.Windows.Forms.Label();
             labelHeight = new System.Windows.Forms.Label();
@@ -74,7 +72,6 @@
             // 
             // panelTool
             // 
-            this.panelTool.Controls.Add(this.btnSave);
             this.panelTool.Controls.Add(this.textBoxHeight);
             this.panelTool.Controls.Add(labelHeight);
             this.panelTool.Controls.Add(this.textBoxWidth);
@@ -86,16 +83,6 @@
             this.panelTool.Name = "panelTool";
             this.panelTool.Size = new System.Drawing.Size(612, 33);
             this.panelTool.TabIndex = 0;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(449, 2);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(109, 29);
-            this.btnSave.TabIndex = 6;
-            this.btnSave.Text = "Сохранить ...";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.ButtonSave_Click);
             // 
             // textBoxHeight
             // 
@@ -131,12 +118,6 @@
             this.pictureBoxView.TabIndex = 1;
             this.pictureBoxView.TabStop = false;
             // 
-            // saveFileDialog
-            // 
-            this.saveFileDialog.DefaultExt = "bmp";
-            this.saveFileDialog.Filter = "Bitmap files|*.bmp";
-            this.saveFileDialog.Title = "Сохранить как ...";
-            // 
             // PictureViewComponent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -157,9 +138,7 @@
         private Panel panelTool;
         private PictureBox pictureBoxView;
         private TextBox textBoxAddress;
-        private Button btnSave;
         private TextBox textBoxHeight;
         private TextBox textBoxWidth;
-        private SaveFileDialog saveFileDialog;
     }
 }

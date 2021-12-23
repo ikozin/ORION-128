@@ -12,8 +12,8 @@
 
         protected override void LoadView()
         {
-            textBoxView.Text = ByteArrayToHex(0);
-            textBoxView.Enabled = true;
+            fastColoredTextBoxView.Text = ByteArrayToHex(0);
+            fastColoredTextBoxView.Enabled = true;
         }
     }
 }

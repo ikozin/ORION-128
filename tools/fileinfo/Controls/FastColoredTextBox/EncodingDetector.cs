@@ -63,7 +63,7 @@ namespace FastColoredTextBoxNS
             return encodingFound;
         }
 
-        public static Encoding DetectBOMBytes(byte[] BOMBytes)
+        public static Encoding? DetectBOMBytes(byte[] BOMBytes)
         {
             if (BOMBytes.Length < 2)
                 return null;

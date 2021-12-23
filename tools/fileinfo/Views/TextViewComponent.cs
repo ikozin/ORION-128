@@ -4,6 +4,9 @@ namespace fileinfo.Views
 {
     public partial class TextViewComponent : ViewComponent
     {
+        protected string? _extension;
+        protected string? _filter;
+
         public TextViewComponent() : base()
         {
             InitializeComponent();
@@ -13,12 +16,14 @@ namespace fileinfo.Views
         {
             InitializeComponent();
             ClearView();
+            _extension = "";
+            _filter = "All files|*.*";
         }
 
         protected override void ClearView()
         {
-            textBoxView.Text = String.Empty;
-            textBoxView.Enabled = false;
+            fastColoredTextBoxView.Text = String.Empty;
+            fastColoredTextBoxView.Enabled = false;
         }
 
         protected override void LoadView()
@@ -29,8 +34,18 @@ namespace fileinfo.Views
                 text.Append(_encoding!(item, true));
             }
             text.Replace("\r", Environment.NewLine);
-            textBoxView.Text = text.ToString();
-            textBoxView.Enabled = true;
+            fastColoredTextBoxView.Text = text.ToString();
+            fastColoredTextBoxView.Enabled = true;
+        }
+        public override void SaveDetailToFile()
+        {
+            if (_detail == null) return;
+            using SaveFileDialog dlg = new();
+            dlg.DefaultExt = _extension;
+            dlg.Filter = _filter;
+            dlg.FileName = _detail.Name;
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            File.WriteAllText(dlg.FileName, fastColoredTextBoxView.Text, Encoding.UTF8);
         }
     }
 }

@@ -36,6 +36,7 @@ namespace fileinfo
             _format.Add("Картинка", new PictureViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер", new DisAssemblerViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));
+            _format.Add();
             _format.Add("Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler));
             _format.CurrentView = _format.GetViews().First();
         }
@@ -162,6 +163,12 @@ namespace fileinfo
             _actionGroup = GroupByExtension.GetGroupByHash;
             _actionGroupFinish = GroupByExtension.GetGroupByHashFinish;
             RefreshGroupView();
+        }
+
+        private void toolStripButtonSave_Click(object sender, EventArgs e)
+        {
+            if (_format.CurrentView == null) return;
+            _format.CurrentView.SaveDetailToFile();
         }
     }
 }

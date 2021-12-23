@@ -15,13 +15,6 @@ namespace fileinfo.Views
             ClearView();
         }
 
-        private void ButtonSave_Click(object sender, EventArgs e)
-        {
-            if (pictureBoxView.Image == null) return;
-            if (saveFileDialog.ShowDialog(this) != DialogResult.OK) return;
-            pictureBoxView.Image.Save(saveFileDialog.FileName);
-        }
-
         protected override void ClearView()
         {
             textBoxAddress.Text = String.Empty;
@@ -86,6 +79,17 @@ namespace fileinfo.Views
             content?.Dispose();
         }
 
+        public override void SaveDetailToFile()
+        {
+            if (_detail == null) return;
+            if (pictureBoxView.Image == null) return;
+            using SaveFileDialog dlg = new();
+            dlg.DefaultExt = "bmp";
+            dlg.Filter = "Bitmap files|*.bmp";
+            dlg.FileName = _detail.Name;
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            pictureBoxView.Image.Save(dlg.FileName);
+        }
 
         protected static byte[] Decompress(MemoryStream stream, int size)
         {

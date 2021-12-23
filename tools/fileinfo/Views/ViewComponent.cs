@@ -55,5 +55,10 @@ namespace fileinfo.Views
         {
             throw new NotImplementedException();
         }
+
+        public virtual void SaveDetailToFile()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

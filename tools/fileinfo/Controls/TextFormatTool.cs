@@ -33,6 +33,12 @@ namespace fileinfo.Controls
             }
         }
 
+        public void Add()
+        {
+            var item = new ToolStripSeparator();
+            _tool.DropDownItems.Add(item);
+        }
+
         public void Add(string text, IViewComponent component)
         {
             var item = new ToolStripMenuItemFormat(this, text, component);
@@ -44,7 +50,8 @@ namespace fileinfo.Controls
             bool isEnable = _enableFunc();
             foreach (var item in _tool.DropDownItems)
             {
-                var itemExt = (ToolStripMenuItemFormat)item;
+                var itemExt = item as ToolStripMenuItemFormat;
+                if (itemExt == null) continue;
                 itemExt.Enabled = isEnable;
                 itemExt.Checked = itemExt.Component == CurrentView;
             }
@@ -52,9 +59,11 @@ namespace fileinfo.Controls
         public IViewComponent[] GetViews()
         {
             var result = new List<IViewComponent>();
-            foreach (ToolStripMenuItemFormat item in _tool.DropDownItems)
+            foreach (ToolStripItem item in _tool.DropDownItems)
             {
-                result.Add(item.Component);
+                var itemExt = item as ToolStripMenuItemFormat;
+                if (itemExt == null) continue;
+                result.Add(itemExt.Component);
             }
             return result.ToArray();
         }

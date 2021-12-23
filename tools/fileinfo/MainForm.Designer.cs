@@ -47,11 +47,12 @@
             this.toolStripFileView = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownButtonEncoding = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonSelectDirectory = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSplitButtonGrouping = new System.Windows.Forms.ToolStripSplitButton();
+            this.toolStripSplitButtonGrouping = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSplitButtonGroupByExec = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByPath = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByCustom = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,6 +107,7 @@
             this.splitContainerInfo.Panel2.Controls.Add(this.panelViewComponent);
             this.splitContainerInfo.Panel2.Controls.Add(this.statusStripView);
             this.splitContainerInfo.Panel2.Controls.Add(this.toolStripFileView);
+            this.splitContainerInfo.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainerInfo.Size = new System.Drawing.Size(800, 423);
             this.splitContainerInfo.SplitterDistance = 266;
             this.splitContainerInfo.TabIndex = 2;
@@ -196,7 +198,8 @@
             this.toolStripFileView.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStripFileView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButtonFormat,
-            this.toolStripDropDownButtonEncoding});
+            this.toolStripDropDownButtonEncoding,
+            this.toolStripButtonSave});
             this.toolStripFileView.Location = new System.Drawing.Point(0, 0);
             this.toolStripFileView.Name = "toolStripFileView";
             this.toolStripFileView.Size = new System.Drawing.Size(530, 27);
@@ -218,6 +221,15 @@
             this.toolStripDropDownButtonEncoding.Name = "toolStripDropDownButtonEncoding";
             this.toolStripDropDownButtonEncoding.Size = new System.Drawing.Size(119, 24);
             this.toolStripDropDownButtonEncoding.Text = "Кодировка";
+            // 
+            // toolStripButtonSave
+            // 
+            this.toolStripButtonSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSave.Image")));
+            this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSave.Name = "toolStripButtonSave";
+            this.toolStripButtonSave.Size = new System.Drawing.Size(107, 24);
+            this.toolStripButtonSave.Text = "Сохранить";
+            this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
             // 
             // folderBrowserDialog
             // 
@@ -257,7 +269,7 @@
             this.toolStripSplitButtonGrouping.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButtonGrouping.Image")));
             this.toolStripSplitButtonGrouping.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSplitButtonGrouping.Name = "toolStripSplitButtonGrouping";
-            this.toolStripSplitButtonGrouping.Size = new System.Drawing.Size(110, 24);
+            this.toolStripSplitButtonGrouping.Size = new System.Drawing.Size(105, 24);
             this.toolStripSplitButtonGrouping.Text = "Grouping";
             // 
             // toolStripSplitButtonGroupByExec
@@ -329,14 +341,15 @@
         private SaveFileDialog saveFileDialog;
         private ToolStrip toolStrip1;
         private ToolStripButton toolStripButtonSelectDirectory;
-        private ToolStripSplitButton toolStripSplitButtonGrouping;
-        private ToolStripMenuItem toolStripSplitButtonGroupByExec;
-        private ToolStripMenuItem toolStripSplitButtonGroupByPath;
-        private ToolStripMenuItem toolStripSplitButtonGroupByCustom;
-        private ToolStripMenuItem toolStripSplitButtonGroupByHash;
         private StatusStrip statusStripView;
         private ToolStripStatusLabel toolStripStatusLabelCrc;
         private ToolStripStatusLabel toolStripStatusLabelSum;
         private Panel panelViewComponent;
+        private ToolStripButton toolStripButtonSave;
+        private ToolStripDropDownButton toolStripSplitButtonGrouping;
+        private ToolStripMenuItem toolStripSplitButtonGroupByExec;
+        private ToolStripMenuItem toolStripSplitButtonGroupByPath;
+        private ToolStripMenuItem toolStripSplitButtonGroupByCustom;
+        private ToolStripMenuItem toolStripSplitButtonGroupByHash;
     }
 }

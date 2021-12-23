@@ -9,5 +9,7 @@ namespace fileinfo.Views
         IFileDetail? Current { get; set; }
 
         UserControl Control { get; }
+
+        void SaveDetailToFile();
     }
 }

@@ -14,8 +14,8 @@ namespace fileinfo.Views
 
         protected override void LoadView()
         {
-            textBoxView.Text = ByteArrayToHex(_detail!.Address);
-            textBoxView.Enabled = true;
+            fastColoredTextBoxView.Text = ByteArrayToHex(_detail!.Address);
+            fastColoredTextBoxView.Enabled = true;
         }
 
         protected string ByteArrayToHex(ushort addr)
