@@ -9,7 +9,7 @@ namespace fileinfo.Views
 
         public ViewComponent()
         {
-            _encoding = (_, _) => { return ' '; };
+            _encoding = (_, _) => throw new NotImplementedException();
         }
 
         public ViewComponent(Func<byte, bool, char> encoding)

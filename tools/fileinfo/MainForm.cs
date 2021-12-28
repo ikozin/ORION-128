@@ -8,6 +8,7 @@ namespace fileinfo
 {
     public partial class MainForm : Form
     {
+        private Action<ListView, List<IFileDetail>> _actionGroupStart;
         private Func<ListView, IFileDetail, ListViewGroup> _actionGroup;
         private Action<ListView> _actionGroupFinish;
         private readonly TextEncodingTool _encoding;
@@ -18,6 +19,7 @@ namespace fileinfo
         {
             InitializeComponent();
 
+            _actionGroupStart = GroupByExtension.GetGroupByExecStart;
             _actionGroup = GroupByExtension.GetGroupByExec;
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
 
@@ -38,6 +40,7 @@ namespace fileinfo
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));
             _format.Add();
             _format.Add("Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler));
+            _format.Add("Бейсик", new BasicViewComponent(_encoding.CurrentHandler));
             _format.CurrentView = _format.GetViews().First();
         }
 
@@ -46,8 +49,8 @@ namespace fileinfo
             if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK) return;
             _listDetails.Clear();
             LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
-            //LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
-            //LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
+            LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
+            LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
             _listDetails.Sort();
 
             RefreshGroupView();
@@ -92,10 +95,12 @@ namespace fileinfo
 
         private void RefreshGroupView()
         {
+            _format.CurrentView = null;
             listViewFile.BeginUpdate();
             listViewFile.Groups.Clear();
             listViewFile.Items.Clear();
 
+            _actionGroupStart(listViewFile, _listDetails);
             foreach (var file in _listDetails)
             {
                 ListViewItemExt item = new(file);
@@ -105,7 +110,6 @@ namespace fileinfo
             _actionGroupFinish(listViewFile);
             listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listViewFile.EndUpdate();
-            //RefreshFileView();
         }
 
         private void directoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,6 +143,7 @@ namespace fileinfo
 
         private void toolStripSplitButtonGroupByExec_Click(object sender, EventArgs e)
         {
+            _actionGroupStart = GroupByExtension.GetGroupByExecStart;
             _actionGroup = GroupByExtension.GetGroupByExec;
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
             RefreshGroupView();
@@ -146,6 +151,7 @@ namespace fileinfo
 
         private void toolStripSplitButtonGroupByPath_Click(object sender, EventArgs e)
         {
+            _actionGroupStart = GroupByExtension.GetGroupByPathStart;
             _actionGroup = GroupByExtension.GetGroupByPath;
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
             RefreshGroupView();
@@ -153,6 +159,7 @@ namespace fileinfo
 
         private void toolStripSplitButtonGroupByCustom_Click(object sender, EventArgs e)
         {
+            _actionGroupStart = GroupByExtension.GetGroupByCustomStart;
             _actionGroup = GroupByExtension.GetGroupByCustom;
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
             RefreshGroupView();
@@ -160,6 +167,7 @@ namespace fileinfo
 
         private void toolStripSplitButtonGroupByHash_Click(object sender, EventArgs e)
         {
+            _actionGroupStart = GroupByExtension.GetGroupByCommonStart;
             _actionGroup = GroupByExtension.GetGroupByHash;
             _actionGroupFinish = GroupByExtension.GetGroupByHashFinish;
             RefreshGroupView();
