@@ -10,10 +10,14 @@
 
   <ItemGroup>
     <None Remove="SyntaxHighlighterAsssebler.xml" />
+    <None Remove="SyntaxHighlighterBasic.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="SyntaxHighlighterAsssebler.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SyntaxHighlighterBasic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

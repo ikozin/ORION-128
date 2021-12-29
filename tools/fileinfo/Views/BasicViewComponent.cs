@@ -101,6 +101,8 @@ namespace fileinfo.Views
 
     public BasicViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
+            if (File.Exists("SyntaxHighlighterBasic.xml"))
+                fastColoredTextBoxView.DescriptionFile = "SyntaxHighlighterBasic.xml";
             _extension = "bas";
             _filter = "Basics files|*.bas|All files|*.*";
         }
@@ -115,37 +117,32 @@ namespace fileinfo.Views
                 while (true)
                 {
                     var value = reader.Read();
-                    if (value == -1) break;
-                    if (value == 0)
+                    if (value != 0) break;
+                    line.Clear();
+                    var offset = reader.ReadUInt16();
+                    if (offset == 0) break;
+                    offset -= (ushort)(_detail!.Address + 1);
+                    var rowNumber = reader.ReadUInt16();
+                    line.AppendFormat("{0} ", rowNumber);
+                    while (offset > stream.Position)
                     {
-                        line.Clear();
-                        var offset = reader.ReadUInt16() - _detail!.Address - 1;
-                        var rowNumber = reader.ReadUInt16();
                         var cmd = reader.ReadByte();
-                        line.AppendFormat("{0} ", rowNumber);
                         if (_vacabular.ContainsKey(cmd))
                             line.AppendFormat("{0}", _vacabular[cmd]);
                         else
                             line.AppendFormat("{0}", _encoding.Invoke(cmd, false));
-                        
-                        while (offset > stream.Position)
-                        {
-                            cmd = reader.ReadByte();
-                            if (_vacabular.ContainsKey(cmd))
-                                line.AppendFormat("{0}", _vacabular[cmd]);
-                            else
-                                line.AppendFormat("{0}", _encoding.Invoke(cmd, false));
-                        }
-                        text.AppendLine(line.ToString());
                     }
+                    text.AppendLine(line.ToString());
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
-
-            fastColoredTextBoxView.Text = text.ToString();
-            fastColoredTextBoxView.Enabled = true;
+            finally
+            {
+                fastColoredTextBoxView.Text = text.ToString();
+                fastColoredTextBoxView.Enabled = true;
+            }
         }
     }
 }

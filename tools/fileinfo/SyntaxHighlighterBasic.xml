@@ -1,0 +1,7 @@
+﻿<doc>
+	<style name="Comment" color="Green" />
+	<style name="Label" color="Maroon" fontStyle="Bold" />
+
+	<rule style="Label" options="Multiline">^\b\d+?\b</rule>
+	<rule style="Comment" options="Multiline">REM.*$</rule>
+</doc>
