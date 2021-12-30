@@ -10,6 +10,7 @@
         byte[] Hash { get; }
         byte[] Content { get; }
         string Message { get; }
-        IFileDetail LoadData(string fileName);
+        void LoadData(string fileName, List<IFileDetail> list);
+        void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list);
     }
 }

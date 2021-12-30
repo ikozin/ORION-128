@@ -41,22 +41,22 @@
             this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelViewComponent = new System.Windows.Forms.Panel();
-            this.statusStripView = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabelCrc = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabelSum = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripFileView = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownButtonEncoding = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonSelectDirectory = new System.Windows.Forms.ToolStripButton();
             this.toolStripSplitButtonGrouping = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSplitButtonGroupByExec = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByPath = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSplitButtonGroupByHash = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonOdi = new System.Windows.Forms.ToolStripButton();
+            this.toolStripMain = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             columnHeaderName = new System.Windows.Forms.ColumnHeader();
             columnHeaderSize = new System.Windows.Forms.ColumnHeader();
             columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
@@ -66,9 +66,8 @@
             this.splitContainerInfo.Panel2.SuspendLayout();
             this.splitContainerInfo.SuspendLayout();
             this.contextMenuStripFile.SuspendLayout();
-            this.statusStripView.SuspendLayout();
             this.toolStripFileView.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // columnHeaderName
@@ -105,7 +104,6 @@
             // splitContainerInfo.Panel2
             // 
             this.splitContainerInfo.Panel2.Controls.Add(this.panelViewComponent);
-            this.splitContainerInfo.Panel2.Controls.Add(this.statusStripView);
             this.splitContainerInfo.Panel2.Controls.Add(this.toolStripFileView);
             this.splitContainerInfo.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainerInfo.Size = new System.Drawing.Size(800, 423);
@@ -168,30 +166,8 @@
             this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelViewComponent.Location = new System.Drawing.Point(0, 27);
             this.panelViewComponent.Name = "panelViewComponent";
-            this.panelViewComponent.Size = new System.Drawing.Size(530, 374);
+            this.panelViewComponent.Size = new System.Drawing.Size(530, 396);
             this.panelViewComponent.TabIndex = 4;
-            // 
-            // statusStripView
-            // 
-            this.statusStripView.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.statusStripView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabelCrc,
-            this.toolStripStatusLabelSum});
-            this.statusStripView.Location = new System.Drawing.Point(0, 401);
-            this.statusStripView.Name = "statusStripView";
-            this.statusStripView.Size = new System.Drawing.Size(530, 22);
-            this.statusStripView.TabIndex = 3;
-            this.statusStripView.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabelCrc
-            // 
-            this.toolStripStatusLabelCrc.Name = "toolStripStatusLabelCrc";
-            this.toolStripStatusLabelCrc.Size = new System.Drawing.Size(0, 16);
-            // 
-            // toolStripStatusLabelSum
-            // 
-            this.toolStripStatusLabelSum.Name = "toolStripStatusLabelSum";
-            this.toolStripStatusLabelSum.Size = new System.Drawing.Size(0, 16);
             // 
             // toolStripFileView
             // 
@@ -237,18 +213,6 @@
             this.folderBrowserDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.folderBrowserDialog.ShowNewFolderButton = false;
             this.folderBrowserDialog.UseDescriptionForTitle = true;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonSelectDirectory,
-            this.toolStripSplitButtonGrouping});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 27);
-            this.toolStrip1.TabIndex = 3;
-            this.toolStrip1.Text = "toolStrip1";
             // 
             // toolStripButtonSelectDirectory
             // 
@@ -300,13 +264,47 @@
             this.toolStripSplitButtonGroupByHash.Text = "Группировка дублей";
             this.toolStripSplitButtonGroupByHash.Click += new System.EventHandler(this.toolStripSplitButtonGroupByHash_Click);
             // 
+            // toolStripButtonOdi
+            // 
+            this.toolStripButtonOdi.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOdi.Image")));
+            this.toolStripButtonOdi.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOdi.Name = "toolStripButtonOdi";
+            this.toolStripButtonOdi.Size = new System.Drawing.Size(141, 24);
+            this.toolStripButtonOdi.Text = "Извлечь из ODI";
+            this.toolStripButtonOdi.Click += new System.EventHandler(this.toolStripButtonOdi_Click);
+            // 
+            // toolStripMain
+            // 
+            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonSelectDirectory,
+            this.toolStripSplitButtonGrouping,
+            this.toolStripSeparator1,
+            this.toolStripButtonOdi});
+            this.toolStripMain.Location = new System.Drawing.Point(0, 0);
+            this.toolStripMain.Name = "toolStripMain";
+            this.toolStripMain.Size = new System.Drawing.Size(800, 27);
+            this.toolStripMain.TabIndex = 3;
+            this.toolStripMain.Text = "toolStrip1";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.DefaultExt = "odi";
+            this.openFileDialog.Filter = "ODI files|*.odi|All files|*.*";
+            this.openFileDialog.Title = "Открыть";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainerInfo);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.toolStripMain);
             this.Name = "MainForm";
             this.Text = "File Info";
             this.splitContainerInfo.Panel1.ResumeLayout(false);
@@ -315,12 +313,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).EndInit();
             this.splitContainerInfo.ResumeLayout(false);
             this.contextMenuStripFile.ResumeLayout(false);
-            this.statusStripView.ResumeLayout(false);
-            this.statusStripView.PerformLayout();
             this.toolStripFileView.ResumeLayout(false);
             this.toolStripFileView.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.toolStripMain.ResumeLayout(false);
+            this.toolStripMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -339,17 +335,17 @@
         private ToolStripDropDownButton toolStripDropDownButtonFormat;
         private ToolStripDropDownButton toolStripDropDownButtonEncoding;
         private SaveFileDialog saveFileDialog;
-        private ToolStrip toolStrip1;
-        private ToolStripButton toolStripButtonSelectDirectory;
-        private StatusStrip statusStripView;
-        private ToolStripStatusLabel toolStripStatusLabelCrc;
-        private ToolStripStatusLabel toolStripStatusLabelSum;
         private Panel panelViewComponent;
         private ToolStripButton toolStripButtonSave;
+        private ToolStripButton toolStripButtonSelectDirectory;
         private ToolStripDropDownButton toolStripSplitButtonGrouping;
         private ToolStripMenuItem toolStripSplitButtonGroupByExec;
         private ToolStripMenuItem toolStripSplitButtonGroupByPath;
         private ToolStripMenuItem toolStripSplitButtonGroupByCustom;
         private ToolStripMenuItem toolStripSplitButtonGroupByHash;
+        private ToolStripButton toolStripButtonOdi;
+        private ToolStrip toolStripMain;
+        private OpenFileDialog openFileDialog;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }

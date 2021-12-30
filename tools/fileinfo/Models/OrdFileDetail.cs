@@ -4,29 +4,35 @@ namespace fileinfo.Models
 {
     public class OrdFileDetail : FileDetail
     {
-        public override IFileDetail LoadData(string fileName)
+        public override void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list)
+        {
+            FileName = fileName;
+            Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
+            Address = reader.ReadUInt16();
+            Size = reader.ReadUInt16();
+            var attribute = reader.ReadByte();
+            var reserv = reader.ReadBytes(3);
+            Content = reader.ReadBytes(Size);
+            ComputeHash();
+            list.Add(this);
+        }
+
+        public override void LoadData(string fileName, List<IFileDetail> list)
         {
             try
             {
-                FileName = fileName;
                 using (var stream = File.Open(fileName, FileMode.Open))
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
-                    Address = reader.ReadUInt16();
-                    Size = reader.ReadUInt16();
-                    var attribute = reader.ReadByte();
-                    var reserv = reader.ReadBytes(3);
-                    Content = reader.ReadBytes(Size);
-                    ComputeHash();
+                    LoadData(fileName, reader, list);
                 }
             }
             catch (Exception ex)
             {
                 Message = ex.Message;
                 IsError = true;
+                list.Add(this);
             }
-            return this;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace fileinfo.Helpers
         {
             if (detail.Name.EndsWith("$"))
             {
-                return control.GetGroup("$", "Исполняемые");
+                return control.GetGroup("EXE", "Исполняемые");
             }
             return control.GetGroup("LIST", "Остальные");
         }
@@ -76,7 +76,7 @@ namespace fileinfo.Helpers
         {
             if (detail.Name.EndsWith("$"))
             {
-                return control.GetGroup("EXE", "$");
+                return control.GetGroup("EXE", "Исполняемые");
             }
             else if (detail.Name.Contains('.'))
             {

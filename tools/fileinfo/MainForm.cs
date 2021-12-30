@@ -51,19 +51,20 @@ namespace fileinfo
             LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
             LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
             LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
+            LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi");
             _listDetails.Sort();
 
             RefreshGroupView();
         }
 
-        private static void LoadFiles<T>(List<IFileDetail> list, string path, string extension)
+        private void LoadFiles<T>(List<IFileDetail> list, string path, string extension)
             where T : IFileDetail, new()
         {
             var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 IFileDetail detail = new T();
-                list.Add(detail.LoadData(file));
+                detail.LoadData(file, list);
             }
         }
 
@@ -84,6 +85,7 @@ namespace fileinfo
             var control = _format.CurrentView;
             if (control != null)
             {
+                _format.CurrentView!.SetEncoding(_encoding.CurrentHandler!);
                 panelViewComponent.Controls.Add(control.Control);
                 control.Control.Dock = DockStyle.Fill;
                 control.Current = IsSelectedItem() ?
@@ -110,6 +112,9 @@ namespace fileinfo
             _actionGroupFinish(listViewFile);
             listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listViewFile.EndUpdate();
+
+            System.GC.Collect();
+            System.GC.WaitForFullGCComplete();
         }
 
         private void directoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -177,6 +182,12 @@ namespace fileinfo
         {
             if (_format.CurrentView == null) return;
             _format.CurrentView.SaveDetailToFile();
+        }
+
+        private void toolStripButtonOdi_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            ExtractOdiHelper.ExtractFiles(openFileDialog.FileName, true);
         }
     }
 }

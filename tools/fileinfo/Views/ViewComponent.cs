@@ -22,6 +22,7 @@ namespace fileinfo.Views
         public void SetEncoding(Func<byte, bool, char> encoding)
         {
             _encoding = encoding;
+            if (_detail == null) return;
             LoadView();
         }
 
