@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace fileinfo.Views
 {
@@ -49,6 +45,7 @@ namespace fileinfo.Views
             { 0xA4, "LOAD" },
             { 0xA5, "FILES" },
             { 0xA6, "KILL" },
+
             { 0xA7, "TAB(" },
             { 0xA8, "TO" },
             { 0xA9, "SPC(" },
@@ -56,6 +53,7 @@ namespace fileinfo.Views
             { 0xAB, "THEN" },
             { 0xAC, "NOT" },
             { 0xAD, "STEP" },
+
             { 0xAE, "+" },
             { 0xAF, "-" },
             { 0xB0, "*" },
@@ -66,6 +64,7 @@ namespace fileinfo.Views
             { 0xB5, ">" },
             { 0xB6, "=" },
             { 0xB7, "<" },
+
             { 0xB8, "SGN" },
             { 0xB9, "INT" },
             { 0xBA, "ABS" },
@@ -90,16 +89,28 @@ namespace fileinfo.Views
             { 0xCD, "LEFT¤" },
             { 0xCE, "RIGHT¤" },
             { 0xCF, "MID¤" },
+
             { 0xD0, "GET" },
             { 0xD1, "PUT" },
             { 0xD2, "SOUND" },
             { 0xD3, "DELETE" },
             { 0xD4, "AUTO" },
             { 0xD5, "RENUM" },
-    };
+            { 0xD6, "MERGE" },
+            { 0xD7, "ELSE" },
+            { 0xD8, "END" },
+            { 0xD9, "TRON" },
+            { 0xDA, "TROFF" },
+            { 0xDB, "OPEN" },
+            { 0xDC, "CLOSE" },
 
+            { 0xDD, "EOF" },
+            { 0xDE, "LOF" },
+            { 0xDF, "EXIST" },
+            { 0xE0, "VARPTR" },
+        };
 
-    public BasicViewComponent(Func<byte, bool, char> encoding) : base(encoding)
+        public BasicViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
             if (File.Exists("SyntaxHighlighterBasic.xml"))
                 fastColoredTextBoxView.DescriptionFile = "SyntaxHighlighterBasic.xml";

@@ -35,6 +35,7 @@ namespace fileinfo
             _format.Add("HEX с адреса", new HexWithAddrViewComponent(_encoding.CurrentHandler));
             _format.Add("HEX", new HexViewComponent(_encoding.CurrentHandler));
             _format.Add("Текст", new TextViewComponent(_encoding.CurrentHandler));
+            _format.Add("Контрольная сумма", new CheckSumViewComponent(_encoding.CurrentHandler));
             _format.Add("Картинка", new PictureViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер", new DisAssemblerViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));

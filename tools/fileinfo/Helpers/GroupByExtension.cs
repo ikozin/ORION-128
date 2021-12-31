@@ -46,12 +46,18 @@ namespace fileinfo.Helpers
             {
                 bool xV = x.Name.EndsWith("$");
                 bool yV = y.Name.EndsWith("$");
-                if (xV) return 1;
-                if (yV) return -1;
-                var result = String.Compare(Path.GetExtension(x.Name), Path.GetExtension(y.Name), StringComparison.OrdinalIgnoreCase);
+                var result = xV.CompareTo(yV);
                 if (result == 0)
                 {
-                    result = String.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase);
+                    result = String.CompareOrdinal(Path.GetExtension(x.Name), Path.GetExtension(y.Name));
+                    if (result == 0)
+                    {
+                        result = String.CompareOrdinal(x.Name, y.Name);
+                        if (result == 0)
+                        {
+                            result = String.CompareOrdinal(x.FileName, y.FileName);
+                        }
+                    }
                 }
                 return result;
             });
@@ -68,7 +74,10 @@ namespace fileinfo.Helpers
 
         public static ListViewGroup GetGroupByPath(ListView control, IFileDetail detail)
         {
-            string key = Path.GetDirectoryName(detail.FileName)!;
+            string path = detail.FileName;
+            if (path.Contains("$"))
+                path = path.Substring(0, path.IndexOf("$"));
+            string key = Path.GetDirectoryName(path)!;
             return control.GetGroup(key, key);
         }
 
@@ -80,9 +89,8 @@ namespace fileinfo.Helpers
             }
             else if (detail.Name.Contains('.'))
             {
-                var start = detail.Name.IndexOf('.');
-                var name = detail.Name.Substring(start);
-                return control.GetGroup(name, name);
+                string key = Path.GetExtension(detail.Name);
+                return control.GetGroup(key, key);
             }
             return control.GetGroup("*", "*");
         }

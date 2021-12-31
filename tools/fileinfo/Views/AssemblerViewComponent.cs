@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace fileinfo.Views
+﻿namespace fileinfo.Views
 {
     public partial class AssemblerViewComponent : TextViewComponent
     {
