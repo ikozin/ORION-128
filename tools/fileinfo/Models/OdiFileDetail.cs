@@ -1,9 +1,4 @@
 ﻿using fileinfo.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fileinfo.Models
 {
@@ -18,13 +13,7 @@ namespace fileinfo.Models
 
             FileName = fileName;
 
-            List<OdiFileEntry> entryList = new List<OdiFileEntry>();
-
-            reader.BaseStream.Position = ExtractOdiHelper.ext_offset(0);
-            entryList.LoadFileInfo(reader);
-            reader.BaseStream.Position = ExtractOdiHelper.ext_offset(1);
-            entryList.LoadFileInfo(reader);
-
+            List<OdiFileEntry> entryList = reader.GetOdiFileEntries();
             var odiList = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0);
             foreach (OdiFileEntry entry in odiList)
             {
