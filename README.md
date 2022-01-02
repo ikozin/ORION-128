@@ -5,14 +5,14 @@
 1. [dasm - Дизассемблер для i8080](https://github.com/ikozin/ORION-128/tree/master/tools/dasm)
 2. [hexdump - Вывод в HEX формате с подсчетом контрольных сумм](https://github.com/ikozin/ORION-128/tree/master/tools/hexdump)
 3. [unpackcodepage - Распаковка знакогенератора из образа ПЗУ](https://github.com/ikozin/ORION-128/tree/master/tools/unpackcodepage)
-4. [fileinfo - Просмотр файлов для Орион-128](://github.com/ikozin/ORION-128/tree/master/tools/fileinfo)
-	Поддерживает просмотр файлов BRU, ORD, RKO, ODI
-	Визаулизаторы форматов
-		HEX - Два вида
-		Текст
-		Картинка - файлы с расширением PC
-		Ассемблер - файлы с расширением AS с подсветкой синтаксиса
-		Бейсик - файлы с расширением BS с подсветкой синтаксиса
+4. [fileinfo - Просмотр файлов для Орион-128](https://github.com/ikozin/ORION-128/tree/master/tools/fileinfo)
+   Поддерживает просмотр файлов BRU, ORD, RKO, ODI  
+Визаулизаторы форматов
+	* HEX - Два вида
+	* Текст
+	* Картинка - файлы с расширением PC
+	* Ассемблер - файлы с расширением AS с подсветкой синтаксиса
+	* Бейсик - файлы с расширением BS с подсветкой синтаксиса
 
 **Полезные ссылки**
 
