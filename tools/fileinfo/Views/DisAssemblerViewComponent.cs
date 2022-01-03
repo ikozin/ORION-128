@@ -1,9 +1,13 @@
 ﻿using fileinfo.Services.Dasm.Service;
+using System.Text;
 
 namespace fileinfo.Views
 {
     public partial class DisAssemblerViewComponent : ViewComponent
     {
+        protected string? _extension;
+        protected string? _filter;
+
         public DisAssemblerViewComponent()
         {
             InitializeComponent();
@@ -15,6 +19,8 @@ namespace fileinfo.Views
             if (!File.Exists(fastColoredTextBoxView.DescriptionFile))
                 fastColoredTextBoxView.DescriptionFile = "";
             ClearView();
+            _extension = "asm";
+            _filter = "Assemblers files|*.asm|All files|*.*";
         }
 
         private void ButtonDasm_Click(object? sender, EventArgs e)
@@ -47,6 +53,16 @@ namespace fileinfo.Views
                 fastColoredTextBoxView.Text += ex.Message;
             }
             splitContainerView.Enabled = true;
+        }
+        public override void SaveDetailToFile()
+        {
+            if (_detail == null) return;
+            using SaveFileDialog dlg = new();
+            dlg.DefaultExt = _extension;
+            dlg.Filter = _filter;
+            dlg.FileName = _detail.Name;
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            File.WriteAllText(dlg.FileName, fastColoredTextBoxView.Text, Encoding.UTF8);
         }
     }
 }

@@ -6,6 +6,10 @@ namespace fileinfo.Views
 {
     public partial class DisAsmDumpViewComponent : ViewComponent
     {
+
+        protected string? _extension;
+        protected string? _filter;
+
         private int _count;
 
         public DisAsmDumpViewComponent()
@@ -22,6 +26,8 @@ namespace fileinfo.Views
             comboBoxCount.SelectedIndex = 0;
             comboBoxCount.SelectedIndexChanged += ComboBoxCount_SelectedIndexChanged;
             _count = int.Parse(comboBoxCount.SelectedItem!.ToString()!);
+            _extension = "asm";
+            _filter = "Assemblers files|*.asm|All files|*.*";
         }
 
         private void ComboBoxCount_SelectedIndexChanged(object? sender, EventArgs e)
@@ -68,6 +74,16 @@ namespace fileinfo.Views
             fastColoredTextBoxView.Text = text.ToString();
             fastColoredTextBoxView.Enabled = true;
             panelTool.Enabled = true;
+        }
+        public override void SaveDetailToFile()
+        {
+            if (_detail == null) return;
+            using SaveFileDialog dlg = new();
+            dlg.DefaultExt = _extension;
+            dlg.Filter = _filter;
+            dlg.FileName = _detail.Name;
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            File.WriteAllText(dlg.FileName, fastColoredTextBoxView.Text, Encoding.UTF8);
         }
     }
 }

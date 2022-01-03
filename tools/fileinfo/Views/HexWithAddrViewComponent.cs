@@ -44,8 +44,8 @@ namespace fileinfo.Views
                 {
                     text.Append(" ");
                     text.AppendLine(descr.ToString());
-                    text.AppendFormat("{0:X4}", addr);
                     descr.Clear();
+                    text.AppendFormat("{0:X4}", addr);
                 }
                 text.AppendFormat(" {0:X2} ", item);
                 descr.Append(_encoding(item, false));
@@ -55,18 +55,17 @@ namespace fileinfo.Views
             if (addr % 16 != 0)
             {
                 start = addr;
-                addr = (ushort)((addr + 16) & (ushort)0xFFF0); ;
+                addr = (ushort)((addr + 16) & (ushort)0xFFF0);
                 while (start < addr)
                 {
                     text.Append("    ");
                     descr.Append(' ');
                     start++;
                 }
-
-                text.Append(" ");
-                text.AppendLine(descr.ToString());
-                descr.Clear();
             }
+            text.Append(" ");
+            text.AppendLine(descr.ToString());
+            descr.Clear();
             return text.ToString();
         }
     }

@@ -37,6 +37,7 @@ namespace fileinfo.Views
             fastColoredTextBoxView.Text = text.ToString();
             fastColoredTextBoxView.Enabled = true;
         }
+
         public override void SaveDetailToFile()
         {
             if (_detail == null) return;

@@ -34,7 +34,14 @@ namespace fileinfo.Helpers
                 bool xV = x.Name.EndsWith("$");
                 bool yV = y.Name.EndsWith("$");
                 if (!(xV ^ yV))
-                    return String.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+                {
+                    var result = String.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+                    if (result == 0)
+                    {
+                        result = String.CompareOrdinal(x.FileName, y.FileName);
+                    }
+                    return result;
+                }
                 if (xV) return 1;
                 return -1;            
             });

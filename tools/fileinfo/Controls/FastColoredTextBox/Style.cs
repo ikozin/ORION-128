@@ -99,13 +99,13 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class TextStyle : Style
     {
-        public Brush ForeBrush { get; set; }
-        public Brush BackgroundBrush { get; set; }
+        public Brush? ForeBrush { get; set; }
+        public Brush? BackgroundBrush { get; set; }
         public FontStyle FontStyle { get; set; }
         //public readonly Font Font;
         public StringFormat stringFormat;
 
-        public TextStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle)
+        public TextStyle(Brush? foreBrush, Brush? backgroundBrush, FontStyle fontStyle)
         {
             this.ForeBrush = foreBrush;
             this.BackgroundBrush = backgroundBrush;
