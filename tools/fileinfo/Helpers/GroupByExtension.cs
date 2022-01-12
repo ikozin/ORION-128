@@ -43,7 +43,7 @@ namespace fileinfo.Helpers
                     return result;
                 }
                 if (xV) return 1;
-                return -1;            
+                return -1;
             });
         }
 

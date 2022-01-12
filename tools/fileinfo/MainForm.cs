@@ -13,14 +13,14 @@ namespace fileinfo
         private Action<ListView> _actionGroupFinish;
         private readonly TextEncodingTool _encoding;
         private readonly TextFormatTool _format;
-        private readonly List<IFileDetail> _listDetails = new(1024);
+        private readonly List<IFileDetail> _listDetails = new(4096);
 
         public MainForm()
         {
             InitializeComponent();
 
-            _actionGroupStart = GroupByExtension.GetGroupByExecStart;
-            _actionGroup = GroupByExtension.GetGroupByExec;
+            _actionGroupStart = GroupByExtension.GetGroupByCustomStart;
+            _actionGroup = GroupByExtension.GetGroupByCustom;
             _actionGroupFinish = GroupByExtension.GetGroupByCommonFinish;
 
             _encoding = new TextEncodingTool(toolStripDropDownButtonEncoding,

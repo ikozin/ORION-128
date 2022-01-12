@@ -1,13 +1,5 @@
 ﻿using fileinfo.Helpers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace fileinfo.Views
 {
@@ -54,7 +46,7 @@ namespace fileinfo.Views
                 Array.Fill<byte>(data, 0, 0, 16);
                 using (MemoryStream memory = new MemoryStream(data))
                 using (BinaryWriter writer = new BinaryWriter(memory))
-                {                    
+                {
                     writer.Write(Encoding.ASCII.GetBytes(_detail.Name));
                     while (memory.Position < 8) writer.Write((byte)0x20);
                     writer.Write(_detail.Address);
@@ -103,7 +95,7 @@ namespace fileinfo.Views
                 var flag = totalSum > 0xFF;
                 totalSum &= 0xFF;
                 if (i == data.Length) return (ushort)((cyclicSum << 8) + totalSum);
-                cyclicSum += (byte)(b + (flag ? 1: 0));
+                cyclicSum += (byte)(b + (flag ? 1 : 0));
             }
         }
 

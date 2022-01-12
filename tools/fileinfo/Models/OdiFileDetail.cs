@@ -22,15 +22,15 @@ namespace fileinfo.Models
                 switch (ext)
                 {
                     case ".BRU":
-                    {
-                        detail = new BruFileDetail();
-                        break;
-                    }
+                        {
+                            detail = new BruFileDetail();
+                            break;
+                        }
                     case ".ORD":
-                    {
-                        detail = new OrdFileDetail();
-                        break;
-                    }
+                        {
+                            detail = new OrdFileDetail();
+                            break;
+                        }
                 }
                 if (detail != null)
                 {
