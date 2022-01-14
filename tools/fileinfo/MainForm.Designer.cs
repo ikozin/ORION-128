@@ -33,6 +33,7 @@
             System.Windows.Forms.ColumnHeader columnHeaderSize;
             System.Windows.Forms.ColumnHeader columnHeaderAddress;
             System.Windows.Forms.ColumnHeader columnHeaderHash;
+            System.Windows.Forms.ToolStrip toolStripFileView;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainerInfo = new System.Windows.Forms.SplitContainer();
             this.listViewFile = new System.Windows.Forms.ListView();
@@ -41,7 +42,6 @@
             this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelViewComponent = new System.Windows.Forms.Panel();
-            this.toolStripFileView = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownButtonEncoding = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
@@ -61,12 +61,13 @@
             columnHeaderSize = new System.Windows.Forms.ColumnHeader();
             columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
             columnHeaderHash = new System.Windows.Forms.ColumnHeader();
+            toolStripFileView = new System.Windows.Forms.ToolStrip();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).BeginInit();
             this.splitContainerInfo.Panel1.SuspendLayout();
             this.splitContainerInfo.Panel2.SuspendLayout();
             this.splitContainerInfo.SuspendLayout();
             this.contextMenuStripFile.SuspendLayout();
-            this.toolStripFileView.SuspendLayout();
+            toolStripFileView.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,7 +105,7 @@
             // splitContainerInfo.Panel2
             // 
             this.splitContainerInfo.Panel2.Controls.Add(this.panelViewComponent);
-            this.splitContainerInfo.Panel2.Controls.Add(this.toolStripFileView);
+            this.splitContainerInfo.Panel2.Controls.Add(toolStripFileView);
             this.splitContainerInfo.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainerInfo.Size = new System.Drawing.Size(800, 423);
             this.splitContainerInfo.SplitterDistance = 266;
@@ -164,46 +165,49 @@
             // 
             this.panelViewComponent.Cursor = System.Windows.Forms.Cursors.Default;
             this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelViewComponent.Location = new System.Drawing.Point(0, 27);
+            this.panelViewComponent.Location = new System.Drawing.Point(0, 39);
             this.panelViewComponent.Name = "panelViewComponent";
-            this.panelViewComponent.Size = new System.Drawing.Size(530, 396);
+            this.panelViewComponent.Size = new System.Drawing.Size(530, 384);
             this.panelViewComponent.TabIndex = 4;
             // 
             // toolStripFileView
             // 
-            this.toolStripFileView.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStripFileView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            toolStripFileView.ImageScalingSize = new System.Drawing.Size(20, 20);
+            toolStripFileView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButtonFormat,
             this.toolStripDropDownButtonEncoding,
             this.toolStripButtonSave});
-            this.toolStripFileView.Location = new System.Drawing.Point(0, 0);
-            this.toolStripFileView.Name = "toolStripFileView";
-            this.toolStripFileView.Size = new System.Drawing.Size(530, 27);
-            this.toolStripFileView.TabIndex = 2;
-            this.toolStripFileView.Text = "toolStrip1";
+            toolStripFileView.Location = new System.Drawing.Point(0, 0);
+            toolStripFileView.Name = "toolStripFileView";
+            toolStripFileView.Size = new System.Drawing.Size(530, 39);
+            toolStripFileView.TabIndex = 2;
+            toolStripFileView.Text = "toolStrip1";
             // 
             // toolStripDropDownButtonFormat
             // 
-            this.toolStripDropDownButtonFormat.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonFormat.Image")));
+            this.toolStripDropDownButtonFormat.Image = global::fileinfo.Properties.Resources.script;
+            this.toolStripDropDownButtonFormat.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripDropDownButtonFormat.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonFormat.Name = "toolStripDropDownButtonFormat";
-            this.toolStripDropDownButtonFormat.Size = new System.Drawing.Size(69, 24);
+            this.toolStripDropDownButtonFormat.Size = new System.Drawing.Size(81, 36);
             this.toolStripDropDownButtonFormat.Text = "Вид";
             // 
             // toolStripDropDownButtonEncoding
             // 
             this.toolStripDropDownButtonEncoding.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonEncoding.Image")));
+            this.toolStripDropDownButtonEncoding.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripDropDownButtonEncoding.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonEncoding.Name = "toolStripDropDownButtonEncoding";
-            this.toolStripDropDownButtonEncoding.Size = new System.Drawing.Size(119, 24);
+            this.toolStripDropDownButtonEncoding.Size = new System.Drawing.Size(123, 36);
             this.toolStripDropDownButtonEncoding.Text = "Кодировка";
             // 
             // toolStripButtonSave
             // 
-            this.toolStripButtonSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSave.Image")));
+            this.toolStripButtonSave.Image = global::fileinfo.Properties.Resources.disk;
+            this.toolStripButtonSave.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSave.Name = "toolStripButtonSave";
-            this.toolStripButtonSave.Size = new System.Drawing.Size(107, 24);
+            this.toolStripButtonSave.Size = new System.Drawing.Size(119, 36);
             this.toolStripButtonSave.Text = "Сохранить";
             this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
             // 
@@ -216,7 +220,7 @@
             // 
             // toolStripButtonSelectDirectory
             // 
-            this.toolStripButtonSelectDirectory.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSelectDirectory.Image")));
+            this.toolStripButtonSelectDirectory.Image = global::fileinfo.Properties.Resources.folder;
             this.toolStripButtonSelectDirectory.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSelectDirectory.Name = "toolStripButtonSelectDirectory";
             this.toolStripButtonSelectDirectory.Size = new System.Drawing.Size(196, 24);
@@ -313,8 +317,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).EndInit();
             this.splitContainerInfo.ResumeLayout(false);
             this.contextMenuStripFile.ResumeLayout(false);
-            this.toolStripFileView.ResumeLayout(false);
-            this.toolStripFileView.PerformLayout();
+            toolStripFileView.ResumeLayout(false);
+            toolStripFileView.PerformLayout();
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
             this.ResumeLayout(false);

@@ -32,16 +32,16 @@ namespace fileinfo
 
             _format = new TextFormatTool(toolStripDropDownButtonFormat,
                 IsSelectedItem, SetFileViewCurrent);
-            _format.Add("HEX с адреса", new HexWithAddrViewComponent(_encoding.CurrentHandler));
-            _format.Add("HEX", new HexViewComponent(_encoding.CurrentHandler));
+            _format.Add("HEX с адреса", new HexWithAddrViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_hex);
+            _format.Add("HEX", new HexViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_hex);
             _format.Add("Текст", new TextViewComponent(_encoding.CurrentHandler));
             _format.Add("Контрольная сумма", new CheckSumViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер", new DisAssemblerViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));
             _format.Add();
-            _format.Add("(*.AS) Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler));
-            _format.Add("(*.BS) Бейсик", new BasicViewComponent(_encoding.CurrentHandler));
-            _format.Add("(*.PC) Картинка", new PictureViewComponent(_encoding.CurrentHandler));
+            _format.Add("(*.AS) Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_as);
+            _format.Add("(*.BS) Бейсик", new BasicViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_bs);
+            _format.Add("(*.PC) Картинка", new PictureViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_pc);
             _format.CurrentView = _format.GetViews().First();
         }
 

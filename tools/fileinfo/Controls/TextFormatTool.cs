@@ -39,9 +39,11 @@ namespace fileinfo.Controls
             _tool.DropDownItems.Add(item);
         }
 
-        public void Add(string text, IViewComponent component)
+        public void Add(string text, IViewComponent component, Bitmap? image = null)
         {
             var item = new ToolStripMenuItemFormat(this, text, component);
+            item.ImageScaling = ToolStripItemImageScaling.None;
+            item.Image = image;
             _tool.DropDownItems.Add(item);
         }
 
