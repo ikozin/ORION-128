@@ -4,7 +4,7 @@ namespace fileinfo.Models
 {
     public class OrdFileDetail : FileDetail
     {
-        public override void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list)
+        public override void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
         {
             FileName = fileName;
             Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
@@ -14,10 +14,10 @@ namespace fileinfo.Models
             var reserv = reader.ReadBytes(3);
             Content = reader.ReadBytes(Size);
             ComputeHash();
-            list.Add(this);
+            lock (list) list.Add(this);
         }
 
-        public override void LoadData(string fileName, List<IFileDetail> list)
+        public override void LoadData(string fileName, ICollection<IFileDetail> list)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace fileinfo.Models
             {
                 Message = ex.Message;
                 IsError = true;
-                list.Add(this);
+                lock (list) list.Add(this);
             }
         }
     }

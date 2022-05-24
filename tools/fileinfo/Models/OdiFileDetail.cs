@@ -4,7 +4,7 @@ namespace fileinfo.Models
 {
     public class OdiFileDetail : FileDetail
     {
-        public override void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list)
+        public override void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
         {
             if (reader.BaseStream.Length != 819200)
             {
@@ -43,7 +43,7 @@ namespace fileinfo.Models
             }
         }
 
-        public override void LoadData(string fileName, List<IFileDetail> list)
+        public override void LoadData(string fileName, ICollection<IFileDetail> list)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace fileinfo.Models
             {
                 Message = ex.Message;
                 IsError = true;
-                list.Add(this);
+                lock (list) list.Add(this);
             }
         }
     }

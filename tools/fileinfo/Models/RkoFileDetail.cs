@@ -6,7 +6,7 @@ namespace fileinfo.Models
     {
         private const int BRU_Offset = 0x4d;
 
-        public override void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list)
+        public override void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
         {
             FileName = fileName;
             long size = reader.BaseStream.Length;
@@ -19,10 +19,10 @@ namespace fileinfo.Models
             var reserv = reader.ReadBytes(3);
             Content = reader.ReadBytes(Size);
             ComputeHash();
-            list.Add(this);
+            lock (list) list.Add(this);
         }
 
-        public override void LoadData(string fileName, List<IFileDetail> list)
+        public override void LoadData(string fileName, ICollection<IFileDetail> list)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace fileinfo.Models
                 Address = 0;
                 Message = ex.Message;
                 IsError = true;
-                list.Add(this);
+                lock (list) list.Add(this);
             }
         }
     }

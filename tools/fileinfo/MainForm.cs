@@ -49,10 +49,19 @@ namespace fileinfo
         {
             if (folderBrowserDialog.ShowDialog(this) != DialogResult.OK) return;
             _listDetails.Clear();
-            LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
-            LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
-            LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
-            LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi");
+
+            //LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru");
+            //LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord");
+            //LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
+            //LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi");
+
+            List<Task> list = new List<Task>();
+            list.Add(Task.Run(() => LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru")));
+            list.Add(Task.Run(() => LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord")));
+            list.Add(Task.Run(() => LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko")));
+            list.Add(Task.Run(() => LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi")));
+            Task.WaitAll(list.ToArray());
+
             _listDetails.Sort();
 
             RefreshGroupView();

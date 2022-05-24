@@ -25,9 +25,9 @@ namespace fileinfo.Models
             Message = String.Empty;
         }
 
-        public abstract void LoadData(string fileName, List<IFileDetail> list);
+        public abstract void LoadData(string fileName, ICollection<IFileDetail> list);
 
-        public abstract void LoadData(string fileName, BinaryReader reader, List<IFileDetail> list);
+        public abstract void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list);
 
 
         public int CompareTo(IFileDetail? other)
