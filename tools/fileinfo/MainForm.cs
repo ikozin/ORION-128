@@ -71,11 +71,11 @@ namespace fileinfo
             where T : IFileDetail, new()
         {
             var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
-            foreach (var file in files)
+            Parallel.ForEach(files, file =>
             {
                 IFileDetail detail = new T();
                 detail.LoadData(file, list);
-            }
+            });
         }
 
         private bool IsSelectedItem()

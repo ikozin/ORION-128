@@ -4,11 +4,11 @@ namespace fileinfo.Models
 {
     public class OdiFileDetail : FileDetail
     {
-        public override void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
         {
             if (reader.BaseStream.Length != 819200)
             {
-                return;
+                return false;
             }
 
             FileName = fileName;
@@ -41,24 +41,7 @@ namespace fileinfo.Models
                     }
                 }
             }
-        }
-
-        public override void LoadData(string fileName, ICollection<IFileDetail> list)
-        {
-            try
-            {
-                using (var stream = File.Open(fileName, FileMode.Open))
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    LoadData(fileName, reader, list);
-                }
-            }
-            catch (Exception ex)
-            {
-                Message = ex.Message;
-                IsError = true;
-                lock (list) list.Add(this);
-            }
+            return false;
         }
     }
 }

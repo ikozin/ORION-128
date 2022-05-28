@@ -25,10 +25,37 @@ namespace fileinfo.Models
             Message = String.Empty;
         }
 
-        public abstract void LoadData(string fileName, ICollection<IFileDetail> list);
+        public void LoadData(string fileName, ICollection<IFileDetail> list)
+        {
+            try
+            {
+                using (var stream = File.Open(fileName, FileMode.Open))
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    LoadData(fileName, reader, list);
+                }
+            }
+            catch (Exception ex)
+            {
+                Name = "";
+                Size = 0;
+                Address = 0;
+                Message = ex.Message;
+                IsError = true;
+                lock (list) list.Add(this);
+            }
+        }
 
-        public abstract void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list);
 
+        public void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
+        {
+            if (!ParseData(fileName, reader, list)) return;
+            ComputeHash();
+            lock (list) list.Add(this);
+        }
+
+
+        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<IFileDetail> list);
 
         public int CompareTo(IFileDetail? other)
         {
