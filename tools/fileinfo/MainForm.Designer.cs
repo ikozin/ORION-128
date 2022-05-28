@@ -331,7 +331,6 @@
         private SplitContainer splitContainerInfo;
         private ListView listViewFile;
         private FolderBrowserDialog folderBrowserDialog;
-        private ToolStrip toolStripFileView;
         private ColumnHeader columnHeaderFileName;
         private ContextMenuStrip contextMenuStripFile;
         private ToolStripMenuItem directoryToolStripMenuItem;
