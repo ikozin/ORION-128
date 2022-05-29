@@ -67,14 +67,14 @@ namespace fileinfo
             RefreshGroupView();
         }
 
-        private void LoadFiles<T>(List<IFileDetail> list, string path, string extension)
+        private void LoadFiles<T>(ICollection<IFileDetail> list, string path, string extension)
             where T : IFileDetail, new()
         {
-            var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories);
-            Parallel.ForEach(files, file =>
+            var files = Directory.GetFiles(path, extension, SearchOption.AllDirectories);
+            Parallel.For(0, files.Length, index =>
             {
                 IFileDetail detail = new T();
-                detail.LoadData(file, list);
+                detail.LoadData(files[index], list);
             });
         }
 
