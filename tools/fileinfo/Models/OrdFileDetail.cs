@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using fileinfo.Controls;
+using System.Text;
 
 namespace fileinfo.Models
 {
     public class OrdFileDetail : FileDetail
     {
-        public override bool ParseData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
         {
             FileName = fileName;
             Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();

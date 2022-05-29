@@ -1,4 +1,6 @@
-﻿namespace fileinfo.Models
+﻿using fileinfo.Controls;
+
+namespace fileinfo.Models
 {
     public interface IFileDetail : IComparable<IFileDetail>
     {
@@ -10,7 +12,7 @@
         byte[] Hash { get; }
         byte[] Content { get; }
         string Message { get; }
-        void LoadData(string fileName, ICollection<IFileDetail> list);
-        void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list);
+        void LoadData(string fileName, ICollection<ListViewItemExt> list);
+        void LoadData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list);
     }
 }

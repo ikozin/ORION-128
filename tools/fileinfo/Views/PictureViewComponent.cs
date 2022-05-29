@@ -31,6 +31,8 @@ namespace fileinfo.Views
         protected override void LoadView()
         {
             var content = pictureBoxView.Image;
+            pictureBoxView.Image = null;
+            content?.Dispose();
             try
             {
                 using MemoryStream stream = new(_detail!.Content);
@@ -44,39 +46,45 @@ namespace fileinfo.Views
                 textBoxWidth.Text = width.ToString();
                 textBoxHeight.Text = height.ToString();
 
-                var image = new Bitmap(width, height);
-
-                byte[] colors = Decompress(stream, size);
-                byte[] bitmap = Decompress(stream, size);
-
-                int posX = 0, posY = 0;
-                for (int index = 0; index < bitmap.Length; index++)
+                if (width != 0 && width < 512 && height != 0 && height < 512)
                 {
-                    byte value = bitmap[index];
-                    byte color = colors[index];
-                    (Color foreColor, Color backColor) = GetColors(color);
+                    var image = new Bitmap(width, height);
 
-                    for (int i = 0, n = 7; n >= 0; i++, n--)
-                    {
-                        Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
-                        image.SetPixel(posX + i, posY, pixel);
-                    }
-                    posY++;
-                    if (posY == height)
-                    {
-                        posX += 8;
-                        posY = 0;
-                    }
+                    byte[] colors = Decompress(stream, size);
+                    byte[] bitmap = Decompress(stream, size);
 
+                    int posX = 0, posY = 0;
+                    for (int index = 0; index < bitmap.Length; index++)
+                    {
+                        byte value = bitmap[index];
+                        byte color = colors[index];
+                        (Color foreColor, Color backColor) = GetColors(color);
+
+                        for (int i = 0, n = 7; n >= 0; i++, n--)
+                        {
+                            Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
+                            image.SetPixel(posX + i, posY, pixel);
+                        }
+                        posY++;
+                        if (posY == height)
+                        {
+                            posX += 8;
+                            posY = 0;
+                        }
+
+                    }
+                    pictureBoxView.Image = image;
+                    pictureBoxView.Enabled = true;
+                    panelTool.Enabled = true;
                 }
-                pictureBoxView.Image = image;
-                pictureBoxView.Enabled = true;
-                panelTool.Enabled = true;
+                else
+                {
+                    ClearView();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
             }
-            content?.Dispose();
         }
 
         public override void SaveDetailToFile()

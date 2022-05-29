@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using fileinfo.Controls;
+using System.Text;
 
 namespace fileinfo.Models
 {
@@ -6,7 +7,7 @@ namespace fileinfo.Models
     {
         private const int BRU_Offset = 0x4d;
 
-        public override bool ParseData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
         {
             FileName = fileName;
             long size = reader.BaseStream.Length;

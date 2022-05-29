@@ -11,6 +11,7 @@ namespace fileinfo.Models
         public byte Rezerv1 { get; private set; }
         public byte Rezerv2 { get; private set; }
         public byte ExtSize { get; private set; }
+
         public ushort[] Extent;     //16 байт, 8 слов
         public string FileName { get; private set; }    // 8 байт - имя, 3 байта - расширение
 

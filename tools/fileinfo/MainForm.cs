@@ -8,12 +8,12 @@ namespace fileinfo
 {
     public partial class MainForm : Form
     {
-        private Action<ListView, List<IFileDetail>> _actionGroupStart;
-        private Func<ListView, IFileDetail, ListViewGroup> _actionGroup;
+        private Action<ListView, List<ListViewItemExt>> _actionGroupStart;
+        private Func<ListView, ListViewItemExt, ListViewGroup> _actionGroup;
         private Action<ListView> _actionGroupFinish;
         private readonly TextEncodingTool _encoding;
         private readonly TextFormatTool _format;
-        private readonly List<IFileDetail> _listDetails = new(4096);
+        private readonly List<ListViewItemExt> _listDetails = new(4096);
 
         public MainForm()
         {
@@ -67,7 +67,7 @@ namespace fileinfo
             RefreshGroupView();
         }
 
-        private void LoadFiles<T>(ICollection<IFileDetail> list, string path, string extension)
+        private void LoadFiles<T>(ICollection<ListViewItemExt> list, string path, string extension)
             where T : IFileDetail, new()
         {
             var files = Directory.GetFiles(path, extension, SearchOption.AllDirectories);
@@ -113,11 +113,10 @@ namespace fileinfo
             listViewFile.Items.Clear();
 
             _actionGroupStart(listViewFile, _listDetails);
-            foreach (var file in _listDetails)
+            foreach (var item in _listDetails)
             {
-                ListViewItemExt item = new(file);
                 listViewFile.Items.Add(item);
-                item.Group = _actionGroup(listViewFile, file);
+                item.Group = _actionGroup(listViewFile, item);
             }
             _actionGroupFinish(listViewFile);
             listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -193,11 +192,20 @@ namespace fileinfo
             if (_format.CurrentView == null) return;
             _format.CurrentView.SaveDetailToFile();
         }
+        private void toolStripButtonExport_Click(object sender, EventArgs e)
+        {
+            if (_format.CurrentView == null) return;
+            if (_format.CurrentView.Current == null) return;
+            saveFileDialog.FileName = _format.CurrentView.Current.Name;
+            if (saveFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            File.WriteAllBytes(saveFileDialog.FileName, _format.CurrentView.Current.Content);            
+        }
 
         private void toolStripButtonOdi_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
             ExtractOdiHelper.ExtractFiles(openFileDialog.FileName, true);
         }
+
     }
 }

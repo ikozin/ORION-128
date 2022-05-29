@@ -1,4 +1,5 @@
-﻿using fileinfo.Models;
+﻿using fileinfo.Controls;
+using fileinfo.Models;
 
 namespace fileinfo.Helpers
 {
@@ -15,30 +16,30 @@ namespace fileinfo.Helpers
             }
             return group;
         }
-        public static void GetGroupByCommonStart(ListView control, List<IFileDetail> list)
+        public static void GetGroupByCommonStart(ListView control, List<ListViewItemExt> list)
         {
         }
 
-        public static void GetGroupByPathStart(ListView control, List<IFileDetail> list)
+        public static void GetGroupByPathStart(ListView control, List<ListViewItemExt> list)
         {
-            list.Sort((IFileDetail x, IFileDetail y) =>
+            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
             {
-                return String.Compare(x.FileName, y.FileName, StringComparison.OrdinalIgnoreCase);
+                return String.Compare(x.Detail.FileName, y.Detail.FileName, StringComparison.OrdinalIgnoreCase);
             });
         }
 
-        public static void GetGroupByExecStart(ListView control, List<IFileDetail> list)
+        public static void GetGroupByExecStart(ListView control, List<ListViewItemExt> list)
         {
-            list.Sort((IFileDetail x, IFileDetail y) =>
+            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
             {
-                bool xV = x.Name.EndsWith("$");
-                bool yV = y.Name.EndsWith("$");
+                bool xV = x.Detail.Name.EndsWith("$");
+                bool yV = y.Detail.Name.EndsWith("$");
                 if (!(xV ^ yV))
                 {
-                    var result = String.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+                    var result = String.Compare(x.Detail.Name, y.Detail.Name, StringComparison.OrdinalIgnoreCase);
                     if (result == 0)
                     {
-                        result = String.CompareOrdinal(x.FileName, y.FileName);
+                        result = String.CompareOrdinal(x.Detail.FileName, y.Detail.FileName);
                     }
                     return result;
                 }
@@ -47,22 +48,22 @@ namespace fileinfo.Helpers
             });
         }
 
-        public static void GetGroupByCustomStart(ListView control, List<IFileDetail> list)
+        public static void GetGroupByCustomStart(ListView control, List<ListViewItemExt> list)
         {
-            list.Sort((IFileDetail x, IFileDetail y) =>
+            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
             {
-                bool xV = x.Name.EndsWith("$");
-                bool yV = y.Name.EndsWith("$");
+                bool xV = x.Detail.Name.EndsWith("$");
+                bool yV = y.Detail.Name.EndsWith("$");
                 var result = xV.CompareTo(yV);
                 if (result == 0)
                 {
-                    result = String.CompareOrdinal(Path.GetExtension(x.Name), Path.GetExtension(y.Name));
+                    result = String.CompareOrdinal(Path.GetExtension(x.Detail.Name), Path.GetExtension(y.Detail.Name));
                     if (result == 0)
                     {
-                        result = String.CompareOrdinal(x.Name, y.Name);
+                        result = String.CompareOrdinal(x.Detail.Name, y.Detail.Name);
                         if (result == 0)
                         {
-                            result = String.CompareOrdinal(x.FileName, y.FileName);
+                            result = String.CompareOrdinal(x.Detail.FileName, y.Detail.FileName);
                         }
                     }
                 }
@@ -70,41 +71,41 @@ namespace fileinfo.Helpers
             });
         }
 
-        public static ListViewGroup GetGroupByExec(ListView control, IFileDetail detail)
+        public static ListViewGroup GetGroupByExec(ListView control, ListViewItemExt item)
         {
-            if (detail.Name.EndsWith("$"))
+            if (item.Detail.Name.EndsWith("$"))
             {
                 return control.GetGroup("EXE", "Исполняемые");
             }
             return control.GetGroup("LIST", "Остальные");
         }
 
-        public static ListViewGroup GetGroupByPath(ListView control, IFileDetail detail)
+        public static ListViewGroup GetGroupByPath(ListView control, ListViewItemExt item)
         {
-            string path = detail.FileName;
+            string path = item.Detail.FileName;
             if (path.Contains("$"))
                 path = path.Substring(0, path.IndexOf("$"));
             string key = Path.GetDirectoryName(path)!;
             return control.GetGroup(key, key);
         }
 
-        public static ListViewGroup GetGroupByCustom(ListView control, IFileDetail detail)
+        public static ListViewGroup GetGroupByCustom(ListView control, ListViewItemExt item)
         {
-            if (detail.Name.EndsWith("$"))
+            if (item.Detail.Name.EndsWith("$"))
             {
                 return control.GetGroup("EXE", "Исполняемые");
             }
-            else if (detail.Name.Contains('.'))
+            else if (item.Detail.Name.Contains('.'))
             {
-                string key = Path.GetExtension(detail.Name);
+                string key = Path.GetExtension(item.Detail.Name);
                 return control.GetGroup(key, key);
             }
             return control.GetGroup("*", "*");
         }
 
-        public static ListViewGroup GetGroupByHash(ListView control, IFileDetail detail)
+        public static ListViewGroup GetGroupByHash(ListView control, ListViewItemExt item)
         {
-            string key = detail.Hash.ToHex();
+            string key = item.Detail.Hash.ToHex();
             return control.GetGroup(key, key);
         }
 

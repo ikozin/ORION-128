@@ -3,7 +3,7 @@ using fileinfo.Models;
 
 namespace fileinfo.Controls
 {
-    internal class ListViewItemExt : ListViewItem
+    public class ListViewItemExt : ListViewItem, IComparable<ListViewItemExt>
     {
         public ListViewItemExt(IFileDetail detail) : base()
         {
@@ -18,5 +18,11 @@ namespace fileinfo.Controls
             SubItems.Add(Detail.FileName);
         }
         public IFileDetail Detail { get; private set; }
+
+        public int CompareTo(ListViewItemExt? other)
+        {
+            return Detail.CompareTo(other!.Detail);
+        }
+
     }
 }

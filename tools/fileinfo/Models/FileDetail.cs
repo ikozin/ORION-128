@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using fileinfo.Controls;
+using System.Security.Cryptography;
 
 namespace fileinfo.Models
 {
@@ -25,7 +26,7 @@ namespace fileinfo.Models
             Message = String.Empty;
         }
 
-        public void LoadData(string fileName, ICollection<IFileDetail> list)
+        public void LoadData(string fileName, ICollection<ListViewItemExt> list)
         {
             try
             {
@@ -42,20 +43,20 @@ namespace fileinfo.Models
                 Address = 0;
                 Message = ex.Message;
                 IsError = true;
-                lock (list) list.Add(this);
+                lock (list) list.Add(new ListViewItemExt(this));
             }
         }
 
 
-        public void LoadData(string fileName, BinaryReader reader, ICollection<IFileDetail> list)
+        public void LoadData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
         {
             if (!ParseData(fileName, reader, list)) return;
             ComputeHash();
-            lock (list) list.Add(this);
+            lock (list) list.Add(new ListViewItemExt(this));
         }
 
 
-        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<IFileDetail> list);
+        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list);
 
         public int CompareTo(IFileDetail? other)
         {
