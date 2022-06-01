@@ -38,6 +38,7 @@
             this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownButtonEncoding = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonExport = new System.Windows.Forms.ToolStripButton();
             this.splitContainerInfo = new System.Windows.Forms.SplitContainer();
             this.listViewFile = new System.Windows.Forms.ListView();
             this.columnHeaderFileName = new System.Windows.Forms.ColumnHeader();
@@ -57,7 +58,6 @@
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.toolStripButtonExport = new System.Windows.Forms.ToolStripButton();
             columnHeaderName = new System.Windows.Forms.ColumnHeader();
             columnHeaderSize = new System.Windows.Forms.ColumnHeader();
             columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
@@ -134,6 +134,17 @@
             this.toolStripButtonSave.Text = "Сохранить";
             this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
             // 
+            // toolStripButtonExport
+            // 
+            this.toolStripButtonExport.Image = global::fileinfo.Properties.Resources.disk;
+            this.toolStripButtonExport.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButtonExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonExport.Name = "toolStripButtonExport";
+            this.toolStripButtonExport.Size = new System.Drawing.Size(103, 36);
+            this.toolStripButtonExport.Text = "Извлечь";
+            this.toolStripButtonExport.ToolTipText = "Сохранить в оригинальном виде";
+            this.toolStripButtonExport.Click += new System.EventHandler(this.toolStripButtonExport_Click);
+            // 
             // splitContainerInfo
             // 
             this.splitContainerInfo.Cursor = System.Windows.Forms.Cursors.VSplit;
@@ -164,6 +175,7 @@
             columnHeaderHash,
             this.columnHeaderPath});
             this.listViewFile.ContextMenuStrip = this.contextMenuStripFile;
+            this.listViewFile.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.listViewFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewFile.FullRowSelect = true;
             this.listViewFile.GridLines = true;
@@ -301,17 +313,6 @@
             this.openFileDialog.DefaultExt = "odi";
             this.openFileDialog.Filter = "ODI files|*.odi|All files|*.*";
             this.openFileDialog.Title = "Открыть";
-            // 
-            // toolStripButtonExport
-            // 
-            this.toolStripButtonExport.Image = global::fileinfo.Properties.Resources.disk;
-            this.toolStripButtonExport.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonExport.Name = "toolStripButtonExport";
-            this.toolStripButtonExport.Size = new System.Drawing.Size(103, 36);
-            this.toolStripButtonExport.Text = "Извлечь";
-            this.toolStripButtonExport.ToolTipText = "Сохранить в оригинальном виде";
-            this.toolStripButtonExport.Click += new System.EventHandler(this.toolStripButtonExport_Click);
             // 
             // MainForm
             // 
