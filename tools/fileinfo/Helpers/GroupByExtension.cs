@@ -1,36 +1,36 @@
 ﻿using fileinfo.Controls;
 using fileinfo.Models;
+using System.Linq;
 
 namespace fileinfo.Helpers
 {
     internal static class GroupByExtension
     {
-        public static ListViewGroup GetGroup(this ListView control, string key, string text)
+        public static TreeNode GetGroup(this TreeView control, string key, string text)
         {
-            ListViewGroup group = control.Groups[key];
-            if (group == null)
+            int index = control.Nodes.IndexOfKey(key);
+            if (index != -1)
             {
-                group = new ListViewGroup(key, text);
-                group.CollapsedState = ListViewGroupCollapsedState.Collapsed;
-                control.Groups.Add(group);
+                return control.Nodes[index];
             }
+            var group = control.Nodes.Add(key, text);
             return group;
         }
-        public static void GetGroupByCommonStart(ListView control, List<ListViewItemExt> list)
+        public static void GetGroupByCommonStart(List<TreeNodeExt> list)
         {
         }
 
-        public static void GetGroupByPathStart(ListView control, List<ListViewItemExt> list)
+        public static void GetGroupByPathStart(List<TreeNodeExt> list)
         {
-            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
+            list.Sort((TreeNodeExt x, TreeNodeExt y) =>
             {
                 return String.Compare(x.Detail.FileName, y.Detail.FileName, StringComparison.OrdinalIgnoreCase);
             });
         }
 
-        public static void GetGroupByExecStart(ListView control, List<ListViewItemExt> list)
+        public static void GetGroupByExecStart(List<TreeNodeExt> list)
         {
-            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
+            list.Sort((TreeNodeExt x, TreeNodeExt y) =>
             {
                 bool xV = x.Detail.Name.EndsWith("$");
                 bool yV = y.Detail.Name.EndsWith("$");
@@ -48,9 +48,9 @@ namespace fileinfo.Helpers
             });
         }
 
-        public static void GetGroupByCustomStart(ListView control, List<ListViewItemExt> list)
+        public static void GetGroupByCustomStart(List<TreeNodeExt> list)
         {
-            list.Sort((ListViewItemExt x, ListViewItemExt y) =>
+            list.Sort((TreeNodeExt x, TreeNodeExt y) =>
             {
                 bool xV = x.Detail.Name.EndsWith("$");
                 bool yV = y.Detail.Name.EndsWith("$");
@@ -71,7 +71,7 @@ namespace fileinfo.Helpers
             });
         }
 
-        public static ListViewGroup GetGroupByExec(ListView control, ListViewItemExt item)
+        public static TreeNode GetGroupByExec(TreeView control, IDetail item)
         {
             if (item.Detail.Name.EndsWith("$"))
             {
@@ -80,7 +80,7 @@ namespace fileinfo.Helpers
             return control.GetGroup("LIST", "Остальные");
         }
 
-        public static ListViewGroup GetGroupByPath(ListView control, ListViewItemExt item)
+        public static TreeNode GetGroupByPath(TreeView control, IDetail item)
         {
             string path = item.Detail.FileName;
             if (path.Contains("$"))
@@ -89,53 +89,62 @@ namespace fileinfo.Helpers
             return control.GetGroup(key, key);
         }
 
-        public static ListViewGroup GetGroupByCustom(ListView control, ListViewItemExt item)
+        public static TreeNode GetGroupByCustom(TreeView control, IDetail item)
         {
-            if (item.Detail.Name.EndsWith("$"))
+            if (item.Detail.IsError)
+            {
+                return control.GetGroup("ERROR", "ERROR");
+            }
+            else if (item.Detail.Name.EndsWith("$"))
             {
                 return control.GetGroup("EXE", "Исполняемые");
             }
             else if (item.Detail.Name.Contains('.'))
             {
                 string key = Path.GetExtension(item.Detail.Name);
-                return control.GetGroup(key, key);
+                if (key.Length > 0)
+                {
+                    return control.GetGroup(key, key);
+                }
             }
             return control.GetGroup("*", "*");
         }
 
-        public static ListViewGroup GetGroupByHash(ListView control, ListViewItemExt item)
+        public static TreeNode GetGroupByHash(TreeView control, IDetail item)
         {
             string key = item.Detail.Hash.ToHex();
             return control.GetGroup(key, key);
         }
 
-        public static void GetGroupByCommonFinish(ListView control)
+        public static void GetGroupByCommonFinish(TreeView control)
         {
-            foreach (ListViewGroup group in control.Groups)
+            
+            foreach (TreeNode item in control.Nodes)
             {
-                group.Subtitle = String.Format("{0} шт.", group.Items.Count);
+                if (item.Level > 0) continue;
+                item.Text += $" ({item.Nodes.Count})";
             }
         }
 
-        public static void GetGroupByHashFinish(ListView control)
+        public static void GetGroupByHashFinish(TreeView control)
         {
-            List<ListViewItem> list = new List<ListViewItem>();
-            for (int i = control.Groups.Count - 1; i >= 0; i--)
-            {
-                var group = control.Groups[i];
-                if (group.Items.Count > 1)
-                {
-                    group.Subtitle = String.Format("{0} шт.", group.Items.Count);
-                    continue;
-                }
-                list.Add(group.Items[0]);
-                group.Items.RemoveAt(0);
-                control.Groups.Remove(group);
+            //List<ListViewItem> list = new List<ListViewItem>();
+            //for (int i = control.Groups.Count - 1; i >= 0; i--)
+            //{
+            //    var group = control.Groups[i];
+            //    if (group.Items.Count > 1)
+            //    {
+            //        group.Subtitle = String.Format("{0} шт.", group.Items.Count);
+            //        continue;
+            //    }
+            //    list.Add(group.Items[0]);
+            //    group.Items.RemoveAt(0);
+            //    control.Groups.Remove(group);
 
-            }
-            var mainGroup = control.GetGroup("UNIQ", "Без дублей");
-            mainGroup.Items.AddRange(list.ToArray());
-            mainGroup.Subtitle = String.Format("{0} шт.", mainGroup.Items.Count);
+            //}
+            //var mainGroup = control.GetGroup("UNIQ", "Без дублей");
+            //mainGroup.Items.AddRange(list.ToArray());
+            //mainGroup.Subtitle = String.Format("{0} шт.", mainGroup.Items.Count);
         }
     }
 }

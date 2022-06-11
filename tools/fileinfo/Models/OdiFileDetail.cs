@@ -5,7 +5,7 @@ namespace fileinfo.Models
 {
     public class OdiFileDetail : FileDetail
     {
-        public override bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list)
         {
             if (reader.BaseStream.Length != 819200)
             {

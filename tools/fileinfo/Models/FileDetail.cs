@@ -1,4 +1,5 @@
 ﻿using fileinfo.Controls;
+using fileinfo.Helpers;
 using System.Security.Cryptography;
 
 namespace fileinfo.Models
@@ -26,7 +27,7 @@ namespace fileinfo.Models
             Message = String.Empty;
         }
 
-        public void LoadData(string fileName, ICollection<ListViewItemExt> list)
+        public void LoadData(string fileName, ICollection<TreeNodeExt> list)
         {
             try
             {
@@ -43,20 +44,21 @@ namespace fileinfo.Models
                 Address = 0;
                 Message = ex.Message;
                 IsError = true;
-                lock (list) list.Add(new ListViewItemExt(this));
+                lock (list) list.Add(new TreeNodeExt(this));
             }
         }
 
 
-        public void LoadData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
+        public void LoadData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list)
         {
             if (!ParseData(fileName, reader, list)) return;
             ComputeHash();
-            lock (list) list.Add(new ListViewItemExt(this));
+            Message = $"{FileName}\rName:{Name}, Size:{Size}, Address:{Address.ToHexAsm()}\rHash:{Hash.ToHex()}";
+            lock (list) list.Add(new TreeNodeExt(this));
         }
 
 
-        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list);
+        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list);
 
         public int CompareTo(IFileDetail? other)
         {

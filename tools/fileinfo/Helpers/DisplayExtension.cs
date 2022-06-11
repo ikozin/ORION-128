@@ -4,8 +4,6 @@ namespace fileinfo.Helpers
 {
     internal static class DisplayExtension
     {
-        private static readonly StringBuilder _text = new(256);
-
         public static string ToHex(this byte? value)
         {
             if (!value.HasValue) return String.Empty;
@@ -67,12 +65,12 @@ namespace fileinfo.Helpers
 
         public static string ToHex(this byte[] value)
         {
-            _text.Clear();
+            StringBuilder text = new(256);
             foreach (var item in value)
             {
-                _text.AppendFormat("{0:X2}", item);
+                text.AppendFormat("{0:X2}", item);
             }
-            return _text.ToString();
+            return text.ToString();
         }
 
     }

@@ -12,7 +12,7 @@ namespace fileinfo.Models
         byte[] Hash { get; }
         byte[] Content { get; }
         string Message { get; }
-        void LoadData(string fileName, ICollection<ListViewItemExt> list);
-        void LoadData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list);
+        void LoadData(string fileName, ICollection<TreeNodeExt> list);
+        void LoadData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list);
     }
 }
