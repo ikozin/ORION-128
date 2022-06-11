@@ -5,7 +5,7 @@ namespace fileinfo.Models
 {
     public class BruFileDetail : FileDetail
     {
-        public override bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list)
         {
             FileName = fileName;
             Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();

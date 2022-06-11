@@ -7,7 +7,7 @@ namespace fileinfo.Models
     {
         private const int BRU_Offset = 0x4d;
 
-        public override bool ParseData(string fileName, BinaryReader reader, ICollection<ListViewItemExt> list)
+        public override bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list)
         {
             FileName = fileName;
             long size = reader.BaseStream.Length;

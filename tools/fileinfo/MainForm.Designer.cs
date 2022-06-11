@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ColumnHeader columnHeaderName;
-            System.Windows.Forms.ColumnHeader columnHeaderSize;
-            System.Windows.Forms.ColumnHeader columnHeaderAddress;
-            System.Windows.Forms.ColumnHeader columnHeaderHash;
             System.Windows.Forms.ToolStrip toolStripFileView;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
@@ -40,9 +36,7 @@
             this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonExport = new System.Windows.Forms.ToolStripButton();
             this.splitContainerInfo = new System.Windows.Forms.SplitContainer();
-            this.listViewFile = new System.Windows.Forms.ListView();
-            this.columnHeaderFileName = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
+            this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelViewComponent = new System.Windows.Forms.Panel();
@@ -58,10 +52,6 @@
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            columnHeaderName = new System.Windows.Forms.ColumnHeader();
-            columnHeaderSize = new System.Windows.Forms.ColumnHeader();
-            columnHeaderAddress = new System.Windows.Forms.ColumnHeader();
-            columnHeaderHash = new System.Windows.Forms.ColumnHeader();
             toolStripFileView = new System.Windows.Forms.ToolStrip();
             toolStripFileView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).BeginInit();
@@ -71,26 +61,6 @@
             this.contextMenuStripFile.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // columnHeaderName
-            // 
-            columnHeaderName.Text = "Имя";
-            columnHeaderName.Width = 100;
-            // 
-            // columnHeaderSize
-            // 
-            columnHeaderSize.Text = "Размер";
-            columnHeaderSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // columnHeaderAddress
-            // 
-            columnHeaderAddress.Text = "Адрес";
-            columnHeaderAddress.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // columnHeaderHash
-            // 
-            columnHeaderHash.Text = "Хеш";
-            columnHeaderHash.Width = 180;
             // 
             // toolStripFileView
             // 
@@ -154,7 +124,8 @@
             // 
             // splitContainerInfo.Panel1
             // 
-            this.splitContainerInfo.Panel1.Controls.Add(this.listViewFile);
+            this.splitContainerInfo.Panel1.Controls.Add(this.treeView);
+            this.splitContainerInfo.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
             // 
             // splitContainerInfo.Panel2
             // 
@@ -165,39 +136,17 @@
             this.splitContainerInfo.SplitterDistance = 266;
             this.splitContainerInfo.TabIndex = 2;
             // 
-            // listViewFile
+            // treeView
             // 
-            this.listViewFile.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderFileName,
-            columnHeaderName,
-            columnHeaderSize,
-            columnHeaderAddress,
-            columnHeaderHash,
-            this.columnHeaderPath});
-            this.listViewFile.ContextMenuStrip = this.contextMenuStripFile;
-            this.listViewFile.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.listViewFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewFile.FullRowSelect = true;
-            this.listViewFile.GridLines = true;
-            this.listViewFile.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewFile.Location = new System.Drawing.Point(0, 0);
-            this.listViewFile.MultiSelect = false;
-            this.listViewFile.Name = "listViewFile";
-            this.listViewFile.ShowItemToolTips = true;
-            this.listViewFile.Size = new System.Drawing.Size(266, 423);
-            this.listViewFile.TabIndex = 1;
-            this.listViewFile.UseCompatibleStateImageBehavior = false;
-            this.listViewFile.View = System.Windows.Forms.View.Details;
-            this.listViewFile.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewFile_ItemSelectionChanged);
-            // 
-            // columnHeaderFileName
-            // 
-            this.columnHeaderFileName.Text = "Файл";
-            this.columnHeaderFileName.Width = 120;
-            // 
-            // columnHeaderPath
-            // 
-            this.columnHeaderPath.Text = "Полный путь";
+            this.treeView.ContextMenuStrip = this.contextMenuStripFile;
+            this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView.FullRowSelect = true;
+            this.treeView.Location = new System.Drawing.Point(0, 0);
+            this.treeView.Name = "treeView";
+            this.treeView.ShowNodeToolTips = true;
+            this.treeView.Size = new System.Drawing.Size(266, 423);
+            this.treeView.TabIndex = 0;
+            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             // 
             // contextMenuStripFile
             // 
@@ -282,6 +231,7 @@
             // 
             // toolStripButtonOdi
             // 
+            this.toolStripButtonOdi.Enabled = false;
             this.toolStripButtonOdi.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOdi.Image")));
             this.toolStripButtonOdi.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonOdi.Name = "toolStripButtonOdi";
@@ -341,12 +291,9 @@
         #endregion
 
         private SplitContainer splitContainerInfo;
-        private ListView listViewFile;
         private FolderBrowserDialog folderBrowserDialog;
-        private ColumnHeader columnHeaderFileName;
         private ContextMenuStrip contextMenuStripFile;
         private ToolStripMenuItem directoryToolStripMenuItem;
-        private ColumnHeader columnHeaderPath;
         private ToolStripDropDownButton toolStripDropDownButtonFormat;
         private ToolStripDropDownButton toolStripDropDownButtonEncoding;
         private SaveFileDialog saveFileDialog;
@@ -363,5 +310,6 @@
         private OpenFileDialog openFileDialog;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton toolStripButtonExport;
+        private TreeView treeView;
     }
 }

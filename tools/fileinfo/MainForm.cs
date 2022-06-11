@@ -8,12 +8,12 @@ namespace fileinfo
 {
     public partial class MainForm : Form
     {
-        private Action<ListView, List<ListViewItemExt>> _actionGroupStart;
-        private Func<ListView, ListViewItemExt, ListViewGroup> _actionGroup;
-        private Action<ListView> _actionGroupFinish;
+        private Action<List<TreeNodeExt>> _actionGroupStart;
+        private Func<TreeView, IDetail, TreeNode> _actionGroup;
+        private Action<TreeView> _actionGroupFinish;
         private readonly TextEncodingTool _encoding;
         private readonly TextFormatTool _format;
-        private readonly List<ListViewItemExt> _listDetails = new(4096);
+        private readonly List<TreeNodeExt> _listDetails = new(4096);
 
         public MainForm()
         {
@@ -67,7 +67,7 @@ namespace fileinfo
             RefreshGroupView();
         }
 
-        private void LoadFiles<T>(ICollection<ListViewItemExt> list, string path, string extension)
+        private void LoadFiles<T>(ICollection<TreeNodeExt> list, string path, string extension)
             where T : IFileDetail, new()
         {
             var files = Directory.GetFiles(path, extension, SearchOption.AllDirectories);
@@ -80,7 +80,7 @@ namespace fileinfo
 
         private bool IsSelectedItem()
         {
-            return listViewFile.SelectedItems.Count > 0;
+            return treeView.SelectedNode != null;
         }
 
         private void SetFileViewEncoding()
@@ -99,7 +99,7 @@ namespace fileinfo
                 panelViewComponent.Controls.Add(control.Control);
                 control.Control.Dock = DockStyle.Fill;
                 control.Current = IsSelectedItem() ?
-                    ((ListViewItemExt)listViewFile.SelectedItems[0]).Detail :
+                    ((TreeNodeExt)treeView.SelectedNode).Detail :
                     null;
             }
             panelViewComponent.ResumeLayout();
@@ -108,19 +108,17 @@ namespace fileinfo
         private void RefreshGroupView()
         {
             _format.CurrentView = null;
-            listViewFile.BeginUpdate();
-            listViewFile.Groups.Clear();
-            listViewFile.Items.Clear();
+            treeView.BeginUpdate();
+            treeView.Nodes.Clear();
 
-            _actionGroupStart(listViewFile, _listDetails);
+            _actionGroupStart(_listDetails);
             foreach (var item in _listDetails)
             {
-                listViewFile.Items.Add(item);
-                item.Group = _actionGroup(listViewFile, item);
+                var group = _actionGroup(treeView, item);
+                group.Nodes.Add(item);
             }
-            _actionGroupFinish(listViewFile);
-            listViewFile.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            listViewFile.EndUpdate();
+            _actionGroupFinish(treeView);
+            treeView.EndUpdate();
 
             System.GC.Collect();
             System.GC.WaitForFullGCComplete();
@@ -128,31 +126,29 @@ namespace fileinfo
 
         private void directoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            var path = listViewFile.SelectedItems[0].SubItems[columnHeaderPath.Index].Text;
-            //Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + @"C:\Repos\Temp\orion_all_prog\Orion-Tech\Texts\TXT2\z80cardII.txt"));
-            Process explorer = new();
-            explorer.StartInfo.UseShellExecute = true;
-            explorer.StartInfo.FileName = "explorer.exe";
-            explorer.StartInfo.Arguments = String.Format("/select, \"{0}\"", path);
-            explorer.Start();
+            TreeViewHitTestInfo info = treeView.HitTest(treeView.PointToClient(Control.MousePosition));
+            if (info.Node != null && info.Node.Level > 0)
+            {
+                var nodeExt = (TreeNodeExt)info.Node;
+                var path = nodeExt.Detail.FileName;
+                //Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + @"C:\Repos\Temp\orion_all_prog\Orion-Tech\Texts\TXT2\z80cardII.txt"));
+                int index = path.IndexOf('$');
+                if (index != -1)
+                {
+                    path = path.Substring(0, index);
+                }
+                Process explorer = new();
+                explorer.StartInfo.UseShellExecute = true;
+                explorer.StartInfo.FileName = "explorer.exe";
+                explorer.StartInfo.Arguments = String.Format("/select, \"{0}\"", path);
+                explorer.Start();
+            }
         }
 
         private void contextMenuStripFile_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            directoryToolStripMenuItem.Enabled = IsSelectedItem();
-        }
-
-        private void listViewFile_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            var control = _format.CurrentView;
-            if (control != null)
-            {
-                if (e.IsSelected)
-                {
-                    control.Current = ((ListViewItemExt)e.Item).Detail;
-                }
-            }
+            TreeViewHitTestInfo info = treeView.HitTest(treeView.PointToClient(Control.MousePosition));
+            directoryToolStripMenuItem.Enabled = info.Node != null && info.Node.Level > 0;
         }
 
         private void toolStripSplitButtonGroupByExec_Click(object sender, EventArgs e)
@@ -198,7 +194,7 @@ namespace fileinfo
             if (_format.CurrentView.Current == null) return;
             saveFileDialog.FileName = _format.CurrentView.Current.Name;
             if (saveFileDialog.ShowDialog(this) != DialogResult.OK) return;
-            File.WriteAllBytes(saveFileDialog.FileName, _format.CurrentView.Current.Content);            
+            File.WriteAllBytes(saveFileDialog.FileName, _format.CurrentView.Current.Content);
         }
 
         private void toolStripButtonOdi_Click(object sender, EventArgs e)
@@ -207,5 +203,20 @@ namespace fileinfo
             ExtractOdiHelper.ExtractFiles(openFileDialog.FileName, true);
         }
 
+        private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var control = _format.CurrentView;
+            if (control != null)
+            {
+                if (e.Node == null || e.Node.Level == 0)
+                {
+                    control.Current = null;
+                }
+                else
+                {
+                    control.Current = ((TreeNodeExt)e.Node).Detail;
+                }
+            }
+        }
     }
 }
