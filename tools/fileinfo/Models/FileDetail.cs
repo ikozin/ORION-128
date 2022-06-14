@@ -53,7 +53,7 @@ namespace fileinfo.Models
         {
             if (!ParseData(fileName, reader, list)) return;
             ComputeHash();
-            Message = $"{FileName}\rName:{Name}, Size:{Size}, Address:{Address.ToHexAsm()}\rHash:{Hash.ToHex()}";
+            Message = $"{FileName}\rName:{Name.Convert()}, Size:{Size}, Address:{Address.ToHexAsm()}\rHash:{Hash.ToHex()}";
             lock (list) list.Add(new TreeNodeExt(this));
         }
 

@@ -4,6 +4,16 @@ namespace fileinfo.Helpers
 {
     internal static class DisplayExtension
     {
+        public static string Convert(this string value)
+        {
+            StringBuilder text = new StringBuilder();
+            foreach (var item in value)
+            {
+                text.Append(Char.IsControl(item) ? '?' : item);
+            }
+            return text.ToString();
+        }
+
         public static string ToHex(this byte? value)
         {
             if (!value.HasValue) return String.Empty;
