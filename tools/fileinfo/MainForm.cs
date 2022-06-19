@@ -80,7 +80,7 @@ namespace fileinfo
 
         private bool IsSelectedItem()
         {
-            return treeView.SelectedNode != null;
+            return treeView.SelectedNode != null && treeView.SelectedNode.Level > 0;
         }
 
         private void SetFileViewEncoding()
