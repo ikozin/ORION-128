@@ -42,7 +42,7 @@ namespace fileinfo
             _format.Add("(*.AS) Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_as);
             _format.Add("(*.BS) Бейсик", new BasicViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_bs);
             _format.Add("(*.PC) Картинка", new PictureViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_pc);
-            _format.CurrentView = _format.GetViews().First();
+            _format.CurrentView = null;
         }
 
         private void toolStripButtonSelectDirectory_Click(object sender, EventArgs e)

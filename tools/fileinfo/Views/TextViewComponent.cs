@@ -48,5 +48,10 @@ namespace fileinfo.Views
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
             File.WriteAllText(dlg.FileName, fastColoredTextBoxView.Text, Encoding.UTF8);
         }
+
+        private void checkBoxWrap_CheckedChanged(object sender, EventArgs e)
+        {
+            fastColoredTextBoxView.WordWrap = checkBoxWrap.Checked;
+        }
     }
 }
