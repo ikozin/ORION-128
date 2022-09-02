@@ -1,15 +1,21 @@
 #include <Arduino.h>
 
-//#include <PS2Keyboard.h>
-//PS2Keyboard keyboard;
-
-#define PS2_REQUIRES_PROGMEM
-#include <PS2KeyAdvanced.h>
+//#define PS2_REQUIRES_PROGMEM
+#include "PS2KeyAdvanced.h"
 PS2KeyAdvanced keyboard;
 
+#define DEBUG_CONSOLE
+
+void(* resetFunc) (void) = 0;//объявляем функцию reset с адресом 0
+
+#ifdef DEBUG_CONSOLE
 char text[128];
-byte mappingLat[256] = { 0 };
-byte mappingRus[256] = { 0 };
+#endif
+
+#define KEYCODE_MAX   0x80
+byte mappingLat[KEYCODE_MAX] = { 0 };
+byte mappingRus[KEYCODE_MAX] = { 0 };
+byte currentKey;
 
 int ledState = LOW;               // ledState used to set the LED
 unsigned long previousMillis = 0; // will store last time LED was updated
@@ -34,8 +40,9 @@ void saveRegB(byte value) {
 }
 
 void setup() {
+#ifdef DEBUG_CONSOLE
     Serial.begin(57600);
-    
+#endif
     pinMode(LED_PIN, OUTPUT);
     pinMode(REG_A_CLK_PIN, OUTPUT);
     pinMode(REG_B_CLK_PIN, OUTPUT);
@@ -75,14 +82,17 @@ void ledOff() {
 uint16_t readKey() {
     uint16_t key = keyboard.read();
     ledOn();
-    
+#ifdef DEBUG_CONSOLE
     sprintf(text, "Key: %04X", key);
     Serial.println(text);
-
+#endif
     return key;
 }
 
 void processKeyCode(uint16_t key) {
+  if (key >= KEYCODE_MAX) return;
+  byte* mapping = (isRUS) ? mappingRus : mappingLat;
+  
 }
 
 uint8_t toggleLang() {
@@ -90,10 +100,10 @@ uint8_t toggleLang() {
     uint8_t value = keyboard.getLock();
     value &= ~PS2_LOCK_SCROLL;
     keyboard.setLock(value | (isRUS & PS2_LOCK_SCROLL));
-    
-    //sprintf(text, "Keyboard: %2X", isRUS);
-    //Serial.println(text);
-
+#ifdef DEBUG_CONSOLE
+    sprintf(text, "toggleLang: Keyboard: %2X", isRUS);
+    Serial.println(text);
+#endif
     return 0;
 }
 
@@ -117,16 +127,14 @@ void loop() {
             if (key == PS2_KEY_ACK) {
                 uint8_t value = keyboard.getLock() & PS2_LOCK_SCROLL;
                 isRUS = value? 0xFF: 0;
-
-                //sprintf(text, "Keyboard: %2X", isRUS);
-                //Serial.println(text);
-
+#ifdef DEBUG_CONSOLE
+                sprintf(text, "loop: Keyboard: %2X", isRUS);
+                Serial.println(text);
+#endif
                 continue;
             }
         }
         processKeyCode(key);
-/*        
-*/
     }
     delay(10);
 }
