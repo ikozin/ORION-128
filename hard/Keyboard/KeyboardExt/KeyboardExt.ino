@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-//#define PS2_REQUIRES_PROGMEM
 #include "PS2KeyAdvanced.h"
 PS2KeyAdvanced keyboard;
 
@@ -17,51 +16,29 @@ byte mappingLat[KEYCODE_MAX] = { 0 };
 byte mappingRus[KEYCODE_MAX] = { 0 };
 byte currentKey;
 
+#define LED_PIN 5
 int ledState = LOW;               // ledState used to set the LED
 unsigned long previousMillis = 0; // will store last time LED was updated
 const long interval = 100;        // interval at which to blink (milliseconds)
 
 byte isRUS = 0;
 
-#define LED_PIN         PD5
-#define REG_A_CLK_PIN   PD6
-#define REG_B_CLK_PIN   PD7
-
-void saveRegA(byte value) {
-    PORTB = value;
-    digitalWrite(REG_A_CLK_PIN, HIGH);
-    digitalWrite(REG_A_CLK_PIN, LOW);
-}
-
-void saveRegB(byte value) {
-    PORTB = value;
-    digitalWrite(REG_B_CLK_PIN, HIGH);
-    digitalWrite(REG_B_CLK_PIN, LOW);
-}
-
 void setup() {
 #ifdef DEBUG_CONSOLE
     Serial.begin(57600);
+    while (!Serial);
+    Serial.println("Start ...");
 #endif
     pinMode(LED_PIN, OUTPUT);
-    pinMode(REG_A_CLK_PIN, OUTPUT);
-    pinMode(REG_B_CLK_PIN, OUTPUT);
-    digitalWrite(LED_PIN, LOW);
-    digitalWrite(REG_A_CLK_PIN, LOW);
-    digitalWrite(REG_B_CLK_PIN, LOW);
-    DDRB = B11111111;
-    saveRegA(0);
-    saveRegB(0);
-    
-    keyboard.begin(PD3, PD2);
+    sei();
+    keyboard.begin(A4, A5);
     keyboard.setNoBreak(1);         // No break codes for keys (when key released)
     keyboard.setNoRepeat(1);        // Don't repeat shift ctrl etc
-    
+
     digitalWrite(LED_PIN, HIGH);
-    keyboard.setLock(PS2_LOCK_SCROLL | PS2_LOCK_NUM | PS2_LOCK_CAPS);
     delay(500);
-    keyboard.setLock(0);
     digitalWrite(LED_PIN, LOW);
+
 }
 
 void ledOn() {
@@ -79,7 +56,8 @@ void ledOff() {
         }
     }
 }
-uint16_t readKey() {
+
+int16_t readKey() {
     uint16_t key = keyboard.read();
     ledOn();
 #ifdef DEBUG_CONSOLE
@@ -90,16 +68,13 @@ uint16_t readKey() {
 }
 
 void processKeyCode(uint16_t key) {
-  if (key >= KEYCODE_MAX) return;
-  byte* mapping = (isRUS) ? mappingRus : mappingLat;
-  
+//  if (key >= KEYCODE_MAX) return;
+//  byte* mapping = (isRUS) ? mappingRus : mappingLat;
+ 
 }
 
 uint8_t toggleLang() {
     isRUS = ~isRUS;
-    uint8_t value = keyboard.getLock();
-    value &= ~PS2_LOCK_SCROLL;
-    keyboard.setLock(value | (isRUS & PS2_LOCK_SCROLL));
 #ifdef DEBUG_CONSOLE
     sprintf(text, "toggleLang: Keyboard: %2X", isRUS);
     Serial.println(text);
@@ -111,30 +86,30 @@ void loop() {
     ledOff();
     while (keyboard.available()) {
         uint8_t key = readKey();
-        // При нажатии Ctrl+Shft переключение клавиатуры и индикация светодиодом Scroll
-        if (key == PS2_KEY_L_CTRL || key == PS2_KEY_R_CTRL) {
-            while (!keyboard.available());
-            key = readKey();
-            if (key == PS2_KEY_L_SHIFT || key == PS2_KEY_R_SHIFT) {
-                toggleLang();
-                continue;
-            }
-        }
-        // При нажатии ScrollLock прилетает пара PS2_KEY_ACK, альтернативное переключение клавиатуры
-        if (key == PS2_KEY_ACK) {
-            while (!keyboard.available());
-            key = readKey();
-            if (key == PS2_KEY_ACK) {
-                uint8_t value = keyboard.getLock() & PS2_LOCK_SCROLL;
-                isRUS = value? 0xFF: 0;
-#ifdef DEBUG_CONSOLE
-                sprintf(text, "loop: Keyboard: %2X", isRUS);
-                Serial.println(text);
-#endif
-                continue;
-            }
-        }
+//        // При нажатии Ctrl+Shft переключение клавиатуры и индикация светодиодом Scroll
+//        if (key == PS2_KEY_L_CTRL || key == PS2_KEY_R_CTRL) {
+//            while (!keyboard.available());
+//            key = readKey();
+//            if (key == PS2_KEY_L_SHIFT || key == PS2_KEY_R_SHIFT) {
+//                toggleLang();
+//                continue;
+//            }
+//        }
+//        // При нажатии ScrollLock прилетает пара PS2_KEY_ACK, альтернативное переключение клавиатуры
+//        if (key == PS2_KEY_ACK) {
+//            while (!keyboard.available());
+//            key = readKey();
+//            if (key == PS2_KEY_ACK) {
+//                uint8_t value = keyboard.getLock() & PS2_LOCK_SCROLL;
+//                isRUS = value? 0xFF: 0;
+//#ifdef DEBUG_CONSOLE
+//                sprintf(text, "loop: Keyboard: %2X", isRUS);
+//                Serial.println(text);
+//#endif
+//                continue;
+//            }
+//        }
         processKeyCode(key);
     }
-    delay(10);
+//    delay(10);
 }

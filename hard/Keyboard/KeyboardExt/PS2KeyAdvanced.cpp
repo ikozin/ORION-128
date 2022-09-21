@@ -208,19 +208,28 @@ uint8_t PS2_lockstate[ 4 ];   // Save if had break on key for locks
 uint8_t PS2_keystatus;        // current CAPS etc status for top byte
 
 
+void attachPCI(byte pin) {
+  while (digitalRead(PS2_IrqPin) != HIGH);
+  *digitalPinToPCMSK(pin) |= bit (digitalPinToPCMSKbit(pin));  // Разрешаем PCINT для указанного пина
+  PCIFR  |= bit (digitalPinToPCICRbit(pin)); // Очищаем признак запроса прерывания для соответствующей группы пинов
+  PCICR  |= bit (digitalPinToPCICRbit(pin)); // Разрешаем PCINT для соответствующей группы пинов
+}
+
+void detachPCI(byte pin) {
+  PCICR  &= ~bit (digitalPinToPCICRbit(pin)); // Разрешаем PCINT для соответствующей группы пинов
+}
+
 /*------------------ Code starts here -------------------------*/
 
 /* The ISR for the external interrupt
    To receive 11 bits - start 8 data, ODD parity, stop
    To send data calls send_bit( )
    Interrupt every falling incoming clock edge from keyboard */
-void ps2interrupt( void )
-{
-// Workaround for ESP32 SILICON error see extra/Porting.md
-#ifdef PS2_ONLY_CHANGE_IRQ
+ISR (PCINT1_vect) { // Обработчик запросов прерывания от пинов A0..A5
+
 if( digitalRead( PS2_IrqPin ) )
    return;
-#endif
+
 if( _ps2mode & _TX_MODE )
   send_bit( );
 else
@@ -495,7 +504,8 @@ if( !( _tx_ready & _HANDSHAKE ) && ( _tx_ready & _COMMAND ) )
 
 // STOP interrupt handler 
 // Setting pin output low will cause interrupt before ready
-detachInterrupt( digitalPinToInterrupt( PS2_IrqPin ) );
+//detachInterrupt( digitalPinToInterrupt( PS2_IrqPin ) );
+detachPCI(PS2_IrqPin);
 // set pins to outputs and high
 digitalWrite( PS2_DataPin, HIGH );
 pinMode( PS2_DataPin, OUTPUT );
@@ -513,7 +523,8 @@ digitalWrite( PS2_DataPin, LOW );
 // set clock to input_pullup data stays output while writing to keyboard
 pininput( PS2_IrqPin );
 // Restart interrupt handler
-attachInterrupt( digitalPinToInterrupt( PS2_IrqPin ), ps2interrupt, FALLING );
+//attachInterrupt( digitalPinToInterrupt( PS2_IrqPin ), ps2interrupt, FALLING );
+attachPCI(PS2_IrqPin);
 //  wait clock interrupt to send data
 }
 
@@ -1012,5 +1023,6 @@ pininput( PS2_IrqPin );            /* Setup Clock pin */
 pininput( PS2_DataPin );           /* Setup Data pin */
 
 // Start interrupt handler
-attachInterrupt( digitalPinToInterrupt( PS2_IrqPin ), ps2interrupt, FALLING );
+//attachInterrupt( digitalPinToInterrupt( irq_pin ), ps2interrupt, FALLING );
+attachPCI(PS2_IrqPin);
 }

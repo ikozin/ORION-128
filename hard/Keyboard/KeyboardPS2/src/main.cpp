@@ -1,11 +1,17 @@
 #include <Arduino.h>
 
-#include "PS2KeyAdvanced.h"
-PS2KeyAdvanced keyboard;
+//#include "PS2KeyExt.h"
+//PS2KeyAdvanced keyboard;
+#include "PS2KeyRaw.h"
+PS2KeyRaw keyboard;
+
+#ifndef ARDUINO_AVR_ATmega328P_BB8
+#error ATmega328P BB 8Mhz.json
+#endif
 
 #define DEBUG_CONSOLE
 
-void(* resetFunc) (void) = 0;//объявляем функцию reset с адресом 0
+void (* resetFunc) (void) = 0;//объявляем функцию reset с адресом 0
 
 #ifdef DEBUG_CONSOLE
 char text[128];
@@ -16,37 +22,56 @@ byte mappingLat[KEYCODE_MAX] = { 0 };
 byte mappingRus[KEYCODE_MAX] = { 0 };
 byte currentKey;
 
-#define LED_PIN 5
+#define LED_PIN     5
+#define LED_PIN_S   6
+
 int ledState = LOW;               // ledState used to set the LED
 unsigned long previousMillis = 0; // will store last time LED was updated
 const long interval = 100;        // interval at which to blink (milliseconds)
 
 byte isRUS = 0;
 
-void setup() {
+void setSignal(void);
+void clearSignal(void);
+
+
+void setup(void) {
 #ifdef DEBUG_CONSOLE
     Serial.begin(57600);
     while (!Serial);
     Serial.println("Start ...");
 #endif
     pinMode(LED_PIN, OUTPUT);
+    pinMode(LED_PIN_S, OUTPUT);
     sei();
-    keyboard.begin(A4, A5);
-    keyboard.setNoBreak(1);         // No break codes for keys (when key released)
-    keyboard.setNoRepeat(1);        // Don't repeat shift ctrl etc
-
+    keyboard.begin();
+    
+    setSignal();
     digitalWrite(LED_PIN, HIGH);
     delay(500);
     digitalWrite(LED_PIN, LOW);
+    clearSignal();
+
+    //keyboard.setLock(0);        // Don't repeat shift ctrl etc
+    //keyboard.setNoBreak(1);         // No break codes for keys (when key released)
+    //keyboard.setNoRepeat(1);        // Don't repeat shift ctrl etc
 }
 
-void ledOn() {
+void setSignal(void) {
+    digitalWrite(LED_PIN_S, HIGH);
+}
+
+void clearSignal(void) {
+    digitalWrite(LED_PIN_S, LOW);
+}
+
+void ledOn(void) {
     ledState = HIGH;
     digitalWrite(LED_PIN, ledState);
     previousMillis = millis();
 }
 
-void ledOff() {
+void ledOff(void) {
     if (ledState == HIGH) {
         unsigned long currentMillis = millis();
         if (currentMillis - previousMillis >= interval) {
@@ -56,23 +81,20 @@ void ledOff() {
     }
 }
 
-int16_t readKey() {
+int16_t readKey(void) {
     uint16_t key = keyboard.read();
+    if (!key) {
+        return key;
+    }
     ledOn();
-#ifdef DEBUG_CONSOLE
-    sprintf(text, "Key: %04X", key);
-    Serial.println(text);
-#endif
     return key;
 }
 
 void processKeyCode(uint16_t key) {
-//  if (key >= KEYCODE_MAX) return;
-//  byte* mapping = (isRUS) ? mappingRus : mappingLat;
- 
+
 }
 
-uint8_t toggleLang() {
+uint8_t toggleLang(void) {
     isRUS = ~isRUS;
 #ifdef DEBUG_CONSOLE
     sprintf(text, "toggleLang: Keyboard: %2X", isRUS);
@@ -81,36 +103,17 @@ uint8_t toggleLang() {
     return 0;
 }
 
-void loop() {
+void loop(void) {
     ledOff();
     while (keyboard.available()) {
-        uint8_t key = readKey();
-        // При нажатии Ctrl+Shft переключение клавиатуры и индикация светодиодом Scroll
-        if (key == PS2_KEY_L_CTRL || key == PS2_KEY_R_CTRL) {
-            while (!keyboard.available());
-            key = readKey();
-            if (key == PS2_KEY_L_SHIFT || key == PS2_KEY_R_SHIFT) {
-                toggleLang();
-                continue;
-            }
-        }
-        // При нажатии ScrollLock прилетает пара PS2_KEY_ACK, альтернативное переключение клавиатуры
-        if (key == PS2_KEY_ACK) {
-            while (!keyboard.available());
-            key = readKey();
-            if (key == PS2_KEY_ACK) {
-                uint8_t value = keyboard.getLock() & PS2_LOCK_SCROLL;
-                isRUS = value? 0xFF: 0;
+        auto key = readKey();
 #ifdef DEBUG_CONSOLE
-                sprintf(text, "loop: Keyboard: %2X", isRUS);
-                Serial.println(text);
+        sprintf(text, "Key: %04X", key);
+        Serial.println(text);
 #endif
-                continue;
-            }
-        }
+
         processKeyCode(key);
     }
-//    delay(10);
 }
 /*
 void attachPCI(byte pin) {
