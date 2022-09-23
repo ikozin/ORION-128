@@ -2,7 +2,7 @@
 
 #define BUFFER_SIZE 32
 volatile uint8_t buffer[BUFFER_SIZE];
-volatile uint8_t head, tail;
+volatile int head, tail;
 
 const uint8_t PS2_DataPin = A4;
 const uint8_t PS2_IrqPin = A5;
@@ -105,7 +105,7 @@ ISR (PCINT1_vect) {
 }
 
 inline uint8_t get_scan_code(void) {
-    uint8_t index = tail;
+    int index = tail;
 	if (index == head) {
         return 0;
     }
@@ -117,15 +117,15 @@ inline uint8_t get_scan_code(void) {
 	return buffer[index];
 }
 
-int8_t PS2KeyRaw::available() {
-    int8_t index = head - tail;
+inline int available() {
+    int index = head - tail;
     if (index < 0) {
         index += BUFFER_SIZE;
     }
     return index;
 }
 
-int PS2KeyRaw::read() {
+uint8_t PS2KeyRaw::read() {
     if (available()) {
         return get_scan_code();
     }

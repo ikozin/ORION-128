@@ -11,11 +11,8 @@ class PS2KeyRaw {
         // The best place to call this method is in the setup routine.
         static void begin();
         
-        // Returns number of bytes available.
-        static int8_t available();
-        
         // Returns the char last read from the keyboard.
         // If there is no char available, -1 is returned.
-        static int read();
+        static uint8_t read();
 };
 #endif
