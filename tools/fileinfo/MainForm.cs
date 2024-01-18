@@ -140,7 +140,7 @@ namespace fileinfo
                 Process explorer = new();
                 explorer.StartInfo.UseShellExecute = true;
                 explorer.StartInfo.FileName = "explorer.exe";
-                explorer.StartInfo.Arguments = String.Format("/select, \"{0}\"", path);
+                explorer.StartInfo.Arguments = String.Format("/n /select,\"{0}\"", Path.GetDirectoryName(path));
                 explorer.Start();
             }
         }
