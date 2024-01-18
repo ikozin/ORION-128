@@ -8,7 +8,7 @@ namespace fileinfo.Controls
         public TreeNodeExt(IFileDetail detail) : base()
         {
             Detail = detail;
-            Text = Path.GetFileName(Detail.FileName);
+            Text = Path.GetFileName(Detail.Name);
             ToolTipText = Detail.Message;
         }
         public IFileDetail Detail { get; private set; }
