@@ -31,7 +31,7 @@ namespace fileinfo.Models
         {
             try
             {
-                using (var stream = File.Open(fileName, FileMode.Open))
+                using (var stream = File.OpenRead(fileName))
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     LoadData(fileName, reader, list);
@@ -39,7 +39,7 @@ namespace fileinfo.Models
             }
             catch (Exception ex)
             {
-                Name = "";
+                Name = fileName;
                 Size = 0;
                 Address = 0;
                 Message = ex.Message;
