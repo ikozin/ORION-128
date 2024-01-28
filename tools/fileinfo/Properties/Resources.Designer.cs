@@ -143,6 +143,16 @@ namespace fileinfo.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap type_c {
+            get {
+                object obj = ResourceManager.GetObject("type.c", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap type_hex {
             get {
                 object obj = ResourceManager.GetObject("type.hex", resourceCulture);

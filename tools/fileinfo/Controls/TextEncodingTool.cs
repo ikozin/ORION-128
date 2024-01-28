@@ -2,7 +2,7 @@
 {
     internal class TextEncodingTool
     {
-        public Func<byte, bool, char>? CurrentHandler { get; set; }
+        public Func<byte, bool, char> CurrentHandler { get; set; }
         public Action ClickAction { get; private set; }
 
         private readonly ToolStripDropDownButton _parent;
@@ -13,7 +13,7 @@
         {
             _enableFunc = enableFunc;
             ClickAction = clickAction;
-            CurrentHandler = null;
+            CurrentHandler = DefaultCurrentHandler;
             _parent = parent;
             _parent.DropDownItems.Clear();
             _parent.DropDownOpening += ToolStripMenuItemDropDownOpening;
@@ -35,5 +35,11 @@
                 itemExt.Checked = itemExt.Handler == CurrentHandler;
             }
         }
+
+        private static char DefaultCurrentHandler(byte data, bool fullSupport)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

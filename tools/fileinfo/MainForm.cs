@@ -3,6 +3,7 @@ using fileinfo.Helpers;
 using fileinfo.Models;
 using fileinfo.Views;
 using System.Diagnostics;
+using System.Text;
 
 namespace fileinfo
 {
@@ -35,14 +36,19 @@ namespace fileinfo
             _format.Add("HEX с адреса", new HexWithAddrViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_hex);
             _format.Add("HEX", new HexViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_hex);
             _format.Add("Текст", new TextViewComponent(_encoding.CurrentHandler));
+            _format.Add("Текст (Микрон)", new TextMicronViewComponent(_encoding.CurrentHandler));
             _format.Add("Контрольная сумма", new CheckSumViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер", new DisAssemblerViewComponent(_encoding.CurrentHandler));
             _format.Add("Дизассемблер (Dump)", new DisAsmDumpViewComponent(_encoding.CurrentHandler));
             _format.Add();
             _format.Add("(*.AS) Ассемблер", new AssemblerViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_as);
             _format.Add("(*.BS) Бейсик", new BasicViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_bs);
+            _format.Add("(*.C) Си", new CViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_c);
             _format.Add("(*.PC) Картинка", new PictureViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_pc);
+            _format.Add("(*.4C) Картинка", new Picture4CViewComponent(_encoding.CurrentHandler), global::fileinfo.Properties.Resources.type_pc);
             _format.CurrentView = null;
+
+
         }
 
         private void toolStripButtonSelectDirectory_Click(object sender, EventArgs e)
@@ -55,11 +61,13 @@ namespace fileinfo
             //LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko");
             //LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi");
 
-            List<Task> list = new List<Task>();
-            list.Add(Task.Run(() => LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru")));
-            list.Add(Task.Run(() => LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord")));
-            list.Add(Task.Run(() => LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko")));
-            list.Add(Task.Run(() => LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi")));
+            List<Task> list = new()
+            {
+                Task.Run(() => LoadFiles<BruFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.bru")),
+                Task.Run(() => LoadFiles<OrdFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.ord")),
+                Task.Run(() => LoadFiles<RkoFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.rko")),
+                Task.Run(() => LoadFiles<OdiFileDetail>(_listDetails, folderBrowserDialog.SelectedPath, "*.odi"))
+            };
             Task.WaitAll(list.ToArray());
 
             _listDetails.Sort();
@@ -67,7 +75,7 @@ namespace fileinfo
             RefreshGroupView();
         }
 
-        private void LoadFiles<T>(ICollection<TreeNodeExt> list, string path, string extension)
+        private static void LoadFiles<T>(ICollection<TreeNodeExt> list, string path, string extension)
             where T : IFileDetail, new()
         {
             var files = Directory.GetFiles(path, extension, SearchOption.AllDirectories);
@@ -90,17 +98,23 @@ namespace fileinfo
 
         private void SetFileViewCurrent()
         {
+            IFileDetail? detail = IsSelectedItem() ?
+                ((TreeNodeExt)treeView.SelectedNode).Detail :
+                null;
+            SetFileViewCurrentDetail(_format.CurrentView, detail);
+        }
+
+        private void SetFileViewCurrentDetail(IViewComponent? view, IFileDetail? detail)
+        {
             panelViewComponent.SuspendLayout();
             panelViewComponent.Controls.Clear();
-            var control = _format.CurrentView;
+            var control = view;
             if (control != null)
             {
-                _format.CurrentView!.SetEncoding(_encoding.CurrentHandler!);
+                control.SetEncoding(_encoding.CurrentHandler!);
                 panelViewComponent.Controls.Add(control.Control);
                 control.Control.Dock = DockStyle.Fill;
-                control.Current = IsSelectedItem() ?
-                    ((TreeNodeExt)treeView.SelectedNode).Detail :
-                    null;
+                control.Current = detail;
             }
             panelViewComponent.ResumeLayout();
         }
@@ -135,7 +149,7 @@ namespace fileinfo
                 int index = path.IndexOf('$');
                 if (index != -1)
                 {
-                    path = path.Substring(0, index);
+                    path = path[..index];
                 }
                 Process explorer = new();
                 explorer.StartInfo.UseShellExecute = true;
@@ -188,6 +202,7 @@ namespace fileinfo
             if (_format.CurrentView == null) return;
             _format.CurrentView.SaveDetailToFile();
         }
+
         private void toolStripButtonExport_Click(object sender, EventArgs e)
         {
             if (_format.CurrentView == null) return;
@@ -217,6 +232,41 @@ namespace fileinfo
                     control.Current = ((TreeNodeExt)e.Node).Detail;
                 }
             }
+        }
+
+        private void OpenFile<T>() where T : ViewComponent
+        {
+            if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            NativeFileDetail detail = new NativeFileDetail();
+            detail.LoadData(openFileDialog.FileName, null);
+            IViewComponent? view = Activator.CreateInstance(typeof(T), _encoding.CurrentHandler) as IViewComponent;
+            _format.CurrentView = view;
+            SetFileViewCurrentDetail(view, detail);
+        }
+
+        private void toolStripMenuItemHex_Click(object sender, EventArgs e)
+        {
+            OpenFile<HexViewComponent>();
+        }
+
+        private void toolStripMenuItemText_Click(object sender, EventArgs e)
+        {
+            OpenFile<TextViewComponent>();
+        }
+
+        private void toolStripMenuItemAs_Click(object sender, EventArgs e)
+        {
+            OpenFile<AssemblerViewComponent>();
+        }
+
+        private void toolStripMenuItemBs_Click(object sender, EventArgs e)
+        {
+            OpenFile<BasicViewComponent>();
+        }
+
+        private void toolStripMenuItemPc_Click(object sender, EventArgs e)
+        {
+            OpenFile<PictureViewComponent>();
         }
     }
 }

@@ -118,7 +118,6 @@ namespace fileinfo.Helpers
 
         public static void GetGroupByCommonFinish(TreeView control)
         {
-            
             foreach (TreeNode item in control.Nodes)
             {
                 if (item.Level > 0) continue;
@@ -128,6 +127,12 @@ namespace fileinfo.Helpers
 
         public static void GetGroupByHashFinish(TreeView control)
         {
+            foreach (TreeNode item in control.Nodes)
+            {
+                if (item.Level > 0) continue;
+                item.Text = $"{item.Nodes[0].Text}";// + item.Text;
+            }
+
             //List<ListViewItem> list = new List<ListViewItem>();
             //for (int i = control.Groups.Count - 1; i >= 0; i--)
             //{

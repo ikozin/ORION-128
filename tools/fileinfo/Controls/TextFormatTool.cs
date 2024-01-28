@@ -41,9 +41,11 @@ namespace fileinfo.Controls
 
         public void Add(string text, IViewComponent component, Bitmap? image = null)
         {
-            var item = new ToolStripMenuItemFormat(this, text, component);
-            item.ImageScaling = ToolStripItemImageScaling.None;
-            item.Image = image;
+            var item = new ToolStripMenuItemFormat(this, text, component)
+            {
+                ImageScaling = ToolStripItemImageScaling.None,
+                Image = image
+            };
             _tool.DropDownItems.Add(item);
         }
 
@@ -52,8 +54,7 @@ namespace fileinfo.Controls
             bool isEnable = _enableFunc();
             foreach (var item in _tool.DropDownItems)
             {
-                var itemExt = item as ToolStripMenuItemFormat;
-                if (itemExt == null) continue;
+                if (item is not ToolStripMenuItemFormat itemExt) continue;
                 itemExt.Enabled = isEnable;
                 itemExt.Checked = itemExt.Component == CurrentView;
             }
@@ -63,8 +64,7 @@ namespace fileinfo.Controls
             var result = new List<IViewComponent>();
             foreach (ToolStripItem item in _tool.DropDownItems)
             {
-                var itemExt = item as ToolStripMenuItemFormat;
-                if (itemExt == null) continue;
+                if (item is not ToolStripMenuItemFormat itemExt) continue;
                 result.Add(itemExt.Component);
             }
             return result.ToArray();

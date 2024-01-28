@@ -11,9 +11,13 @@
   <ItemGroup>
     <None Remove="SyntaxHighlighterAsssebler.xml" />
     <None Remove="SyntaxHighlighterBasic.xml" />
+    <None Remove="SyntaxHighlighterC.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="SyntaxHighlighterC.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SyntaxHighlighterAsssebler.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -27,6 +31,15 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CViewComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Views\Picture4CViewComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Views\TextMicronViewComponent.cs">
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
 

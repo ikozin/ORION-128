@@ -27,7 +27,7 @@ namespace fileinfo.Models
             Message = String.Empty;
         }
 
-        public void LoadData(string fileName, ICollection<TreeNodeExt> list)
+        public void LoadData(string fileName, ICollection<TreeNodeExt>? list)
         {
             try
             {
@@ -44,21 +44,23 @@ namespace fileinfo.Models
                 Address = 0;
                 Message = ex.Message;
                 IsError = true;
+                if (list is null) return;
                 lock (list) list.Add(new TreeNodeExt(this));
             }
         }
 
 
-        public void LoadData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list)
+        public void LoadData(string fileName, BinaryReader reader, ICollection<TreeNodeExt>? list)
         {
             if (!ParseData(fileName, reader, list)) return;
             ComputeHash();
             Message = $"{FileName}\rName:{Name.Convert()}, Size:{Size}, Address:{Address.ToHexAsm()}\rHash:{Hash.ToHex()}";
+            if (list is null) return;
             lock (list) list.Add(new TreeNodeExt(this));
         }
 
 
-        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt> list);
+        public abstract bool ParseData(string fileName, BinaryReader reader, ICollection<TreeNodeExt>? list);
 
         public int CompareTo(IFileDetail? other)
         {

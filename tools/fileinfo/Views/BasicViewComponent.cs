@@ -138,6 +138,11 @@ namespace fileinfo.Views
                     while (offset > stream.Position)
                     {
                         var cmd = reader.ReadByte();
+                        if (cmd == 0)
+                        {
+                            reader.BaseStream.Seek(-1, SeekOrigin.Current);
+                            break;
+                        }
                         if (_vacabular.ContainsKey(cmd))
                             line.AppendFormat("{0}", _vacabular[cmd]);
                         else

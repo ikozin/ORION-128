@@ -2,14 +2,14 @@
 
 namespace fileinfo.Views
 {
-    public partial class PictureViewComponent : ViewComponent
+    public partial class Picture4CViewComponent : ViewComponent
     {
-        public PictureViewComponent()
+        public Picture4CViewComponent()
         {
             InitializeComponent();
         }
 
-        public PictureViewComponent(Func<byte, bool, char> encoding) : base(encoding)
+        public Picture4CViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
             InitializeComponent();
             ClearView();
@@ -37,43 +37,49 @@ namespace fileinfo.Views
             {
                 using MemoryStream stream = new(_detail!.Content);
                 using BinaryReader reader = new(stream);
-                ushort addr = reader.ReadUInt16();
+                ushort type1 = reader.ReadByte();
+                ushort type2 = reader.ReadByte();
+                if (type1 != 0)
+                {
+
+                }
                 ushort height = reader.ReadByte();
+                if (height == 0) height = 256;
                 ushort width = reader.ReadByte();   // Ширина в байтах
                 var size = height * width;
                 width <<= 3;                        // Ширина в битах
-                textBoxAddress.Text = addr.ToHexAsm();
+                textBoxAddress.Text = ((ushort)((type1 << 8) | (ushort)type2)).ToHexAsm();
                 textBoxWidth.Text = width.ToString();
                 textBoxHeight.Text = height.ToString();
 
                 if (width != 0 && width < 512 && height != 0 && height < 512)
                 {
-                    var image = new Bitmap(width, height);
+                    //var image = new Bitmap(width, height);
 
-                    byte[] colors = Decompress(stream, size);
-                    byte[] bitmap = Decompress(stream, size);
+                    //byte[] colors = Decompress(stream, size);
+                    //byte[] bitmap = Decompress(stream, size);
 
-                    int posX = 0, posY = 0;
-                    for (int index = 0; index < bitmap.Length; index++)
-                    {
-                        byte value = bitmap[index];
-                        byte color = colors[index];
-                        (Color foreColor, Color backColor) = GetColors(color);
+                    //int posX = 0, posY = 0;
+                    //for (int index = 0; index < bitmap.Length; index++)
+                    //{
+                    //    byte value = bitmap[index];
+                    //    byte color = colors[index];
+                    //    (Color foreColor, Color backColor) = GetColors(color);
 
-                        for (int i = 0, n = 7; n >= 0; i++, n--)
-                        {
-                            Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
-                            image.SetPixel(posX + i, posY, pixel);
-                        }
-                        posY++;
-                        if (posY == height)
-                        {
-                            posX += 8;
-                            posY = 0;
-                        }
+                    //    for (int i = 0, n = 7; n >= 0; i++, n--)
+                    //    {
+                    //        Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
+                    //        image.SetPixel(posX + i, posY, pixel);
+                    //    }
+                    //    posY++;
+                    //    if (posY == height)
+                    //    {
+                    //        posX += 8;
+                    //        posY = 0;
+                    //    }
 
-                    }
-                    pictureBoxView.Image = image;
+                    //}
+                    //pictureBoxView.Image = image;
                     pictureBoxView.Enabled = true;
                     panelTool.Enabled = true;
                 }

@@ -28,264 +28,316 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ToolStrip toolStripFileView;
+            components = new System.ComponentModel.Container();
+            ToolStrip toolStripFileView;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.toolStripDropDownButtonFormat = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripDropDownButtonEncoding = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonExport = new System.Windows.Forms.ToolStripButton();
-            this.splitContainerInfo = new System.Windows.Forms.SplitContainer();
-            this.treeView = new System.Windows.Forms.TreeView();
-            this.contextMenuStripFile = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panelViewComponent = new System.Windows.Forms.Panel();
-            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.toolStripButtonSelectDirectory = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSplitButtonGrouping = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripSplitButtonGroupByExec = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSplitButtonGroupByPath = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSplitButtonGroupByCustom = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSplitButtonGroupByHash = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButtonOdi = new System.Windows.Forms.ToolStripButton();
-            this.toolStripMain = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            toolStripFileView = new System.Windows.Forms.ToolStrip();
+            ToolStripDropDownButton toolStripDropDownButtonOpenFile;
+            ToolStripMenuItem toolStripMenuItemHex;
+            ToolStripMenuItem toolStripMenuItemText;
+            ToolStripSeparator toolStripSeparator2;
+            ToolStripMenuItem toolStripMenuItemAs;
+            ToolStripMenuItem toolStripMenuItemBs;
+            ToolStripMenuItem toolStripMenuItemPc;
+            toolStripDropDownButtonFormat = new ToolStripDropDownButton();
+            toolStripDropDownButtonEncoding = new ToolStripDropDownButton();
+            toolStripButtonSave = new ToolStripButton();
+            toolStripButtonExport = new ToolStripButton();
+            splitContainerInfo = new SplitContainer();
+            treeView = new TreeView();
+            contextMenuStripFile = new ContextMenuStrip(components);
+            directoryToolStripMenuItem = new ToolStripMenuItem();
+            panelViewComponent = new Panel();
+            folderBrowserDialog = new FolderBrowserDialog();
+            saveFileDialog = new SaveFileDialog();
+            toolStripButtonSelectDirectory = new ToolStripButton();
+            toolStripSplitButtonGrouping = new ToolStripDropDownButton();
+            toolStripSplitButtonGroupByExec = new ToolStripMenuItem();
+            toolStripSplitButtonGroupByPath = new ToolStripMenuItem();
+            toolStripSplitButtonGroupByCustom = new ToolStripMenuItem();
+            toolStripSplitButtonGroupByHash = new ToolStripMenuItem();
+            toolStripButtonOdi = new ToolStripButton();
+            toolStripMain = new ToolStrip();
+            toolStripSeparator1 = new ToolStripSeparator();
+            openFileDialog = new OpenFileDialog();
+            toolStripFileView = new ToolStrip();
+            toolStripDropDownButtonOpenFile = new ToolStripDropDownButton();
+            toolStripMenuItemHex = new ToolStripMenuItem();
+            toolStripMenuItemText = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            toolStripMenuItemAs = new ToolStripMenuItem();
+            toolStripMenuItemBs = new ToolStripMenuItem();
+            toolStripMenuItemPc = new ToolStripMenuItem();
             toolStripFileView.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).BeginInit();
-            this.splitContainerInfo.Panel1.SuspendLayout();
-            this.splitContainerInfo.Panel2.SuspendLayout();
-            this.splitContainerInfo.SuspendLayout();
-            this.contextMenuStripFile.SuspendLayout();
-            this.toolStripMain.SuspendLayout();
-            this.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerInfo).BeginInit();
+            splitContainerInfo.Panel1.SuspendLayout();
+            splitContainerInfo.Panel2.SuspendLayout();
+            splitContainerInfo.SuspendLayout();
+            contextMenuStripFile.SuspendLayout();
+            toolStripMain.SuspendLayout();
+            SuspendLayout();
             // 
             // toolStripFileView
             // 
-            toolStripFileView.ImageScalingSize = new System.Drawing.Size(20, 20);
-            toolStripFileView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButtonFormat,
-            this.toolStripDropDownButtonEncoding,
-            this.toolStripButtonSave,
-            this.toolStripButtonExport});
-            toolStripFileView.Location = new System.Drawing.Point(0, 0);
+            toolStripFileView.ImageScalingSize = new Size(20, 20);
+            toolStripFileView.Items.AddRange(new ToolStripItem[] { toolStripDropDownButtonFormat, toolStripDropDownButtonEncoding, toolStripButtonSave, toolStripButtonExport });
+            toolStripFileView.Location = new Point(0, 0);
             toolStripFileView.Name = "toolStripFileView";
-            toolStripFileView.Size = new System.Drawing.Size(530, 39);
+            toolStripFileView.Size = new Size(530, 39);
             toolStripFileView.TabIndex = 2;
             toolStripFileView.Text = "toolStrip1";
             // 
             // toolStripDropDownButtonFormat
             // 
-            this.toolStripDropDownButtonFormat.Image = global::fileinfo.Properties.Resources.script;
-            this.toolStripDropDownButtonFormat.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripDropDownButtonFormat.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButtonFormat.Name = "toolStripDropDownButtonFormat";
-            this.toolStripDropDownButtonFormat.Size = new System.Drawing.Size(81, 36);
-            this.toolStripDropDownButtonFormat.Text = "Вид";
+            toolStripDropDownButtonFormat.Image = Properties.Resources.script;
+            toolStripDropDownButtonFormat.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripDropDownButtonFormat.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButtonFormat.Name = "toolStripDropDownButtonFormat";
+            toolStripDropDownButtonFormat.Size = new Size(81, 36);
+            toolStripDropDownButtonFormat.Text = "Вид";
             // 
             // toolStripDropDownButtonEncoding
             // 
-            this.toolStripDropDownButtonEncoding.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonEncoding.Image")));
-            this.toolStripDropDownButtonEncoding.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripDropDownButtonEncoding.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButtonEncoding.Name = "toolStripDropDownButtonEncoding";
-            this.toolStripDropDownButtonEncoding.Size = new System.Drawing.Size(123, 36);
-            this.toolStripDropDownButtonEncoding.Text = "Кодировка";
+            toolStripDropDownButtonEncoding.Image = (Image)resources.GetObject("toolStripDropDownButtonEncoding.Image");
+            toolStripDropDownButtonEncoding.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripDropDownButtonEncoding.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButtonEncoding.Name = "toolStripDropDownButtonEncoding";
+            toolStripDropDownButtonEncoding.Size = new Size(123, 36);
+            toolStripDropDownButtonEncoding.Text = "Кодировка";
             // 
             // toolStripButtonSave
             // 
-            this.toolStripButtonSave.Image = global::fileinfo.Properties.Resources.disk;
-            this.toolStripButtonSave.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSave.Name = "toolStripButtonSave";
-            this.toolStripButtonSave.Size = new System.Drawing.Size(119, 36);
-            this.toolStripButtonSave.Text = "Сохранить";
-            this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
+            toolStripButtonSave.Image = Properties.Resources.disk;
+            toolStripButtonSave.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonSave.ImageTransparentColor = Color.Magenta;
+            toolStripButtonSave.Name = "toolStripButtonSave";
+            toolStripButtonSave.Size = new Size(119, 36);
+            toolStripButtonSave.Text = "Сохранить";
+            toolStripButtonSave.Click += toolStripButtonSave_Click;
             // 
             // toolStripButtonExport
             // 
-            this.toolStripButtonExport.Image = global::fileinfo.Properties.Resources.disk;
-            this.toolStripButtonExport.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButtonExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonExport.Name = "toolStripButtonExport";
-            this.toolStripButtonExport.Size = new System.Drawing.Size(103, 36);
-            this.toolStripButtonExport.Text = "Извлечь";
-            this.toolStripButtonExport.ToolTipText = "Сохранить в оригинальном виде";
-            this.toolStripButtonExport.Click += new System.EventHandler(this.toolStripButtonExport_Click);
+            toolStripButtonExport.Image = Properties.Resources.disk;
+            toolStripButtonExport.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripButtonExport.ImageTransparentColor = Color.Magenta;
+            toolStripButtonExport.Name = "toolStripButtonExport";
+            toolStripButtonExport.Size = new Size(103, 36);
+            toolStripButtonExport.Text = "Извлечь";
+            toolStripButtonExport.ToolTipText = "Сохранить в оригинальном виде";
+            toolStripButtonExport.Click += toolStripButtonExport_Click;
+            // 
+            // toolStripDropDownButtonOpenFile
+            // 
+            toolStripDropDownButtonOpenFile.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownButtonOpenFile.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemHex, toolStripMenuItemText, toolStripSeparator2, toolStripMenuItemAs, toolStripMenuItemBs, toolStripMenuItemPc });
+            toolStripDropDownButtonOpenFile.Image = (Image)resources.GetObject("toolStripDropDownButtonOpenFile.Image");
+            toolStripDropDownButtonOpenFile.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButtonOpenFile.Name = "toolStripDropDownButtonOpenFile";
+            toolStripDropDownButtonOpenFile.Size = new Size(86, 24);
+            toolStripDropDownButtonOpenFile.Text = "Open File";
+            toolStripDropDownButtonOpenFile.ToolTipText = "Open File";
+            // 
+            // toolStripMenuItemHex
+            // 
+            toolStripMenuItemHex.Name = "toolStripMenuItemHex";
+            toolStripMenuItemHex.Size = new Size(223, 26);
+            toolStripMenuItemHex.Text = "HEX ...";
+            toolStripMenuItemHex.Click += toolStripMenuItemHex_Click;
+            // 
+            // toolStripMenuItemText
+            // 
+            toolStripMenuItemText.Name = "toolStripMenuItemText";
+            toolStripMenuItemText.Size = new Size(223, 26);
+            toolStripMenuItemText.Text = "Текст ...";
+            toolStripMenuItemText.Click += toolStripMenuItemText_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(220, 6);
+            // 
+            // toolStripMenuItemAs
+            // 
+            toolStripMenuItemAs.Name = "toolStripMenuItemAs";
+            toolStripMenuItemAs.Size = new Size(223, 26);
+            toolStripMenuItemAs.Text = "(*.AS) Ассемблер ...";
+            toolStripMenuItemAs.Click += toolStripMenuItemAs_Click;
+            // 
+            // toolStripMenuItemBs
+            // 
+            toolStripMenuItemBs.Name = "toolStripMenuItemBs";
+            toolStripMenuItemBs.Size = new Size(223, 26);
+            toolStripMenuItemBs.Text = "(*.BS) Бейсик ...";
+            toolStripMenuItemBs.Click += toolStripMenuItemBs_Click;
+            // 
+            // toolStripMenuItemPc
+            // 
+            toolStripMenuItemPc.Name = "toolStripMenuItemPc";
+            toolStripMenuItemPc.Size = new Size(223, 26);
+            toolStripMenuItemPc.Text = "(*.PC) Картинка ...";
+            toolStripMenuItemPc.Click += toolStripMenuItemPc_Click;
             // 
             // splitContainerInfo
             // 
-            this.splitContainerInfo.Cursor = System.Windows.Forms.Cursors.VSplit;
-            this.splitContainerInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerInfo.Location = new System.Drawing.Point(0, 27);
-            this.splitContainerInfo.Name = "splitContainerInfo";
+            splitContainerInfo.Cursor = Cursors.VSplit;
+            splitContainerInfo.Dock = DockStyle.Fill;
+            splitContainerInfo.Location = new Point(0, 27);
+            splitContainerInfo.Name = "splitContainerInfo";
             // 
             // splitContainerInfo.Panel1
             // 
-            this.splitContainerInfo.Panel1.Controls.Add(this.treeView);
-            this.splitContainerInfo.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
+            splitContainerInfo.Panel1.Controls.Add(treeView);
+            splitContainerInfo.Panel1.Cursor = Cursors.Default;
             // 
             // splitContainerInfo.Panel2
             // 
-            this.splitContainerInfo.Panel2.Controls.Add(this.panelViewComponent);
-            this.splitContainerInfo.Panel2.Controls.Add(toolStripFileView);
-            this.splitContainerInfo.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.splitContainerInfo.Size = new System.Drawing.Size(800, 423);
-            this.splitContainerInfo.SplitterDistance = 266;
-            this.splitContainerInfo.TabIndex = 2;
+            splitContainerInfo.Panel2.Controls.Add(panelViewComponent);
+            splitContainerInfo.Panel2.Controls.Add(toolStripFileView);
+            splitContainerInfo.Panel2.Cursor = Cursors.Default;
+            splitContainerInfo.Size = new Size(800, 423);
+            splitContainerInfo.SplitterDistance = 266;
+            splitContainerInfo.TabIndex = 2;
             // 
             // treeView
             // 
-            this.treeView.ContextMenuStrip = this.contextMenuStripFile;
-            this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView.FullRowSelect = true;
-            this.treeView.Location = new System.Drawing.Point(0, 0);
-            this.treeView.Name = "treeView";
-            this.treeView.ShowNodeToolTips = true;
-            this.treeView.Size = new System.Drawing.Size(266, 423);
-            this.treeView.TabIndex = 0;
-            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
+            treeView.ContextMenuStrip = contextMenuStripFile;
+            treeView.Dock = DockStyle.Fill;
+            treeView.FullRowSelect = true;
+            treeView.HideSelection = false;
+            treeView.Location = new Point(0, 0);
+            treeView.Name = "treeView";
+            treeView.ShowNodeToolTips = true;
+            treeView.Size = new Size(266, 423);
+            treeView.TabIndex = 0;
+            treeView.AfterSelect += treeView_AfterSelect;
             // 
             // contextMenuStripFile
             // 
-            this.contextMenuStripFile.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.contextMenuStripFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.directoryToolStripMenuItem});
-            this.contextMenuStripFile.Name = "contextMenuStripFile";
-            this.contextMenuStripFile.Size = new System.Drawing.Size(305, 28);
-            this.contextMenuStripFile.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripFile_Opening);
+            contextMenuStripFile.ImageScalingSize = new Size(20, 20);
+            contextMenuStripFile.Items.AddRange(new ToolStripItem[] { directoryToolStripMenuItem });
+            contextMenuStripFile.Name = "contextMenuStripFile";
+            contextMenuStripFile.Size = new Size(305, 28);
+            contextMenuStripFile.Opening += contextMenuStripFile_Opening;
             // 
             // directoryToolStripMenuItem
             // 
-            this.directoryToolStripMenuItem.Name = "directoryToolStripMenuItem";
-            this.directoryToolStripMenuItem.Size = new System.Drawing.Size(304, 24);
-            this.directoryToolStripMenuItem.Text = "Открыть расположение файла ...";
-            this.directoryToolStripMenuItem.Click += new System.EventHandler(this.directoryToolStripMenuItem_Click);
+            directoryToolStripMenuItem.Name = "directoryToolStripMenuItem";
+            directoryToolStripMenuItem.Size = new Size(304, 24);
+            directoryToolStripMenuItem.Text = "Открыть расположение файла ...";
+            directoryToolStripMenuItem.Click += directoryToolStripMenuItem_Click;
             // 
             // panelViewComponent
             // 
-            this.panelViewComponent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelViewComponent.Location = new System.Drawing.Point(0, 39);
-            this.panelViewComponent.Name = "panelViewComponent";
-            this.panelViewComponent.Size = new System.Drawing.Size(530, 384);
-            this.panelViewComponent.TabIndex = 4;
+            panelViewComponent.Dock = DockStyle.Fill;
+            panelViewComponent.Location = new Point(0, 39);
+            panelViewComponent.Name = "panelViewComponent";
+            panelViewComponent.Size = new Size(530, 384);
+            panelViewComponent.TabIndex = 4;
             // 
             // folderBrowserDialog
             // 
-            this.folderBrowserDialog.Description = "Выбрать директорию";
-            this.folderBrowserDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-            this.folderBrowserDialog.ShowNewFolderButton = false;
-            this.folderBrowserDialog.UseDescriptionForTitle = true;
+            folderBrowserDialog.Description = "Выбрать директорию";
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+            folderBrowserDialog.ShowNewFolderButton = false;
+            folderBrowserDialog.UseDescriptionForTitle = true;
             // 
             // toolStripButtonSelectDirectory
             // 
-            this.toolStripButtonSelectDirectory.Image = global::fileinfo.Properties.Resources.folder;
-            this.toolStripButtonSelectDirectory.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSelectDirectory.Name = "toolStripButtonSelectDirectory";
-            this.toolStripButtonSelectDirectory.Size = new System.Drawing.Size(196, 24);
-            this.toolStripButtonSelectDirectory.Text = "Выбрать директорию ...";
-            this.toolStripButtonSelectDirectory.Click += new System.EventHandler(this.toolStripButtonSelectDirectory_Click);
+            toolStripButtonSelectDirectory.Image = Properties.Resources.folder;
+            toolStripButtonSelectDirectory.ImageTransparentColor = Color.Magenta;
+            toolStripButtonSelectDirectory.Name = "toolStripButtonSelectDirectory";
+            toolStripButtonSelectDirectory.Size = new Size(196, 24);
+            toolStripButtonSelectDirectory.Text = "Выбрать директорию ...";
+            toolStripButtonSelectDirectory.Click += toolStripButtonSelectDirectory_Click;
             // 
             // toolStripSplitButtonGrouping
             // 
-            this.toolStripSplitButtonGrouping.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSplitButtonGroupByExec,
-            this.toolStripSplitButtonGroupByPath,
-            this.toolStripSplitButtonGroupByCustom,
-            this.toolStripSplitButtonGroupByHash});
-            this.toolStripSplitButtonGrouping.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButtonGrouping.Image")));
-            this.toolStripSplitButtonGrouping.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButtonGrouping.Name = "toolStripSplitButtonGrouping";
-            this.toolStripSplitButtonGrouping.Size = new System.Drawing.Size(105, 24);
-            this.toolStripSplitButtonGrouping.Text = "Grouping";
+            toolStripSplitButtonGrouping.DropDownItems.AddRange(new ToolStripItem[] { toolStripSplitButtonGroupByExec, toolStripSplitButtonGroupByPath, toolStripSplitButtonGroupByCustom, toolStripSplitButtonGroupByHash });
+            toolStripSplitButtonGrouping.Image = (Image)resources.GetObject("toolStripSplitButtonGrouping.Image");
+            toolStripSplitButtonGrouping.ImageTransparentColor = Color.Magenta;
+            toolStripSplitButtonGrouping.Name = "toolStripSplitButtonGrouping";
+            toolStripSplitButtonGrouping.Size = new Size(105, 24);
+            toolStripSplitButtonGrouping.Text = "Grouping";
             // 
             // toolStripSplitButtonGroupByExec
             // 
-            this.toolStripSplitButtonGroupByExec.Name = "toolStripSplitButtonGroupByExec";
-            this.toolStripSplitButtonGroupByExec.Size = new System.Drawing.Size(309, 26);
-            this.toolStripSplitButtonGroupByExec.Text = "Группировка по исполняемым";
-            this.toolStripSplitButtonGroupByExec.Click += new System.EventHandler(this.toolStripSplitButtonGroupByExec_Click);
+            toolStripSplitButtonGroupByExec.Name = "toolStripSplitButtonGroupByExec";
+            toolStripSplitButtonGroupByExec.Size = new Size(309, 26);
+            toolStripSplitButtonGroupByExec.Text = "Группировка по исполняемым";
+            toolStripSplitButtonGroupByExec.Click += toolStripSplitButtonGroupByExec_Click;
             // 
             // toolStripSplitButtonGroupByPath
             // 
-            this.toolStripSplitButtonGroupByPath.Name = "toolStripSplitButtonGroupByPath";
-            this.toolStripSplitButtonGroupByPath.Size = new System.Drawing.Size(309, 26);
-            this.toolStripSplitButtonGroupByPath.Text = "Группировка по директории";
-            this.toolStripSplitButtonGroupByPath.Click += new System.EventHandler(this.toolStripSplitButtonGroupByPath_Click);
+            toolStripSplitButtonGroupByPath.Name = "toolStripSplitButtonGroupByPath";
+            toolStripSplitButtonGroupByPath.Size = new Size(309, 26);
+            toolStripSplitButtonGroupByPath.Text = "Группировка по директории";
+            toolStripSplitButtonGroupByPath.Click += toolStripSplitButtonGroupByPath_Click;
             // 
             // toolStripSplitButtonGroupByCustom
             // 
-            this.toolStripSplitButtonGroupByCustom.Name = "toolStripSplitButtonGroupByCustom";
-            this.toolStripSplitButtonGroupByCustom.Size = new System.Drawing.Size(309, 26);
-            this.toolStripSplitButtonGroupByCustom.Text = "Группировка по типу";
-            this.toolStripSplitButtonGroupByCustom.Click += new System.EventHandler(this.toolStripSplitButtonGroupByCustom_Click);
+            toolStripSplitButtonGroupByCustom.Name = "toolStripSplitButtonGroupByCustom";
+            toolStripSplitButtonGroupByCustom.Size = new Size(309, 26);
+            toolStripSplitButtonGroupByCustom.Text = "Группировка по типу";
+            toolStripSplitButtonGroupByCustom.Click += toolStripSplitButtonGroupByCustom_Click;
             // 
             // toolStripSplitButtonGroupByHash
             // 
-            this.toolStripSplitButtonGroupByHash.Name = "toolStripSplitButtonGroupByHash";
-            this.toolStripSplitButtonGroupByHash.Size = new System.Drawing.Size(309, 26);
-            this.toolStripSplitButtonGroupByHash.Text = "Группировка дублей";
-            this.toolStripSplitButtonGroupByHash.Click += new System.EventHandler(this.toolStripSplitButtonGroupByHash_Click);
+            toolStripSplitButtonGroupByHash.Name = "toolStripSplitButtonGroupByHash";
+            toolStripSplitButtonGroupByHash.Size = new Size(309, 26);
+            toolStripSplitButtonGroupByHash.Text = "Группировка дублей";
+            toolStripSplitButtonGroupByHash.Click += toolStripSplitButtonGroupByHash_Click;
             // 
             // toolStripButtonOdi
             // 
-            this.toolStripButtonOdi.Enabled = false;
-            this.toolStripButtonOdi.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOdi.Image")));
-            this.toolStripButtonOdi.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOdi.Name = "toolStripButtonOdi";
-            this.toolStripButtonOdi.Size = new System.Drawing.Size(141, 24);
-            this.toolStripButtonOdi.Text = "Извлечь из ODI";
-            this.toolStripButtonOdi.Click += new System.EventHandler(this.toolStripButtonOdi_Click);
+            toolStripButtonOdi.Enabled = false;
+            toolStripButtonOdi.Image = (Image)resources.GetObject("toolStripButtonOdi.Image");
+            toolStripButtonOdi.ImageTransparentColor = Color.Magenta;
+            toolStripButtonOdi.Name = "toolStripButtonOdi";
+            toolStripButtonOdi.Size = new Size(141, 24);
+            toolStripButtonOdi.Text = "Извлечь из ODI";
+            toolStripButtonOdi.Click += toolStripButtonOdi_Click;
             // 
             // toolStripMain
             // 
-            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonSelectDirectory,
-            this.toolStripSplitButtonGrouping,
-            this.toolStripSeparator1,
-            this.toolStripButtonOdi});
-            this.toolStripMain.Location = new System.Drawing.Point(0, 0);
-            this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(800, 27);
-            this.toolStripMain.TabIndex = 3;
-            this.toolStripMain.Text = "toolStrip1";
+            toolStripMain.ImageScalingSize = new Size(20, 20);
+            toolStripMain.Items.AddRange(new ToolStripItem[] { toolStripButtonSelectDirectory, toolStripSplitButtonGrouping, toolStripSeparator1, toolStripButtonOdi, toolStripDropDownButtonOpenFile });
+            toolStripMain.Location = new Point(0, 0);
+            toolStripMain.Name = "toolStripMain";
+            toolStripMain.Size = new Size(800, 27);
+            toolStripMain.TabIndex = 3;
+            toolStripMain.Text = "toolStrip1";
             // 
             // toolStripSeparator1
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 27);
             // 
             // openFileDialog
             // 
-            this.openFileDialog.DefaultExt = "odi";
-            this.openFileDialog.Filter = "ODI files|*.odi|All files|*.*";
-            this.openFileDialog.Title = "Открыть";
+            openFileDialog.DefaultExt = "odi";
+            openFileDialog.Filter = "ODI files|*.odi|All files|*.*";
+            openFileDialog.Title = "Открыть";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.splitContainerInfo);
-            this.Controls.Add(this.toolStripMain);
-            this.Name = "MainForm";
-            this.Text = "File Info";
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(splitContainerInfo);
+            Controls.Add(toolStripMain);
+            Name = "MainForm";
+            Text = "File Info";
             toolStripFileView.ResumeLayout(false);
             toolStripFileView.PerformLayout();
-            this.splitContainerInfo.Panel1.ResumeLayout(false);
-            this.splitContainerInfo.Panel2.ResumeLayout(false);
-            this.splitContainerInfo.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainerInfo)).EndInit();
-            this.splitContainerInfo.ResumeLayout(false);
-            this.contextMenuStripFile.ResumeLayout(false);
-            this.toolStripMain.ResumeLayout(false);
-            this.toolStripMain.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            splitContainerInfo.Panel1.ResumeLayout(false);
+            splitContainerInfo.Panel2.ResumeLayout(false);
+            splitContainerInfo.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerInfo).EndInit();
+            splitContainerInfo.ResumeLayout(false);
+            contextMenuStripFile.ResumeLayout(false);
+            toolStripMain.ResumeLayout(false);
+            toolStripMain.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
