@@ -44,10 +44,16 @@ https://all-arduino.ru/wp-content/uploads/mega2_ret_by_pighixxx-d5yqsht.png
                                                                                             ^
                                                                                             |
                                                                                            Key
-
 */
 
-#include "common.h"
+#include <Arduino.h>
+
+#ifndef __AVR_ATmega2560__
+#error "Select board ATMEG2560"
+#endif
+
+#define PIN_ROMDISK_SELECT  40
+#define PIN_KEYBOARD_RESET  41
 
 #define KEYCODE_ALF     B10000000
 #define KEYCODE_CY      B01000000
@@ -59,90 +65,127 @@ https://all-arduino.ru/wp-content/uploads/mega2_ret_by_pighixxx-d5yqsht.png
 #define INITIAL_STATE_C B00001111
 
 char text[64];
-char *keyNames[]
+char const * keyNames[]
 {
-  "↖", "СТР", "АР2", "F1", "F2", "F3", "F4", "",
-  "ТАБ", "ПС", "ВК", "ЗБ", "←", "↑", "→", "↓",
-  "0", "1", "2", "3", "4", "5", "6", "7",
-  "8", "9", ":", ";", "<", "=", ">", "?",
-  "@", "A", "B", "C", "D", "E", "F", "G",
-  "H", "I", "J", "K", "L", "M", "N", "O",
-  "P", "Q", "R", "S", "T", "U", "V", "W",
-  "X", "Y", "Z", "[", "\\", "]", "^", "SPACE",  
+    "↖", "СТР", "АР2", "F1", "F2", "F3", "F4", "",
+    "ТАБ", "ПС", "ВК", "ЗБ", "←", "↑", "→", "↓",
+    "0", "1", "2", "3", "4", "5", "6", "7",
+    "8", "9", ":", ";", "<", "=", ">", "?",
+    "@", "A", "B", "C", "D", "E", "F", "G",
+    "H", "I", "J", "K", "L", "M", "N", "O",
+    "P", "Q", "R", "S", "T", "U", "V", "W",
+    "X", "Y", "Z", "[", "\\", "]", "^", "SPACE",  
 };
 
-void setup()
-{
-  Serial.begin(9600);
-	OutputModePortA();
-  InputModePortB();
-  KeyboardModeC();
-  pinMode(PIN_KEYBOARD_RESET, INPUT_PULLUP);
-  SetPortA(0x00);
+void OutputModePortA() {
+    DDRA = ((uint8_t)B11111111);
 }
 
-uint8_t GetInputKey()
-{
-  uint8_t keyCode = 0;
-  uint8_t row = 0x01;
-  do
-  {
-    SetPortA(~row);
-    uint8_t data = ~GetPortB();
-    if (data)
-    {
-      while (data >>= 1)
-      {
-        keyCode ++;
-      }
-      return keyCode;
-    }
-    keyCode += 0x08;
-  }
-  while(row <<= 1);
-  return 0xFF;
+void OutputModePortB() {
+    DDRC = ((uint8_t)B11111111);
+
+}
+void OutputModePortC() {
+    DDRL = ((uint8_t)B11111111);
+}
+
+void InputModePortA() {
+    DDRA = ((uint8_t)B00000000);
+}
+
+void InputModePortB() {
+    DDRC = ((uint8_t)B00000000);
+}
+
+void InputModePortC() {
+    DDRL = ((uint8_t)B00000000);
+}
+
+void SetPortA(uint8_t data) {
+    PORTA = data;
+}
+
+void SetPortB(uint8_t data) {
+    PORTC = data;
+}
+
+void SetPortC(uint8_t data) { 
+    PORTL = data;
+}
+
+#define GetPortA()      (PINA)
+#define GetPortB()      (PINC)
+#define GetPortC()      (PINL)
+
+void println(const char *__fmt, va_list __ap) {
+    char text[128];
+    sprintf(text, __fmt, __ap);
+    Serial.println(text);
+}
+
+uint8_t GetInputKey() {
+    uint8_t keyCode = 0;
+    uint8_t row = 0x01;
+    do {
+        SetPortA(~row);
+        uint8_t data = ~((uint8_t)GetPortB());
+        if (data != 0) {
+            while ((data & 0x01) != 1) {
+                keyCode ++;
+                data >>= 1;
+            }
+            keyCode -= 0x08;
+            return (keyCode & 0x3F);
+        }
+        keyCode += 0x08;
+    } while(row <<= 1);
+    return 0xFF;
 }
 
 byte keyboardState = INITIAL_STATE_C;
 
-void KeyboardModeC()
-{
-  DDRL  = B00001111;  //Output C1-C4,Input C5-C8
-  PORTL = keyboardState;
+void KeyboardModeC() {
+    DDRL  = B00001111;  //Output C1-C4,Input C5-C8
+    PORTL = keyboardState;
 }
 
-void ProcessControlKey()
-{
-  if (digitalRead(PIN_KEYBOARD_RESET) == LOW)
-  {
-    Serial.println("RESET");
-    return;    
-  }
-  uint8_t keyCode = GetPortC();
-  if ((keyCode & KEYCODE_ALF) == 0)
-  {
-    Serial.println("АЛФ");
-    keyboardState = (keyboardState & ~LED_ALF) | ((keyboardState & LED_ALF) ^ LED_ALF);
-    PORTL = keyboardState;
-  }
-  if ((keyCode & KEYCODE_CY) == 0)
-  {
-    Serial.println("СУ");
-  }
-  if ((keyCode & KEYCODE_KOM) == 0)
-  {
-    Serial.println("КОМ");
-    keyboardState = (keyboardState & ~LED_REC) | ((keyboardState & LED_REC) ^ LED_REC);
-    PORTL = keyboardState;
-  }
+void ProcessControlKey() {
+    if (digitalRead(PIN_KEYBOARD_RESET) == LOW) {
+        Serial.println("RESET");
+        return;    
+    }
+    uint8_t keyCode = GetPortC();
+    if ((keyCode & KEYCODE_ALF) == 0) {
+        Serial.println("АЛФ");
+        keyboardState = (keyboardState & ~LED_ALF) | ((keyboardState & LED_ALF) ^ LED_ALF);
+        PORTL = keyboardState;
+    }
+    if ((keyCode & KEYCODE_CY) == 0) {
+        Serial.println("СУ");
+    }
+    if ((keyCode & KEYCODE_KOM) == 0) {
+        Serial.println("КОМ");
+        keyboardState = (keyboardState & ~LED_REC) | ((keyboardState & LED_REC) ^ LED_REC);
+        PORTL = keyboardState;
+    }
 }
 
-void loop()
-{
-  delay(100);
-  ProcessControlKey();
-  uint8_t keyCode = GetInputKey();
-  if (keyCode == 0xFF) return;
-  sprintf(text, "0x%02X %s", keyCode, keyNames[keyCode]);
-  Serial.println(text);
+void setup() {
+    Serial.begin(57600);
+    OutputModePortA();
+    InputModePortB();
+    KeyboardModeC();
+    pinMode(PIN_KEYBOARD_RESET, INPUT_PULLUP);
+    SetPortA(0x00);
+    Serial.println("Start...");
+}
+
+void loop() {
+    delay(100);
+    ProcessControlKey();
+    uint8_t keyCode = GetInputKey();
+    if (keyCode == 0xFF)
+        return;
+    sprintf(text, "0x%02X %s", keyCode, keyNames[keyCode]);
+    Serial.println(text);
 }
