@@ -1,0 +1,99 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: bru new",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "new", "vc$.bru", "-a", "AD00", "-s", "vc.bin"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru extract",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "extract", "data\\vc.tx.bru", "-o", "vc.txt", "-e", "textkoi7"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru list",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "list", "data\\vc$.bru"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: rom",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["rom", "new", "romdisk.rom", "-b", "data\\boot.bin", "-l", "data\\vc$.bru", "data\\m256.2$.bru", "data\\basic$.bru"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: rom new",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["rom", "new", "romdisk.rom", "--boot", "Data\\boot.bin", "--list", "data\\*.bru"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: rom list",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["rom", "list", "romdisk.rom"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: rom extract",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["rom", "extract", "romdisk.rom", "--dir", "Data"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+    ]
+}
