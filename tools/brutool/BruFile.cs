@@ -1,17 +1,20 @@
 using System.CommandLine;
-using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 
 class BruFile
 {
     const ushort headerSize = 16;
-    public enum Export: int
+    public enum ExportType: int
     {
         Binary,
-        TextKOI7,
-        TextKOI8,
-        TextCP866
+        Text
+    }
+    public enum ExportEncoding: int
+    {
+        KOI7N2,
+        KOI8R,
+        CP866
     }
     public static Command GetCommand()
     {
@@ -87,14 +90,18 @@ class BruFile
         var fileNameOutOption = new Option<string>("--output", description: "Имя файла");
         fileNameOutOption.AddAlias("-o");
         extractCommand.Add(fileNameOutOption);
-        var exportOption = new Option<Export>("--export",
+        var exportTypeOption = new Option<ExportType>("--type",
             description: "Преобразованин файла",
-            getDefaultValue: () => Export.Binary);
-        exportOption.AddAlias("-e");
-        extractCommand.Add(exportOption);
+            getDefaultValue: () => ExportType.Binary);
+        exportTypeOption.AddAlias("-t");
+        extractCommand.Add(exportTypeOption);
+        var exportTypeEncoding = new Option<ExportEncoding>("--encoding",
+            description: "Кодировка файла",
+            getDefaultValue: () => ExportEncoding.KOI7N2);
+        exportTypeEncoding.AddAlias("-e");
+        extractCommand.Add(exportTypeEncoding);
 
-
-        extractCommand.SetHandler(Extract, fileInfoExistsArgument, fileNameOutOption, exportOption);
+        extractCommand.SetHandler(Extract, fileInfoExistsArgument, fileNameOutOption, exportTypeOption,  exportTypeEncoding);
         command.Add(extractCommand);
 
         return command;
@@ -177,7 +184,7 @@ class BruFile
         }
     }
 
-    private static void Extract(FileInfo? file, string filename, Export export)
+    private static void Extract(FileInfo? file, string filename, ExportType type, ExportEncoding encoding)
     {
        try
         {
@@ -208,51 +215,31 @@ class BruFile
             using (Stream stream = File.Create(filename))
             using (BinaryWriter writer = new(stream))
             {
-                switch (export)
+                switch (type)
                 {
-                    case Export.Binary:
+                    case ExportType.Binary:
                     {
                         writer.Write(content);
                         break;
                     }
-                    case Export.TextKOI7:
+                    case ExportType.Text:
                     {
                         foreach (byte data in content)
                         {
-                            if (data == 0xFF)
+                            if (data == 0xFF) break;
+                            var symbol = encoding switch
                             {
-                                break;
-                            }
-                            writer.Write(EncodingExtension.Convert_Koi7N2(data, true));
-                        }
-                        break;
-                    }
-                    case Export.TextKOI8:
-                    {
-                        foreach (byte data in content)
-                        {
-                            if (data == 0xFF)
-                            {
-                                break;
-                            }
-                            writer.Write(EncodingExtension.Convert_Koi8R(data, true));
-                        }
-                        break;
-                    }
-                    case Export.TextCP866:
-                    {
-                        foreach (byte data in content)
-                        {
-                            if (data == 0xFF)
-                            {
-                                break;
-                            }
-                            writer.Write(EncodingExtension.Convert_Cp866(data, true));
+                                ExportEncoding.KOI7N2 => EncodingExtension.Convert_Koi7N2(data, true),
+                                ExportEncoding.KOI8R => EncodingExtension.Convert_Koi8R(data, true),
+                                ExportEncoding.CP866 => EncodingExtension.Convert_Cp866(data, true),
+                                _ => throw new ApplicationException(string.Format("Не известная кодировка: {0}", encoding.ToString())),
+                            };
+                            writer.Write(symbol);
                         }
                         break;
                     }
                     default:
-                        throw new ApplicationException(string.Format("Не известный формат преобразования: {0}", export.ToString()));
+                        throw new ApplicationException(string.Format("Не известный формат преобразования: {0}", type.ToString()));
                 }
             }
         }

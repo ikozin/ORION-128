@@ -24,7 +24,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["bru", "extract", "data\\vc.tx.bru", "-o", "vc.txt", "-e", "textkoi7"],
+                "args": ["bru", "extract", "data\\vc.tx.bru", "-o", "vc.txt", "-t", "text", "-e", "koi7n2"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
