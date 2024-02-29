@@ -5,26 +5,118 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: bru new",
+            "name": "C#: bin extract",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["bru", "new", "vc$.bru", "-a", "AD00", "-s", "vc.bin"],
+                "args": ["bin", "extract", "demo\\bios.bin", "-s", "2048", "-a", "2048", "-o", "demo\\data.bin"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
             },
         },
         {
-            "name": "C#: bru extract",
+            "name": "C#: bin new",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["bru", "extract", "data\\vc.tx.bru", "-o", "vc.txt", "-t", "text", "-e", "koi7n2"],
+                "args": ["bin", "new", "demo\\bios.bin", "-a", "4", "--list", "demo\\demo.txt"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+
+        // {
+        //     "name": "C#: bin new",
+        //     "type": "dotnet",
+        //     "request": "launch",
+        //     "projectPath": "${workspaceFolder}\\brutool.csproj",
+        //     "launchConfigurationId": "TargetFramework=;brutool",
+        //     "windows": {
+        //         "args": ["bin", "new", "demo\\bios.bin", "-a", "2048", "--list", "demo\\TEST128.rom", "demo\\TEST256.rom", "demo\\TEST512.rom", "demo\\Orion128_M1.rom", "demo\\Orion128_M2.rom", "demo\\Orion128_M31.rom"],
+        //         "cwd": "${workspaceFolder}",
+        //         "stopAtEntry": false,
+        //         "console": "internalConsole"
+        //     },
+        // },
+        {
+            "name": "C#: odi extract",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["odi", "extract", "demo\\basic-v4-10.odi", "-f", "NEW!!'TX.BRU", "-o", "demo\\bs41\\NEW!!'TX.BRU"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: odi list",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["odi", "list", "demo\\basic-v4-10.odi"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru new",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "new", "rom\\vc$.bru", "-a", "AD40", "-s", "rom\\VC-08-06-2022.bin"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru extract picture",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "extract", "demo\\PGM2'PC.BRU", "-o", "pgm2.bmp", "-t", "picture"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru extract text",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "extract", "demo\\PGM2'TX.BRU", "-o", "pgm2.txt", "-t", "text", "-e", "cp866"],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+        },
+        {
+            "name": "C#: bru extract binary",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\brutool.csproj",
+            "launchConfigurationId": "TargetFramework=;brutool",
+            "windows": {
+                "args": ["bru", "extract", "rom\\VC-08-06-2022.BRU", "-o", "rom\\VC-08-06-2022.bin"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
@@ -37,7 +129,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["bru", "list", "data\\vc$.bru"],
+                "args": ["bru", "list", "data\\VC-08-06-2022.BRU"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
@@ -50,7 +142,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["rom", "new", "romdisk.rom", "-b", "data\\boot.bin", "-l", "data\\vc$.bru", "data\\m256.2$.bru", "data\\basic$.bru"],
+                "args": ["rom", "list", "romdisk.rom"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
@@ -63,7 +155,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["rom", "new", "romdisk.rom", "--boot", "Data\\boot.bin", "--list", "data\\*.bru"],
+                "args": ["rom", "new", "rom\\romdisk.rom", "--boot", "rom\\ordos416.bin", "--list", "rom\\VC$.BRU", "rom\\M256.2$.bru", "rom\\BASIC$.bru"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
@@ -76,7 +168,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["rom", "list", "romdisk.rom"],
+                "args": ["rom", "list", "demo\\ROMDISK_1-512kb.rom"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
@@ -89,7 +181,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["rom", "extract", "romdisk.rom", "--dir", "Data"],
+                "args": ["rom", "extract", "demo\\ROMDISK_1-1mb.rom", "--rom", "7", "--dir", "Data"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"

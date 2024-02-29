@@ -1,3 +1,5 @@
+namespace brutool;
+
 internal static class EncodingExtension
 {
     private static readonly char[] KOI7N2 =
