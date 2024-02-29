@@ -28,117 +28,130 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Label labelAddress;
-            System.Windows.Forms.Label labelWidth;
-            System.Windows.Forms.Label labelHeight;
-            this.panelTool = new System.Windows.Forms.Panel();
-            this.textBoxHeight = new System.Windows.Forms.TextBox();
-            this.textBoxWidth = new System.Windows.Forms.TextBox();
-            this.textBoxAddress = new System.Windows.Forms.TextBox();
-            this.pictureBoxView = new System.Windows.Forms.PictureBox();
-            labelAddress = new System.Windows.Forms.Label();
-            labelWidth = new System.Windows.Forms.Label();
-            labelHeight = new System.Windows.Forms.Label();
-            this.panelTool.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxView)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // labelAddress
-            // 
-            labelAddress.AutoSize = true;
-            labelAddress.Location = new System.Drawing.Point(3, 3);
-            labelAddress.Name = "labelAddress";
-            labelAddress.Size = new System.Drawing.Size(51, 20);
-            labelAddress.TabIndex = 0;
-            labelAddress.Text = "Адрес";
+            Label labelWidth;
+            Label labelHeight;
+            panelTool = new Panel();
+            checkBoxCompressed = new CheckBox();
+            checkBoxColor = new CheckBox();
+            textBoxHeight = new TextBox();
+            textBoxWidth = new TextBox();
+            pictureBoxView = new PictureBox();
+            labelWidth = new Label();
+            labelHeight = new Label();
+            panelTool.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxView).BeginInit();
+            SuspendLayout();
             // 
             // labelWidth
             // 
             labelWidth.AutoSize = true;
-            labelWidth.Location = new System.Drawing.Point(143, 3);
+            labelWidth.Location = new Point(191, 3);
             labelWidth.Name = "labelWidth";
-            labelWidth.Size = new System.Drawing.Size(67, 20);
+            labelWidth.Size = new Size(67, 20);
             labelWidth.TabIndex = 2;
             labelWidth.Text = "Ширина";
             // 
             // labelHeight
             // 
             labelHeight.AutoSize = true;
-            labelHeight.Location = new System.Drawing.Point(300, 3);
+            labelHeight.Location = new Point(348, 3);
             labelHeight.Name = "labelHeight";
-            labelHeight.Size = new System.Drawing.Size(59, 20);
+            labelHeight.Size = new Size(59, 20);
             labelHeight.TabIndex = 4;
             labelHeight.Text = "Высота";
             // 
             // panelTool
             // 
-            this.panelTool.Controls.Add(this.textBoxHeight);
-            this.panelTool.Controls.Add(labelHeight);
-            this.panelTool.Controls.Add(this.textBoxWidth);
-            this.panelTool.Controls.Add(labelWidth);
-            this.panelTool.Controls.Add(this.textBoxAddress);
-            this.panelTool.Controls.Add(labelAddress);
-            this.panelTool.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTool.Location = new System.Drawing.Point(0, 0);
-            this.panelTool.Name = "panelTool";
-            this.panelTool.Size = new System.Drawing.Size(612, 33);
-            this.panelTool.TabIndex = 0;
+            panelTool.Controls.Add(checkBoxCompressed);
+            panelTool.Controls.Add(checkBoxColor);
+            panelTool.Controls.Add(textBoxHeight);
+            panelTool.Controls.Add(labelHeight);
+            panelTool.Controls.Add(textBoxWidth);
+            panelTool.Controls.Add(labelWidth);
+            panelTool.Dock = DockStyle.Top;
+            panelTool.Location = new Point(0, 0);
+            panelTool.Name = "panelTool";
+            panelTool.Size = new Size(612, 33);
+            panelTool.TabIndex = 0;
+            // 
+            // checkBoxCompressed
+            // 
+            checkBoxCompressed.AutoSize = true;
+            checkBoxCompressed.CheckAlign = ContentAlignment.MiddleRight;
+            checkBoxCompressed.Checked = true;
+            checkBoxCompressed.CheckState = CheckState.Indeterminate;
+            checkBoxCompressed.Enabled = false;
+            checkBoxCompressed.ImageAlign = ContentAlignment.MiddleRight;
+            checkBoxCompressed.Location = new Point(98, 3);
+            checkBoxCompressed.Name = "checkBoxCompressed";
+            checkBoxCompressed.Size = new Size(82, 24);
+            checkBoxCompressed.TabIndex = 7;
+            checkBoxCompressed.Text = "Сжатие";
+            checkBoxCompressed.ThreeState = true;
+            checkBoxCompressed.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxColor
+            // 
+            checkBoxColor.AutoSize = true;
+            checkBoxColor.CheckAlign = ContentAlignment.MiddleRight;
+            checkBoxColor.Checked = true;
+            checkBoxColor.CheckState = CheckState.Indeterminate;
+            checkBoxColor.Enabled = false;
+            checkBoxColor.Location = new Point(3, 3);
+            checkBoxColor.Name = "checkBoxColor";
+            checkBoxColor.Size = new Size(89, 24);
+            checkBoxColor.TabIndex = 6;
+            checkBoxColor.Text = "Цветная";
+            checkBoxColor.ThreeState = true;
+            checkBoxColor.UseVisualStyleBackColor = true;
             // 
             // textBoxHeight
             // 
-            this.textBoxHeight.Location = new System.Drawing.Point(365, 3);
-            this.textBoxHeight.Name = "textBoxHeight";
-            this.textBoxHeight.ReadOnly = true;
-            this.textBoxHeight.Size = new System.Drawing.Size(78, 27);
-            this.textBoxHeight.TabIndex = 5;
+            textBoxHeight.Location = new Point(413, 3);
+            textBoxHeight.Name = "textBoxHeight";
+            textBoxHeight.ReadOnly = true;
+            textBoxHeight.Size = new Size(78, 27);
+            textBoxHeight.TabIndex = 5;
             // 
             // textBoxWidth
             // 
-            this.textBoxWidth.Location = new System.Drawing.Point(216, 3);
-            this.textBoxWidth.Name = "textBoxWidth";
-            this.textBoxWidth.ReadOnly = true;
-            this.textBoxWidth.Size = new System.Drawing.Size(78, 27);
-            this.textBoxWidth.TabIndex = 3;
-            // 
-            // textBoxAddress
-            // 
-            this.textBoxAddress.Location = new System.Drawing.Point(60, 3);
-            this.textBoxAddress.Name = "textBoxAddress";
-            this.textBoxAddress.ReadOnly = true;
-            this.textBoxAddress.Size = new System.Drawing.Size(77, 27);
-            this.textBoxAddress.TabIndex = 1;
+            textBoxWidth.Location = new Point(264, 3);
+            textBoxWidth.Name = "textBoxWidth";
+            textBoxWidth.ReadOnly = true;
+            textBoxWidth.Size = new Size(78, 27);
+            textBoxWidth.TabIndex = 3;
             // 
             // pictureBoxView
             // 
-            this.pictureBoxView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxView.Location = new System.Drawing.Point(0, 33);
-            this.pictureBoxView.Name = "pictureBoxView";
-            this.pictureBoxView.Size = new System.Drawing.Size(612, 534);
-            this.pictureBoxView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxView.TabIndex = 1;
-            this.pictureBoxView.TabStop = false;
+            pictureBoxView.Dock = DockStyle.Fill;
+            pictureBoxView.Location = new Point(0, 33);
+            pictureBoxView.Name = "pictureBoxView";
+            pictureBoxView.Size = new Size(612, 534);
+            pictureBoxView.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBoxView.TabIndex = 1;
+            pictureBoxView.TabStop = false;
             // 
-            // PictureViewComponent
+            // Picture4CViewComponent
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.pictureBoxView);
-            this.Controls.Add(this.panelTool);
-            this.Name = "PictureViewComponent";
-            this.Size = new System.Drawing.Size(612, 567);
-            this.panelTool.ResumeLayout(false);
-            this.panelTool.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxView)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(pictureBoxView);
+            Controls.Add(panelTool);
+            Name = "Picture4CViewComponent";
+            Size = new Size(612, 567);
+            panelTool.ResumeLayout(false);
+            panelTool.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxView).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
 
         private Panel panelTool;
         private PictureBox pictureBoxView;
-        private TextBox textBoxAddress;
         private TextBox textBoxHeight;
         private TextBox textBoxWidth;
+        private CheckBox checkBoxColor;
+        private CheckBox checkBoxCompressed;
     }
 }

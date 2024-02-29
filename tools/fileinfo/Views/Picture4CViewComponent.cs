@@ -1,4 +1,5 @@
 ﻿using fileinfo.Helpers;
+using System.Text;
 
 namespace fileinfo.Views
 {
@@ -17,7 +18,8 @@ namespace fileinfo.Views
 
         protected override void ClearView()
         {
-            textBoxAddress.Text = String.Empty;
+            checkBoxColor.CheckState = CheckState.Indeterminate;
+            checkBoxCompressed.CheckState = CheckState.Indeterminate;
             textBoxWidth.Text = String.Empty;
             textBoxHeight.Text = String.Empty;
             panelTool.Enabled = false;
@@ -37,59 +39,99 @@ namespace fileinfo.Views
             {
                 using MemoryStream stream = new(_detail!.Content);
                 using BinaryReader reader = new(stream);
-                ushort type1 = reader.ReadByte();
-                ushort type2 = reader.ReadByte();
-                if (type1 != 0)
-                {
+                bool isCompress = reader.ReadByte() != 0;
+                bool isColor = reader.ReadByte() == 0;
 
-                }
                 ushort height = reader.ReadByte();
                 if (height == 0) height = 256;
+
                 ushort width = reader.ReadByte();   // Ширина в байтах
                 var size = height * width;
                 width <<= 3;                        // Ширина в битах
-                textBoxAddress.Text = ((ushort)((type1 << 8) | (ushort)type2)).ToHexAsm();
+
+                checkBoxColor.CheckState= isColor ? CheckState.Checked : CheckState.Unchecked;
+                checkBoxCompressed.CheckState = isCompress ? CheckState.Checked : CheckState.Unchecked;
                 textBoxWidth.Text = width.ToString();
                 textBoxHeight.Text = height.ToString();
 
                 if (width != 0 && width < 512 && height != 0 && height < 512)
                 {
-                    //var image = new Bitmap(width, height);
+                    List<byte> map = new List<byte>((isColor) ? size << 1 : size);
+                    try
+                    {
+                        while (true)
+                        {
+                            byte value = reader.ReadByte();
+                            if (value == 0)
+                                break;
+                            if ((value & 0x80) > 0)
+                            {
+                                value = (byte)(value & 0x7F);
+                                for (int i = 0; i < value; i++)
+                                    map.Add(reader.ReadByte());
+                            }
+                            else
+                            {
+                                value = (byte)(value & 0x7F);
+                                byte data = reader.ReadByte();
+                                for (int i = 0; i < value; i++)
+                                    map.Add(data);
+                            }
+                        }
 
-                    //byte[] colors = Decompress(stream, size);
-                    //byte[] bitmap = Decompress(stream, size);
+                        var image = new Bitmap(width, height);
+                        int index = 0;
+                        for (int w = 0; w < width; w += 8)
+                        {
+                            for (int h = 0; h < height; h++)
+                            {
+                                byte value = map[index];
+                                for (int i = 0, n = 7; n >= 0; i++, n--)
+                                {
+                                    byte data = (value & (1 << n)) > 0 ? (byte)0x02 : (byte)0x00;
+                                    if (isColor)
+                                    {
+                                        byte value2 = map[index + size];
+                                        data |= (value2 & (1 << n)) > 0 ? (byte)0x01 : (byte)0x00;
 
-                    //int posX = 0, posY = 0;
-                    //for (int index = 0; index < bitmap.Length; index++)
-                    //{
-                    //    byte value = bitmap[index];
-                    //    byte color = colors[index];
-                    //    (Color foreColor, Color backColor) = GetColors(color);
+                                    }
 
-                    //    for (int i = 0, n = 7; n >= 0; i++, n--)
-                    //    {
-                    //        Color pixel = (value & (1 << n)) > 0 ? foreColor : backColor;
-                    //        image.SetPixel(posX + i, posY, pixel);
-                    //    }
-                    //    posY++;
-                    //    if (posY == height)
-                    //    {
-                    //        posX += 8;
-                    //        posY = 0;
-                    //    }
+                                    var pixel = data switch
+                                    {
+                                        0 => Color.Black,
+                                        1 => Color.Red,
+                                        2 => Color.Green,
+                                        3 => Color.Blue,
+                                        _ => Color.White,
+                                    };
+                                    image.SetPixel(w + i, h, pixel);
+                                }
+                                index++;
+                            }
+                        }
+                        map.Clear();
+                        pictureBoxView.Image = image;
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    finally
+                    {
+                        map.Clear();
+                    }
 
-                    //}
-                    //pictureBoxView.Image = image;
                     pictureBoxView.Enabled = true;
                     panelTool.Enabled = true;
                 }
                 else
                 {
-                    ClearView();
+                    throw new ApplicationException("Ошибка формата");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ClearView();
             }
         }
 
