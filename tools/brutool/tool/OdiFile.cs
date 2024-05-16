@@ -113,10 +113,7 @@ public static class OdiFile
         {
             fileInfoExistsArgument
         };
-        var fileNameExtactOption = new Option<string>("--file", description: "Имя файла для извлечения")
-        {
-            IsRequired = true
-        };
+        var fileNameExtactOption = new Option<string>("--file", description: "Имя файла для извлечения");
         fileNameExtactOption.AddAlias("-f");
         extractCommand.Add(fileNameExtactOption);
         var fileNameOutputOption = new Option<string>("--out", description: "Имя файла для сохранения")
@@ -223,11 +220,24 @@ public static class OdiFile
             using Stream stream = file.OpenRead();
             using BinaryReader reader = new(stream);
             List<OdiFileEntry> entryList = reader.GetOdiFileEntries();
-            var item = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0 && d.Name[0] != ' ')
-                .First(d => d.FileName.ToUpper() == filename.ToUpper());
-            if (item == null) throw new ApplicationException(string.Format("Файл {0} не найден", filename));
-            using var memory = item.ExtractFile(reader, entryList);
-                File.WriteAllBytes(outfilename, memory.ToArray());
+            if (!String.IsNullOrEmpty(filename))
+            {
+                var item = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0 && d.Name[0] != ' ')
+                    .First(d => d.FileName.ToUpper() == filename.ToUpper());
+                if (item == null) throw new ApplicationException(string.Format("Файл {0} не найден", filename));
+                using var memory = item.ExtractFile(reader, entryList);
+                    File.WriteAllBytes(outfilename, memory.ToArray());
+            }
+            else
+            {
+                var list = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0 && d.Name[0] != ' ');
+                foreach (var item in list)
+                {
+                    
+                    using var memory = item.ExtractFile(reader, entryList);
+                        File.WriteAllBytes(Path.Combine(outfilename, item.FileName.ToUpper()), memory.ToArray());
+                }
+            }
         }
         catch (Exception ex)
         {

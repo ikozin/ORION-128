@@ -64,7 +64,7 @@ public class RomFile
             {
                 if (result.Tokens.Count == 0)
                 {
-                    return 0;
+                    return -1;
                 }
                 return int.TryParse(result.Tokens.Single().Value, out int value) ? value : 0;;
             });
@@ -187,26 +187,43 @@ public class RomFile
             using Stream stream = file.OpenRead();
             using BinaryReader reader = new(stream);
             int currentRom = 0;
-            while (currentRom < indexRom)
+            while (true)
             {
-                reader.BaseStream.Seek(MaxRomSize + 1, SeekOrigin.Current);
+                Console.WriteLine("ROM: {0}", currentRom);
+                if (currentRom == indexRom || indexRom == -1)
+                {
+                    long start = 0;
+                    File.WriteAllBytes(Path.Join(path, loaderName), reader.ReadBytes(loaderSize));
+                    while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
+                    {
+                        start += 16;
+                        var name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
+                        var address = reader.ReadUInt16();
+                        var size = reader.ReadUInt16();
+                        var attribute = reader.ReadByte();
+                        var reserv = reader.ReadBytes(3);
+                        if (size == MaxRomSize) break;
+                        start += size;
+                        reader.BaseStream.Seek(-16, SeekOrigin.Current);
+                        try
+                        {
+                            Console.WriteLine("Extract: {0}", name);
+                            File.WriteAllBytes(Path.Join(path, name + ".bru"), reader.ReadBytes(size + 16));
+                        }
+                        catch (System.IO.IOException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("Адрес: {0}", reader.BaseStream.Position);
+                        }
+                    }
+                }
+                Console.WriteLine();
+                if (reader.BaseStream.Length <= currentRom * (MaxRomSize + 1))
+                {
+                    break;
+                }
+                reader.BaseStream.Seek(currentRom * (MaxRomSize + 1), SeekOrigin.Begin);
                 currentRom ++;
-            }
-
-            long start = 0;
-            File.WriteAllBytes(Path.Join(path, loaderName), reader.ReadBytes(loaderSize));
-            while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
-            {
-                start += 16;
-                var name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
-                var address = reader.ReadUInt16();
-                var size = reader.ReadUInt16();
-                var attribute = reader.ReadByte();
-                var reserv = reader.ReadBytes(3);
-                if (size == MaxRomSize) break;
-                start += size;
-                reader.BaseStream.Seek(-16, SeekOrigin.Current);
-                File.WriteAllBytes(Path.Join(path, name + ".bru"), reader.ReadBytes(size + 16));
             }
         }
         catch (Exception ex)
