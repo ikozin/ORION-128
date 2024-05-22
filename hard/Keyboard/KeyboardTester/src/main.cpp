@@ -57,7 +57,7 @@ https://all-arduino.ru/wp-content/uploads/mega2_ret_by_pighixxx-d5yqsht.png
 
 #define KEYCODE_ALF     B10000000
 #define KEYCODE_CY      B01000000
-#define KEYCODE_KOM     B00100000
+#define KEYCODE_CC      B00100000
 
 #define LED_ALF         B00000100
 #define LED_REC         B00001000
@@ -67,15 +67,27 @@ https://all-arduino.ru/wp-content/uploads/mega2_ret_by_pighixxx-d5yqsht.png
 char text[64];
 char const * keyNames[]
 {
-    "↖", "СТР", "АР2", "F1", "F2", "F3", "F4", "",
+    "↖", "СТР", "АР2", "F1", "F2", "F3", "F4", "F5",
     "ТАБ", "ПС", "ВК", "ЗБ", "←", "↑", "→", "↓",
     "0", "1", "2", "3", "4", "5", "6", "7",
-    "8", "9", ":", ";", "<", "=", ">", "?",
+    "8", "9", ":", ";", ".", "-", ",", "/",
     "@", "A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N", "O",
     "P", "Q", "R", "S", "T", "U", "V", "W",
     "X", "Y", "Z", "[", "\\", "]", "^", "SPACE",  
 };
+char const * keyNamesShift[]
+{
+    "↖", "СТР", "АР2", "F1", "F2", "F3", "F4", "F5",
+    "ТАБ", "ПС", "ВК", "ЗБ", "←", "↑", "→", "↓",
+    "_", "!", "\"", "#", "$", "%", "&", ",",
+    "(", ")", "*", "+", ">", "=", "<", "?",
+    "@", "A", "B", "C", "D", "E", "F", "G",
+    "H", "I", "J", "K", "L", "M", "N", "O",
+    "P", "Q", "R", "S", "T", "U", "V", "W",
+    "X", "Y", "Z", "[", "\\", "]", "^", "SPACE",  
+};
+
 
 void OutputModePortA() {
     DDRA = ((uint8_t)B11111111);
@@ -154,20 +166,20 @@ void ProcessControlKey() {
         Serial.println("RESET");
         return;    
     }
-    uint8_t keyCode = GetPortC();
-    if ((keyCode & KEYCODE_ALF) == 0) {
-        Serial.println("АЛФ");
-        keyboardState = (keyboardState & ~LED_ALF) | ((keyboardState & LED_ALF) ^ LED_ALF);
-        PORTL = keyboardState;
-    }
-    if ((keyCode & KEYCODE_CY) == 0) {
-        Serial.println("СУ");
-    }
-    if ((keyCode & KEYCODE_KOM) == 0) {
-        Serial.println("КОМ");
-        keyboardState = (keyboardState & ~LED_REC) | ((keyboardState & LED_REC) ^ LED_REC);
-        PORTL = keyboardState;
-    }
+    // uint8_t keyCode = GetPortC();
+    // if ((keyCode & KEYCODE_ALF) == 0) {
+    //     Serial.println("АЛФ");
+    //     keyboardState = (keyboardState & ~LED_ALF) | ((keyboardState & LED_ALF) ^ LED_ALF);
+    //     PORTL = keyboardState;
+    // }
+    // if ((keyCode & KEYCODE_CY) == 0) {
+    //     Serial.println("СУ");
+    // }
+    // if ((keyCode & KEYCODE_CC) == 0) {
+    //     Serial.println("СС");
+    //     keyboardState = (keyboardState & ~LED_REC) | ((keyboardState & LED_REC) ^ LED_REC);
+    //     PORTL = keyboardState;
+    // }
 }
 
 void setup() {
@@ -181,11 +193,19 @@ void setup() {
 }
 
 void loop() {
-    delay(100);
+    delay(200);
     ProcessControlKey();
     uint8_t keyCode = GetInputKey();
-    if (keyCode == 0xFF)
+    if (keyCode == 0xFF) {
+        Serial.println();
         return;
-    sprintf(text, "0x%02X %s", keyCode, keyNames[keyCode]);
+    }
+    uint8_t ControlCode = GetPortC();
+    const char ** keys = ((ControlCode & KEYCODE_CC) == 0) ? keyNamesShift : keyNames;
+
+    const char * textLayer   = ((ControlCode & KEYCODE_ALF) == 0) ? "[RU]" : "[EN]";
+    const char * textControl = ((ControlCode & KEYCODE_CC) == 0)  ? "[СС]" : "";
+    const char * textShift   = ((ControlCode & KEYCODE_CY) == 0)  ? "[СY]" : "";
+    sprintf(text, "0x%02X%s%s%s %s", keyCode, textLayer, textControl, textShift, keys[keyCode]);
     Serial.println(text);
 }
