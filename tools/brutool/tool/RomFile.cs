@@ -7,8 +7,7 @@ public class RomFile
 {
     const string loaderName = "boot.bin";
     const ushort loaderSize = 2048;
-    const int MaxRomSize = 0xFFFF;
-
+    const int MaxRomSize = 0x10000; //0xFFFF;
 
     public static Command GetCommand()
     {
@@ -110,7 +109,7 @@ public class RomFile
             {
                 writer.Write(File.ReadAllBytes(info.FullName));
             }
-            while (stream.Position <= MaxRomSize)
+            while (stream.Position < MaxRomSize)
                 writer.Write((byte)0xFF);
 
             writer.Close();
@@ -130,30 +129,35 @@ public class RomFile
             {
                 throw new ApplicationException("Ошибка формата образа ROM диска");
             }
-
             int romIndex = 0;
             using (Stream stream = file.OpenRead())
             using (BinaryReader reader = new (stream))
             {
                 while (reader.BaseStream.Position < file.Length)
                 {
-                    long start = 0;
-                    Console.WriteLine("ROM = {0}", romIndex++);
+                    Console.WriteLine("ROM = {0}, file pos: 0x{1:X4}", romIndex++, reader.BaseStream.Position);
                     Console.WriteLine("----------------------------------");
                     Console.WriteLine("| FileName | Start | Size | Attr |");
                     Console.WriteLine("----------------------------------");
                     Console.WriteLine(romListFormat, loaderName, null, loaderSize, null);
                     reader.BaseStream.Seek(loaderSize, SeekOrigin.Current);
+                    long start = loaderSize;
                     while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
                     {
-                        start += 16;
-                        var name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
+                        byte[] data = reader.ReadBytes(8);
+                        if (data[0] == 0xFF) break;
+                        var name = Encoding.ASCII.GetString(data).Trim();
                         var address = reader.ReadUInt16();
                         var size = reader.ReadUInt16();
                         var attribute = reader.ReadByte();
                         var reserv = reader.ReadBytes(3);
-                        if (size == MaxRomSize) break;
-                        start += size;
+                        start += size + 16;
+                        if (start > MaxRomSize) {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(romListFormat, name, address, size, attribute);
+                            Console.ResetColor();
+                            break;
+                        }
                         reader.BaseStream.Seek(size, SeekOrigin.Current);
                         Console.WriteLine(romListFormat, name, address, size, attribute);
                     }
@@ -192,22 +196,28 @@ public class RomFile
                 Console.WriteLine("ROM: {0}", currentRom);
                 if (currentRom == indexRom || indexRom == -1)
                 {
-                    long start = 0;
                     File.WriteAllBytes(Path.Join(path, loaderName), reader.ReadBytes(loaderSize));
+                    long start = loaderSize;
                     while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
                     {
-                        start += 16;
-                        var name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
+                        byte[] data = reader.ReadBytes(8);
+                        if (data[0] == 0xFF) break;
+                        var name = Encoding.ASCII.GetString(data).Trim();
                         var address = reader.ReadUInt16();
                         var size = reader.ReadUInt16();
                         var attribute = reader.ReadByte();
                         var reserv = reader.ReadBytes(3);
-                        if (size == MaxRomSize) break;
-                        start += size;
-                        reader.BaseStream.Seek(-16, SeekOrigin.Current);
+                        start += size + 16;
+                        if (start > MaxRomSize) {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Extract: {0}, ошибка размера", name);
+                            Console.ResetColor();
+                            break;
+                        }
                         try
                         {
                             Console.WriteLine("Extract: {0}", name);
+                            reader.BaseStream.Seek(-16, SeekOrigin.Current);
                             File.WriteAllBytes(Path.Join(path, name + ".bru"), reader.ReadBytes(size + 16));
                         }
                         catch (System.IO.IOException ex)
@@ -218,11 +228,11 @@ public class RomFile
                     }
                 }
                 Console.WriteLine();
-                if (reader.BaseStream.Length <= currentRom * (MaxRomSize + 1))
+                if (reader.BaseStream.Length <= currentRom * MaxRomSize)
                 {
                     break;
                 }
-                reader.BaseStream.Seek(currentRom * (MaxRomSize + 1), SeekOrigin.Begin);
+                reader.BaseStream.Seek(currentRom * MaxRomSize, SeekOrigin.Begin);
                 currentRom ++;
             }
         }

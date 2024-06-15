@@ -194,7 +194,7 @@
             "projectPath": "${workspaceFolder}\\brutool.csproj",
             "launchConfigurationId": "TargetFramework=;brutool",
             "windows": {
-                "args": ["rom", "list", "Data\\ROM\\ROMDISK_1-512kb.rom"],
+                "args": ["rom", "list", "Data\\ROM\\ROMDISK_1-1mb.rom"],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,
                 "console": "internalConsole"
