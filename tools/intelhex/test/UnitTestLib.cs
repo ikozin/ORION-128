@@ -6,7 +6,22 @@ namespace test;
 public class UnitTestLib
 {
     [TestMethod]
-    public void TestMethod1()
+    public void TestMethod_GetDump()
+    {
+        IntellHex value = new();
+
+        byte[] data = { 0x55, 0xAA, 0x55, 0xAA };
+        value.Add(0,  data);
+        var buffer = value.GetDump(0, 4);
+        for (int i = 0; i < data.Length; i++)
+        {
+            Assert.IsFalse(data[i] != buffer[i]);
+        } 
+    } 
+
+
+    [TestMethod]
+    public void TestMethod_Add()
     {
         IntellHex value = new();
 

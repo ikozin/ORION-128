@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace intellhex;
@@ -26,30 +25,30 @@ public class IntellHex
             int sum = 0;
             if (!line.StartsWith(':'))
             {
-                throw new ArgumentException(String.Format("Error string: start: {0}", line));
+                throw new ArgumentException(string.Format("Error string: start: {0}", line));
             }
             item = line.Substring(1, 2);
             if (!int.TryParse(item, NumberStyles.HexNumber, null,  out int length))
             {
-                throw new ArgumentException(String.Format("Error string: length: {0}", line));
+                throw new ArgumentException(string.Format("Error string: length: {0}", line));
             }
             sum += length; 
             item = line.Substring(3, 4);
             if (!int.TryParse(item, NumberStyles.HexNumber, null,  out int address))
             {
-                throw new ArgumentException(String.Format("Error string: address: {0}", line));
+                throw new ArgumentException(string.Format("Error string: address: {0}", line));
             }
             sum += address & 0xFF;
-            sum += (address >> 8);
+            sum += address >> 8;
 
             item = line.Substring(7, 2);
             if (!int.TryParse(item, NumberStyles.HexNumber, null,  out int type))
             {
-                throw new ArgumentException(String.Format("Error string: type: {0}", line));
+                throw new ArgumentException(string.Format("Error string: type: {0}", line));
             }
             if (type < 0 || type > 4)
             {
-                throw new ArgumentException(String.Format("Error string: type: {0}", line));
+                throw new ArgumentException(string.Format("Error string: type: {0}", line));
             }
             sum += type; 
            
@@ -59,7 +58,7 @@ public class IntellHex
                 item = line.Substring(9 + (i << 1), 2);
                 if (!int.TryParse(item, NumberStyles.HexNumber, null,  out int value))
                 {
-                    throw new ArgumentException(String.Format("Error string: value: {0}", line));
+                    throw new ArgumentException(string.Format("Error string: value: {0}", line));
                 }
                 dump[i] = (byte)value;
             }
@@ -68,11 +67,11 @@ public class IntellHex
             item = line.Substring(9 + (length << 1), 2);
             if (!int.TryParse(item, NumberStyles.HexNumber, null,  out int hexsum))
             {
-                throw new ArgumentException(String.Format("Error string: sum: {0}", line));
+                throw new ArgumentException(string.Format("Error string: sum: {0}", line));
             }
             if (controlsum != hexsum)
             {
-                throw new ArgumentException(String.Format("Error string: sum: {0}", line));
+                throw new ArgumentException(string.Format("Error string: sum: {0}", line));
             }
             if (type == 0)
             {
@@ -94,13 +93,13 @@ public class IntellHex
     public int GetSize()
     {
         int address = list.Max(d => d.Key);
-        return (address + list[address].Length) - GetAddress();
+        return address + list[address].Length - GetAddress();
     }
     
-    public MemoryStream GetDump(int start, int size, byte fillFactor = 255)
+    public byte[] GetDump(int start, int size, byte fillFactor = 255)
     {
-        MemoryStream dump = new MemoryStream(size);
-        using BinaryWriter writer = new BinaryWriter(dump);
+        using MemoryStream dump = new(size);
+        using BinaryWriter writer = new(dump);
         for (int i = 0; i < dump.Length; i++)
         {
             writer.Write(fillFactor);
@@ -114,17 +113,18 @@ public class IntellHex
                 writer.Write(item.Value[i]);
             }
         }
-        return dump;
+        return dump.GetBuffer();
     }
-    public String GetText()
+
+    public string GetText()
     {
-        StringBuilder dump = new StringBuilder();
+        StringBuilder dump = new();
         foreach(var item in list)
         {
             int type = 0;
             int controlsum = 0;
             int address = item.Key;
-            dump.Append(":");
+            dump.Append(':');
             dump.AppendFormat("{0:X2}", item.Value.Length);
             dump.AppendFormat("{0:X4}", address);
             dump.AppendFormat("{0:X2}", type);
