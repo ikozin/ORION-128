@@ -1,6 +1,6 @@
 ﻿namespace fileinfo.Views
 {
-    public partial class AssemblerViewComponent : TextViewComponent
+    public partial class AssemblerViewComponent : TextMicronViewComponent
     {
         public AssemblerViewComponent(Func<byte, bool, char> encoding) : base(encoding)
         {
