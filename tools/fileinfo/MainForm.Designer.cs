@@ -122,7 +122,7 @@
             toolStripButtonExport.Name = "toolStripButtonExport";
             toolStripButtonExport.Size = new Size(103, 36);
             toolStripButtonExport.Text = "Извлечь";
-            toolStripButtonExport.ToolTipText = "Сохранить в оригинальном виде";
+            toolStripButtonExport.ToolTipText = "Сохранить в формате BRU";
             toolStripButtonExport.Click += toolStripButtonExport_Click;
             // 
             // toolStripDropDownButtonOpenFile
@@ -239,6 +239,12 @@
             folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             folderBrowserDialog.ShowNewFolderButton = false;
             folderBrowserDialog.UseDescriptionForTitle = true;
+            // 
+            // saveFileDialog
+            // 
+            saveFileDialog.DefaultExt = "BRU";
+            saveFileDialog.Filter = "BRU files|*.BRU";
+            saveFileDialog.SupportMultiDottedExtensions = true;
             // 
             // toolStripButtonSelectDirectory
             // 

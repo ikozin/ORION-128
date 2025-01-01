@@ -209,7 +209,27 @@ namespace fileinfo
             if (_format.CurrentView.Current == null) return;
             saveFileDialog.FileName = _format.CurrentView.Current.Name;
             if (saveFileDialog.ShowDialog(this) != DialogResult.OK) return;
-            File.WriteAllBytes(saveFileDialog.FileName, _format.CurrentView.Current.Content);
+            IFileDetail detail = _format.CurrentView.Current;
+            using FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.CreateNew);
+            using BinaryWriter writer = new BinaryWriter(stream);
+
+            byte[] data = Encoding.ASCII.GetBytes(detail.Name);
+            writer.Write(data, 0, (data.Length <= 8) ? data.Length: 8);
+            while (writer.BaseStream.Length < 8)
+            {
+                writer.Write((byte)' ');
+            }
+                    
+
+            writer.Write(detail.Address);   // address
+            writer.Write(detail.Size);      // size
+            writer.Write((byte)0);          // attribute
+            writer.Write((byte)0);          // reserv
+            writer.Write((byte)0);          // reserv
+            writer.Write((byte)0);          // reserv
+
+            writer.Write(detail.Content);
+            //File.WriteAllBytes(saveFileDialog.FileName, _format.CurrentView.Current.Content);
         }
 
         private void toolStripButtonOdi_Click(object sender, EventArgs e)

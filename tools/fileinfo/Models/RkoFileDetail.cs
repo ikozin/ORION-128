@@ -1,4 +1,4 @@
-﻿using fileinfo.Controls;
+﻿    using fileinfo.Controls;
 using System.Text;
 
 namespace fileinfo.Models
@@ -12,19 +12,19 @@ namespace fileinfo.Models
         {
             FileName = fileName;
             long size = reader.BaseStream.Length;
-            reader.BaseStream.Seek(Sync_Offset, SeekOrigin.Begin);
-            byte sync = reader.ReadByte();
-            if (sync != 0xE6)
+            //  Преамбула записи на ленту
+            Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
+            byte sync;
+            do
             {
-                return false;
-            }
+                sync = reader.ReadByte();
+            } while (sync != 0xE6);
             
             Address = reader.ReadByte();                    // Lo
             Address += (ushort)(reader.ReadByte() << 8);    // Hi
             Size = reader.ReadUInt16();
 
-            //reader.BaseStream.Seek(BRU_Offset, SeekOrigin.Begin);
-            //size -= BRU_Offset;
+            // Заголовок файла
             Name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
             Address = reader.ReadUInt16();
             Size = reader.ReadUInt16();
