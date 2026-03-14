@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS
@@ -1475,13 +1477,13 @@ namespace FastColoredTextBoxNS
                             }
                         }
                         else
-                        if (start.iChar < line.Count && start.iChar > 0)
-                        {
-                            var left = line[start.iChar - 1];
-                            var right = line[start.iChar];
-                            if ((left.style & si) != 0 &&
-                                (right.style & si) != 0) return true;//we are between readonly chars
-                        }
+                            if (start.iChar < line.Count && start.iChar > 0)
+                            {
+                                var left = line[start.iChar - 1];
+                                var right = line[start.iChar];
+                                if ((left.style & si) != 0 &&
+                                    (right.style & si) != 0) return true;//we are between readonly chars
+                            }
                     }
                     else
                         foreach (Char c in Chars)

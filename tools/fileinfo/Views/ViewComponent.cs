@@ -1,4 +1,7 @@
 ﻿using fileinfo.Models;
+using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace fileinfo.Views
 {
@@ -26,6 +29,7 @@ namespace fileinfo.Views
             LoadView();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IFileDetail? Current
         {
             get => _detail;

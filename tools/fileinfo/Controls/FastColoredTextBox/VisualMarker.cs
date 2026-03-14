@@ -1,4 +1,7 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace FastColoredTextBoxNS
 {
     public class VisualMarker
     {

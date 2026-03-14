@@ -1,8 +1,14 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace FastColoredTextBoxNS
 {
     public partial class GoToForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedLineNumber { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int TotalLineCount { get; set; }
 
         public GoToForm()

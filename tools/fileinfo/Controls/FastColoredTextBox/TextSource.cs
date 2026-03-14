@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Text;
 
 namespace FastColoredTextBoxNS
@@ -301,7 +305,8 @@ namespace FastColoredTextBoxNS
                 text = args.InsertingText;
                 if (args.Cancel)
                     text = string.Empty;
-            };
+            }
+            ;
         }
 
         public virtual int GetLineLength(int i)

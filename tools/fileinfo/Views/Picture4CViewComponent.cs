@@ -1,5 +1,8 @@
-﻿using fileinfo.Helpers;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace fileinfo.Views
 {
@@ -49,7 +52,7 @@ namespace fileinfo.Views
                 var size = height * width;
                 width <<= 3;                        // Ширина в битах
 
-                checkBoxColor.CheckState= isColor ? CheckState.Checked : CheckState.Unchecked;
+                checkBoxColor.CheckState = isColor ? CheckState.Checked : CheckState.Unchecked;
                 checkBoxCompressed.CheckState = isCompress ? CheckState.Checked : CheckState.Unchecked;
                 textBoxWidth.Text = width.ToString();
                 textBoxHeight.Text = height.ToString();

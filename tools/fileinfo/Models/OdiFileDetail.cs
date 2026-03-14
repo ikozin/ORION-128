@@ -1,5 +1,8 @@
 ﻿using fileinfo.Controls;
 using fileinfo.Helpers;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace fileinfo.Models
 {

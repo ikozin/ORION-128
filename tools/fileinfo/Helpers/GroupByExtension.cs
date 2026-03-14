@@ -1,6 +1,8 @@
 ﻿using fileinfo.Controls;
-using fileinfo.Models;
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
 
 namespace fileinfo.Helpers
 {

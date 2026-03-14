@@ -1,4 +1,7 @@
 ﻿using fileinfo.Models;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace fileinfo.Helpers
 {

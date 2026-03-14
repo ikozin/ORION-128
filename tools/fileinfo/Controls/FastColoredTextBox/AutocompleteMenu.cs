@@ -1,6 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace FastColoredTextBoxNS
 {
@@ -12,12 +16,21 @@ namespace FastColoredTextBoxNS
     {
         AutocompleteListView listView;
         public ToolStripControlHost host;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Range Fragment { get; internal set; }
 
         /// <summary>
         /// Regex pattern for serach fragment around caret
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Regex pattern for serach fragment around caret
+        /// </summary>
         public string SearchPattern { get; set; }
+        /// <summary>
+        /// Minimum fragment length for popup
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Minimum fragment length for popup
         /// </summary>
@@ -37,7 +50,15 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Allow TAB for select menu item
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Allow TAB for select menu item
+        /// </summary>
         public bool AllowTabKey { get { return listView.AllowTabKey; } set { listView.AllowTabKey = value; } }
+        /// <summary>
+        /// Interval of menu appear (ms)
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Interval of menu appear (ms)
         /// </summary>
@@ -45,7 +66,15 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Sets the max tooltip window size
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Sets the max tooltip window size
+        /// </summary>
         public Size MaxTooltipSize { get { return listView.MaxToolTipSize; } set { listView.MaxToolTipSize = value; } }
+        /// <summary>
+        /// Tooltip will perm show and duration will be ignored
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Tooltip will perm show and duration will be ignored
         /// </summary>
@@ -93,6 +122,7 @@ namespace FastColoredTextBoxNS
 
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Font Font
         {
             get { return listView.Font; }
@@ -156,12 +186,20 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Minimal size of menu
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Minimal size of menu
+        /// </summary>
         public new Size MinimumSize
         {
             get { return Items.MinimumSize; }
             set { Items.MinimumSize = value; }
         }
 
+        /// <summary>
+        /// Image list of menu
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Image list of menu
         /// </summary>
@@ -174,12 +212,20 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Tooltip duration (ms)
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Tooltip duration (ms)
+        /// </summary>
         public int ToolTipDuration
         {
             get { return Items.ToolTipDuration; }
             set { Items.ToolTipDuration = value; }
         }
 
+        /// <summary>
+        /// Tooltip
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Tooltip
         /// </summary>
@@ -218,19 +264,28 @@ namespace FastColoredTextBoxNS
         internal ToolTip toolTip = new ToolTip();
         System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool AllowTabKey { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ImageList ImageList { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal int AppearInterval { get { return timer.Interval; } set { timer.Interval = value; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal int ToolTipDuration { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal Size MaxToolTipSize { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool AlwaysShowTooltip
         {
             get { return toolTip.ShowAlways; }
             set { toolTip.ShowAlways = value; }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color SelectedColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color HoveredColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int FocussedItemIndex
         {
             get { return focussedItemIndex; }
@@ -245,7 +300,8 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public AutocompleteItem FocussedItem
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AutocompleteItem? FocussedItem
         {
             get
             {
@@ -255,7 +311,7 @@ namespace FastColoredTextBoxNS
             }
             set
             {
-                FocussedItemIndex = visibleItems.IndexOf(value);
+                FocussedItemIndex = visibleItems.IndexOf(value!);
             }
         }
 
@@ -455,17 +511,17 @@ namespace FastColoredTextBoxNS
                     needClose = true;
                 else
                     if (!Menu.Fragment.Contains(tb.Selection.Start))
-                {
-                    if (tb.Selection.Start.iLine == Menu.Fragment.End.iLine && tb.Selection.Start.iChar == Menu.Fragment.End.iChar + 1)
                     {
-                        //user press key at end of fragment
-                        char c = tb.Selection.CharBeforeStart;
-                        if (!Regex.IsMatch(c.ToString(), Menu.SearchPattern))//check char
+                        if (tb.Selection.Start.iLine == Menu.Fragment.End.iLine && tb.Selection.Start.iChar == Menu.Fragment.End.iChar + 1)
+                        {
+                            //user press key at end of fragment
+                            char c = tb.Selection.CharBeforeStart;
+                            if (!Regex.IsMatch(c.ToString(), Menu.SearchPattern))//check char
+                                needClose = true;
+                        }
+                        else
                             needClose = true;
                     }
-                    else
-                        needClose = true;
-                }
 
                 if (needClose)
                     Menu.Close();

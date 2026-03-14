@@ -1,5 +1,8 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace FastColoredTextBoxNS
@@ -169,8 +172,8 @@ namespace FastColoredTextBoxNS
                                 AddCharToMacros((char)int.Parse(ca.Value), Keys.None);
                         }
                         else
-                        if (ka != null)
-                            AddKeyToMacros((Keys)kc.ConvertFromString(ka.Value));
+                            if (ka != null)
+                                AddKeyToMacros((Keys)kc.ConvertFromString(ka.Value));
                     }
 
                 Thread.CurrentThread.CurrentUICulture = cult;

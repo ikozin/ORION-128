@@ -1,4 +1,6 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+
+namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Line index and char index

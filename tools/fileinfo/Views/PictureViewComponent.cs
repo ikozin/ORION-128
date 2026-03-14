@@ -1,4 +1,8 @@
 ﻿using fileinfo.Helpers;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace fileinfo.Views
 {

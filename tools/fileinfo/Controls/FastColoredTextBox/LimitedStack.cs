@@ -1,4 +1,6 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+
+namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Limited stack

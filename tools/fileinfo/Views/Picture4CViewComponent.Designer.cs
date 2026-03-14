@@ -1,4 +1,7 @@
-﻿namespace fileinfo.Views
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace fileinfo.Views
 {
     partial class Picture4CViewComponent
     {

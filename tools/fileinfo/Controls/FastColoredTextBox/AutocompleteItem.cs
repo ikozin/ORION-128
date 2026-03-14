@@ -1,4 +1,7 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+using System.Drawing;
+
+namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Item of autocomplete menu
@@ -7,14 +10,14 @@
     {
         public string Text;
         public int ImageIndex = -1;
-        public object Tag;
-        string toolTipTitle;
-        string toolTipText;
-        string menuText;
+        public object? Tag = null;
+        string? toolTipTitle = null;
+        string? toolTipText = null;
+        string? menuText = null;
         public AutocompleteMenu Parent { get; internal set; }
 
 
-        public AutocompleteItem()
+        public AutocompleteItem() : this(String.Empty)
         {
         }
 
@@ -82,7 +85,7 @@
         /// Title for tooltip.
         /// </summary>
         /// <remarks>Return null for disable tooltip for this item</remarks>
-        public virtual string ToolTipTitle
+        public virtual string? ToolTipTitle
         {
             get { return toolTipTitle; }
             set { toolTipTitle = value; }
@@ -92,7 +95,7 @@
         /// Tooltip text.
         /// </summary>
         /// <remarks>For display tooltip text, ToolTipTitle must be not null</remarks>
-        public virtual string ToolTipText
+        public virtual string? ToolTipText
         {
             get { return toolTipText; }
             set { toolTipText = value; }
@@ -101,7 +104,7 @@
         /// <summary>
         /// Menu text. This text is displayed in the drop-down menu.
         /// </summary>
-        public virtual string MenuText
+        public virtual string? MenuText
         {
             get { return menuText; }
             set { menuText = value; }
@@ -213,7 +216,7 @@
     public class MethodAutocompleteItem : AutocompleteItem
     {
         string firstPart;
-        string lowercaseText;
+        readonly string lowercaseText;
 
         public MethodAutocompleteItem(string text)
             : base(text)
@@ -226,7 +229,7 @@
             int i = fragmentText.LastIndexOf('.');
             if (i < 0)
                 return CompareResult.Hidden;
-            string lastPart = fragmentText.Substring(i + 1);
+            string lastPart = fragmentText[(i + 1)..];
             firstPart = fragmentText.Substring(0, i);
 
             if (lastPart == "") return CompareResult.Visible;

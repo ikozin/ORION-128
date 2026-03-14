@@ -1,4 +1,7 @@
 ﻿using fileinfo.Helpers;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace fileinfo.Services.Dasm.Model
 {

@@ -1,4 +1,7 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace FastColoredTextBoxNS
 {
@@ -98,11 +101,11 @@ namespace FastColoredTextBoxNS
                     items[i].LineIndex = items[i].LineIndex + e.Count;
                 }
                 else
-                if (items[i].LineIndex == e.Index - 1 && e.Count == 1)
-                {
-                    if (tb[e.Index - 1].StartSpacesCount == tb[e.Index - 1].Count)
-                        items[i].LineIndex = items[i].LineIndex + e.Count;
-                }
+                    if (items[i].LineIndex == e.Index - 1 && e.Count == 1)
+                    {
+                        if (tb[e.Index - 1].StartSpacesCount == tb[e.Index - 1].Count)
+                            items[i].LineIndex = items[i].LineIndex + e.Count;
+                    }
         }
 
         public override void Dispose()

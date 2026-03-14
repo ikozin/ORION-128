@@ -1,4 +1,7 @@
-﻿namespace fileinfo.Services.Dasm.Model
+﻿using System.Collections.Generic;
+using System.IO;
+
+namespace fileinfo.Services.Dasm.Model
 {
     public class OpCodeArray
     {

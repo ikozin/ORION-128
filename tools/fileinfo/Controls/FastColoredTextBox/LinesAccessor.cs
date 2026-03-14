@@ -1,4 +1,7 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+using System.Collections.Generic;
+
+namespace FastColoredTextBoxNS
 {
     public class LinesAccessor : IList<string>
     {

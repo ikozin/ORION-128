@@ -1,4 +1,6 @@
 ﻿using fileinfo.Controls;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace fileinfo.Models

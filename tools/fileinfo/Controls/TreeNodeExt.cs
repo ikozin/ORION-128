@@ -1,5 +1,7 @@
-﻿using fileinfo.Helpers;
-using fileinfo.Models;
+﻿using fileinfo.Models;
+using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace fileinfo.Controls
 {

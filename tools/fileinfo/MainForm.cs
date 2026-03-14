@@ -2,8 +2,13 @@ using fileinfo.Controls;
 using fileinfo.Helpers;
 using fileinfo.Models;
 using fileinfo.Views;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace fileinfo
 {
@@ -214,12 +219,12 @@ namespace fileinfo
             using BinaryWriter writer = new BinaryWriter(stream);
 
             byte[] data = Encoding.ASCII.GetBytes(detail.Name);
-            writer.Write(data, 0, (data.Length <= 8) ? data.Length: 8);
+            writer.Write(data, 0, (data.Length <= 8) ? data.Length : 8);
             while (writer.BaseStream.Length < 8)
             {
                 writer.Write((byte)' ');
             }
-                    
+
 
             writer.Write(detail.Address);   // address
             writer.Write(detail.Size);      // size

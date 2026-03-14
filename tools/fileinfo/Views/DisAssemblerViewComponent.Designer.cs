@@ -1,4 +1,6 @@
-﻿namespace fileinfo.Views
+﻿using System.Windows.Forms;
+
+namespace fileinfo.Views
 {
     partial class DisAssemblerViewComponent
     {

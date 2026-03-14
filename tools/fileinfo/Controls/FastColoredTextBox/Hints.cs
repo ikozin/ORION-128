@@ -1,4 +1,9 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Collection of Hints.

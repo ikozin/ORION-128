@@ -1,5 +1,9 @@
 ﻿using fileinfo.Services.Dasm.Service;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace fileinfo.Views
 {

@@ -1,7 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using KEYS = System.Windows.Forms.Keys;
 

@@ -1,4 +1,6 @@
-﻿    using fileinfo.Controls;
+﻿using fileinfo.Controls;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace fileinfo.Models
@@ -19,7 +21,7 @@ namespace fileinfo.Models
             {
                 sync = reader.ReadByte();
             } while (sync != 0xE6);
-            
+
             Address = reader.ReadByte();                    // Lo
             Address += (ushort)(reader.ReadByte() << 8);    // Hi
             Size = reader.ReadUInt16();

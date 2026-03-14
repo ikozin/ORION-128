@@ -1,4 +1,7 @@
-﻿namespace fileinfo.Views
+﻿using System;
+using System.IO;
+
+namespace fileinfo.Views
 {
     public partial class AssemblerViewComponent : TextMicronViewComponent
     {

@@ -1,4 +1,6 @@
-﻿namespace fileinfo.Views
+﻿using System;
+
+namespace fileinfo.Views
 {
     public partial class HexViewComponent : HexWithAddrViewComponent
     {

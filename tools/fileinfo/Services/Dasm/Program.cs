@@ -1,5 +1,8 @@
 ﻿using fileinfo.Helpers;
 using fileinfo.Services.Dasm.Model;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace fileinfo.Services.Dasm

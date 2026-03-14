@@ -1,5 +1,8 @@
 ﻿//#define debug
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace FastColoredTextBoxNS
@@ -127,12 +130,12 @@ namespace FastColoredTextBoxNS
                     base.lines.Add(null);
                 }
                 else
-                if (prev == 13)// \r (Mac format)
-                {
-                    sourceFileLinePositions.Add((int)prevPos);
-                    base.lines.Add(null);
-                    SaveEOL = "\r";
-                }
+                    if (prev == 13)// \r (Mac format)
+                    {
+                        sourceFileLinePositions.Add((int)prevPos);
+                        base.lines.Add(null);
+                        SaveEOL = "\r";
+                    }
 
                 prev = b;
             }
@@ -205,29 +208,29 @@ namespace FastColoredTextBoxNS
                 bytesPerSignature = 4;
             }
             else
-            if (signature[0] == 0x00 && signature[1] == 0x00 && signature[2] == 0xFE && signature[3] == 0xFF)
-            {
-                enc = new UTF32Encoding(true, true);//UTF32 BE
-                bytesPerSignature = 4;
-            }
-            else
-            if (signature[0] == 0xEF && signature[1] == 0xBB && signature[2] == 0xBF)
-            {
-                enc = Encoding.UTF8;//UTF8
-                bytesPerSignature = 3;
-            }
-            else
-            if (signature[0] == 0xFE && signature[1] == 0xFF)
-            {
-                enc = Encoding.BigEndianUnicode;//UTF16 BE
-                bytesPerSignature = 2;
-            }
-            else
-            if (signature[0] == 0xFF && signature[1] == 0xFE)
-            {
-                enc = Encoding.Unicode;//UTF16 LE
-                bytesPerSignature = 2;
-            }
+                if (signature[0] == 0x00 && signature[1] == 0x00 && signature[2] == 0xFE && signature[3] == 0xFF)
+                {
+                    enc = new UTF32Encoding(true, true);//UTF32 BE
+                    bytesPerSignature = 4;
+                }
+                else
+                    if (signature[0] == 0xEF && signature[1] == 0xBB && signature[2] == 0xBF)
+                    {
+                        enc = Encoding.UTF8;//UTF8
+                        bytesPerSignature = 3;
+                    }
+                    else
+                        if (signature[0] == 0xFE && signature[1] == 0xFF)
+                        {
+                            enc = Encoding.BigEndianUnicode;//UTF16 BE
+                            bytesPerSignature = 2;
+                        }
+                        else
+                            if (signature[0] == 0xFF && signature[1] == 0xFE)
+                            {
+                                enc = Encoding.Unicode;//UTF16 LE
+                                bytesPerSignature = 2;
+                            }
 
             fs.Seek(bytesPerSignature, SeekOrigin.Begin);
 

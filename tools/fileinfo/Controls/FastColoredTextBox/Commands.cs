@@ -1,4 +1,7 @@
-﻿namespace FastColoredTextBoxNS
+﻿using System;
+using System.Collections.Generic;
+
+namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Insert single char
@@ -680,10 +683,10 @@
                 if (cmd is InsertTextCommand)
                     ExecuteInsertTextCommand(ref iChar, (cmd as InsertTextCommand).InsertedText);
                 else
-                if (cmd is InsertCharCommand && (cmd as InsertCharCommand).c != '\x0' && (cmd as InsertCharCommand).c != '\b')//if not DEL or BACKSPACE
-                    ExecuteInsertTextCommand(ref iChar, (cmd as InsertCharCommand).c.ToString());
-                else
-                    ExecuteCommand(ref iChar);
+                    if (cmd is InsertCharCommand && (cmd as InsertCharCommand).c != '\x0' && (cmd as InsertCharCommand).c != '\b')//if not DEL or BACKSPACE
+                        ExecuteInsertTextCommand(ref iChar, (cmd as InsertCharCommand).c.ToString());
+                    else
+                        ExecuteCommand(ref iChar);
             }
             catch (ArgumentOutOfRangeException)
             {

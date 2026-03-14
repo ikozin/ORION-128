@@ -1,4 +1,7 @@
-﻿namespace fileinfo.Controls
+﻿using System;
+using System.Windows.Forms;
+
+namespace fileinfo.Controls
 {
     internal class ToolStripMenuItemEncoding : ToolStripMenuItem
     {

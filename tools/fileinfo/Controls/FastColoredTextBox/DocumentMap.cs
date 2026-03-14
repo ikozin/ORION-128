@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace FastColoredTextBoxNS
 {
@@ -17,6 +20,7 @@ namespace FastColoredTextBoxNS
         private bool scrollbarVisible = true;
 
         [Description("Target FastColoredTextBox")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FastColoredTextBox Target
         {
             get { return target; }

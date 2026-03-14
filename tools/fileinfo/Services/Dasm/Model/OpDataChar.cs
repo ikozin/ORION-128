@@ -1,4 +1,7 @@
-﻿namespace fileinfo.Services.Dasm.Model
+﻿using System;
+using System.IO;
+
+namespace fileinfo.Services.Dasm.Model
 {
     public class OpDataChar : OpData
     {

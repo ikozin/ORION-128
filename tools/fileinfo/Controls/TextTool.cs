@@ -1,4 +1,6 @@
 ﻿using fileinfo.Models;
+using System;
+using System.Windows.Forms;
 
 namespace fileinfo.Controls
 {

@@ -1,6 +1,10 @@
 ﻿using fileinfo.Helpers;
+using System;
 using System.Data;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace fileinfo.Views
 {
