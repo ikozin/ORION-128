@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "brutool": {
+      "commandName": "Project",
+      "commandLineArgs": "odi list \"..\\..\\..\\Data\\ODI\\basic-v4-10.odi\""
+    }
+  }
+}

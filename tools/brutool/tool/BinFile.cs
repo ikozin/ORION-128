@@ -1,90 +1,121 @@
 using System.CommandLine;
-namespace brutool;
+using System.Net;
+namespace brutool.tool;
 
 public class BinFile
 {
     public static Command GetCommand()
     {
-        var command = new Command("bin", "Действия с файлом");
 
-        var fileInfoExistsArgument = new Argument<FileInfo?>("file", CommandLine.Parsing.ParseFileInfoExistsOption,
-            isDefault: false, description: "Имя файла");
-        
-        var newCommand = new Command("new", "Создать файл из списка");
-        var fileNameNewArgument = new Argument<string>("file", description: "Имя файла", isDefault: false,
-            parse: result =>
+        var fileInfoExistsArgument = new Argument<FileInfo?>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя файла",
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption,
+        };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var fileNameNewArgument = new Argument<string>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя файла",
+            DefaultValueFactory = result =>
             {
                 return result.Tokens.Single().Value;
-            });
-        newCommand.Add(fileNameNewArgument);
-
-        var alignSizeArgument = new Option<long>("--align", description: "Размер выравнивания", isDefault: true,
-            parseArgument: result =>
+            },
+        };
+        var alignSizeOption = new Option<long>("--align", "-a")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Размер выравнивания",
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
                     return 0;
                 }
-                return long.TryParse(result.Tokens.Single().Value, out long value) ? value : 0;;
-            });
-        alignSizeArgument.AddAlias("-a");
-        newCommand.Add(alignSizeArgument);
-
-        var listArgument = new Option<FileInfo[]>("--list", CommandLine.Parsing.ParseFileInfoListOption,
-            description: "Список файлов" )
-            {
-                IsRequired = true,
-                AllowMultipleArgumentsPerToken = true
-            };
-        listArgument.AddAlias("-l");
-        newCommand.Add(listArgument);
-        newCommand.SetHandler(New, fileNameNewArgument, alignSizeArgument, listArgument);
-        command.Add(newCommand);
-
-        var extractCommand = new Command("extract", "Извлечь содержимое из файла")
-        {
-            fileInfoExistsArgument
+                return long.TryParse(result.Tokens.Single().Value, out long value) ? value : 0;
+            },
         };
-        var indexSizeOption = new Option<uint>("--size"
-            ,description: "Размер извлекаемых данных"
-            ,isDefault: false
-            ,parseArgument: result =>
+        var listOption = new Option<FileInfo[]>("--list", "-l")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Список файлов",
+            Required = true,
+            AllowMultipleArgumentsPerToken = true,
+            DefaultValueFactory = Parsing.ParseFileInfoListOption,
+        };
+        var newCommand = new Command("new", "Создать файл из списка")
+        { 
+            Arguments = { fileNameNewArgument },
+            Options = { alignSizeOption, listOption },
+        };
+        newCommand.SetAction(result =>
+        {
+            string file = result.GetValue(fileNameNewArgument)!;
+            long align = result.GetValue(alignSizeOption);
+            FileInfo[] list = result.GetValue(listOption)!;
+            New(file, align, list);
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        var indexSizeOption = new Option<uint>("--size", "-s")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Размер извлекаемых данных",
+            Required = true,
+            DefaultValueFactory = result =>
             {
-                return uint.TryParse(result.Tokens.Single().Value, out uint value) 
+                return uint.TryParse(result.Tokens.Single().Value, out uint value)
                     ? value
                     : throw new ApplicationException("Неверное значение размера извлекаемых данных");
-            })
-        {
-            IsRequired = true
+            },
         };
-        indexSizeOption.AddAlias("-s");
-        extractCommand.Add(indexSizeOption);
-
-        var indexAddressOption = new Option<uint>("--address"
-            ,description: "Адрес начала данных"
-            ,isDefault: true
-            ,parseArgument: result =>
+        var indexAddressOption = new Option<uint>("--address", "-a")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Адрес начала данных",
+            Required = false,
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
                     return 0;
                 }
-                return uint.TryParse(result.Tokens.Single().Value, out uint value) 
+                return uint.TryParse(result.Tokens.Single().Value, out uint value)
                     ? value
                     : throw new ApplicationException("Неверный адрес начала данных");
-            });
-        indexAddressOption.AddAlias("-a");
-        extractCommand.Add(indexAddressOption);
-
-        var fileNameOutOption = new Option<string>("--output", description: "Имя файла")
-        {
-            IsRequired = true
+            }
         };
-        fileNameOutOption.AddAlias("-o");
-        extractCommand.Add(fileNameOutOption);
 
-        extractCommand.SetHandler(Extract, fileInfoExistsArgument, indexSizeOption, indexAddressOption, fileNameOutOption);
-        command.Add(extractCommand);
+        var fileNameOutOption = new Option<string>("--output", "-o")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Required = true,
+            Description = "Имя файла"
+        };
+        var extractCommand = new Command("extract", "Извлечь содержимое из файла")
+        {
+            Arguments = { fileInfoExistsArgument },
+            Options = { indexSizeOption, indexAddressOption, fileNameOutOption },
+        };
+        extractCommand.SetAction(result =>
+        {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            uint size = result.GetValue(indexSizeOption);
+            uint address = result.GetValue(indexAddressOption);
+            string filename = result.GetValue(fileNameOutOption)!;
+            Extract(file, size, address, filename);
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var command = new Command("bin", "Действия с файлом");
+        command.Subcommands.Add(newCommand);
+        command.Subcommands.Add(extractCommand);
 
         return command;
     }

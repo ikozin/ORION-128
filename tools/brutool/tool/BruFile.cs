@@ -5,20 +5,21 @@ using SixLabors.ImageSharp.PixelFormats;
 using System.CommandLine;
 using System.Globalization;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace brutool;
+namespace brutool.tool;
 
 class BruFile
 {
     const ushort headerSize = 16;
-    public enum ExportType: int
+    public enum ExportType : int
     {
         Binary,
         Text,
         Basic,
         Picture,
     }
-    public enum ExportEncoding: int
+    public enum ExportEncoding : int
     {
         KOI7N2,
         KOI8R,
@@ -27,35 +28,45 @@ class BruFile
 
     public static Command GetCommand()
     {
-        var fileInfoExistsArgument = new Argument<FileInfo?>("file", CommandLine.Parsing.ParseFileInfoExistsOption,
-            description: "Имя BRU файла");
+        var fileInfoExistsArgument = new Argument<FileInfo?>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя BRU файла",
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption,
+        };
 
-        var command = new Command("bru", "Действия с BRU файлами");
+///////////////////////////////////////////////////////////////////////////////////////////////
 
-        var newCommand = new Command("new", "создать BRU файл");
-        var fileNameNewArgument = new Argument<string>("file", description: "Имя BRU файла",
-            parse: result =>
+        var fileNameNewArgument = new Argument<string>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя BRU файла",
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
-                    result.ErrorMessage = "Не указано имя BRU файла";
+                    result.AddError("Не указано имя BRU файла");
                     return string.Empty;
                 }
                 string path = result.Tokens.Single().Value;
                 if (!Path.GetExtension(path).Equals(".BRU", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    result.ErrorMessage = "Имя файла не содержит расширение BRU";
+                    result.AddError("Имя файла не содержит расширение BRU");
                     return string.Empty;
                 }
                 return path;
-            });
-        newCommand.Add(fileNameNewArgument);
-        var addressOption = new Option<int>("--address", description: "Адрес размещения файла в памяти",
-            parseArgument: result =>
+            },
+        };
+        var addressOption = new Option<int>("--address", "-a")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Адрес размещения файла в памяти",
+            Required = true,
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
-                    result.ErrorMessage = "Значение адреса не указано";
+                    result.AddError("Значение адреса не указано");
                     return 0;
                 }
                 string value = result.Tokens.Single().Value;
@@ -68,53 +79,82 @@ class BruFile
                     return address;
                 }
                 return 0;
-            })
-            { 
-                IsRequired = true
-            };
-        addressOption.AddAlias("-a");
-        newCommand.Add(addressOption);
-        var sourceOption = new Option<FileInfo?>("--source", description: "Исходный файл",
-            parseArgument: CommandLine.Parsing.ParseFileInfoExistsOption)
-            { 
-                IsRequired = true
-            };
-        sourceOption.AddAlias("-s");
-        newCommand.Add(sourceOption);
-        newCommand.SetHandler(New, fileNameNewArgument, addressOption, sourceOption);
-        command.Add(newCommand);
+            },
+        };
+        var sourceOption = new Option<FileInfo?>("--source", "-s")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Исходный файл",
+            Required = true,
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption,
+        };
+        var newCommand = new Command("new", "создать BRU файл")
+        {
+            Arguments = { fileNameNewArgument },
+            Options = { addressOption, sourceOption },
+        };
+        newCommand.SetAction(result => {
+            string filename = result.GetValue(fileNameNewArgument)!;
+            int address = result.GetValue(addressOption);
+            FileInfo ? source = result.GetValue(sourceOption);
+            New(filename, address, source);
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
         var listommand = new Command("list", "Отобразить данные BRU файла")
         {
-            fileInfoExistsArgument
+            Arguments = { fileInfoExistsArgument },
         };
-        listommand.SetHandler(List, fileInfoExistsArgument);
-        command.Add(listommand);
+        listommand.SetAction(result => {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            List(file); 
+        });
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var fileNameOutOption = new Option<string>("--output", "-o")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Имя файла",
+        };
+        var exportTypeOption = new Option<ExportType>("--type", "-t")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Преобразованин файла",
+            DefaultValueFactory = _ => ExportType.Binary,
+        };
+        exportTypeOption.AcceptOnlyFromAmong(Enum.GetNames(typeof(ExportType)));
+        var exportTypeEncoding = new Option<ExportEncoding>("--encoding", "-e")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Кодировка файла",
+            DefaultValueFactory = _ => ExportEncoding.KOI7N2,
+        };
+        exportTypeEncoding.AcceptOnlyFromAmong(Enum.GetNames(typeof(ExportEncoding)));
         var extractCommand = new Command("extract", "Извлечь содержимое из BRU файла")
         {
-            fileInfoExistsArgument
+            Arguments = { fileInfoExistsArgument },
+            Options = { fileNameOutOption, exportTypeOption, exportTypeEncoding },
         };
-        var fileNameOutOption = new Option<string>("--output", description: "Имя файла");
-        fileNameOutOption.AddAlias("-o");
-        extractCommand.Add(fileNameOutOption);
-        var exportTypeOption = new Option<ExportType>("--type",
-            description: "Преобразованин файла",
-            getDefaultValue: () => ExportType.Binary);
-        exportTypeOption.AddAlias("-t");
-        extractCommand.Add(exportTypeOption);
-        var exportTypeEncoding = new Option<ExportEncoding>("--encoding",
-            description: "Кодировка файла",
-            getDefaultValue: () => ExportEncoding.KOI7N2);
-        exportTypeEncoding.AddAlias("-e");
-        extractCommand.Add(exportTypeEncoding);
+        extractCommand.SetAction(result => {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            string filename = result.GetValue(fileNameOutOption)!;
+            ExportType type = result.GetValue(exportTypeOption);
+            ExportEncoding encoding = result.GetValue(exportTypeEncoding);
+            Extract(file, filename, type, encoding);
+        });
 
-        extractCommand.SetHandler(Extract, fileInfoExistsArgument, fileNameOutOption, exportTypeOption,  exportTypeEncoding);
-        command.Add(extractCommand);
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var command = new Command("bru", "Действия с BRU файлами");
+        command.Subcommands.Add(newCommand);
+        command.Subcommands.Add(listommand);
+        command.Subcommands.Add(extractCommand);
 
         return command;
     }
-    
+
     private static void New(string filename, int address, FileInfo? source)
     {
         byte[] content;
@@ -152,13 +192,13 @@ class BruFile
             writer.Write((byte)0);
             writer.Write((byte)0);
             writer.Write(content);
-            for (int i = 0; i < append; i++)            
+            for (int i = 0; i < append; i++)
             {
                 writer.Write((byte)0xFF);
             }
         }
     }
-    
+
     private static void List(FileInfo? file)
     {
         const string bruListFormat = "| {0,-8:S} | {1,4:X4} | {2,5} | {3,3:X2}  |";
@@ -194,7 +234,7 @@ class BruFile
 
     private static void Extract(FileInfo? file, string filename, ExportType type, ExportEncoding encoding)
     {
-       try
+        try
         {
             if (file!.Length < headerSize)
             {
@@ -207,7 +247,7 @@ class BruFile
             byte[] content;
 
             using (Stream streamRead = file.OpenRead())
-            using (BinaryReader reader = new (streamRead))
+            using (BinaryReader reader = new(streamRead))
             {
                 var name = Encoding.ASCII.GetString(reader.ReadBytes(8)).Trim();
                 if (string.IsNullOrEmpty(filename))
@@ -224,19 +264,17 @@ class BruFile
                 }
                 content = reader.ReadBytes(size);
             }
-            using (Stream streamWrite = File.Create(filename))
-            using (BinaryWriter writer = new (streamWrite))
+            using Stream streamWrite = File.Create(filename);
+            using BinaryWriter writer = new(streamWrite);
+            Action<BinaryWriter, byte[], ushort, byte, ExportEncoding> action = type switch
             {
-                Action<BinaryWriter, byte[], ushort, byte, ExportEncoding> action = type switch
-                {
-                    ExportType.Binary => ExtractBinary,
-                    ExportType.Text => ExtractText,
-                    ExportType.Basic => ExtractBasic,
-                    ExportType.Picture => ExtractPicture,
-                    _ => throw new ApplicationException(string.Format("Не известный формат преобразования: {0}", type.ToString()))
-                };
-                action(writer, content, address, attribute, encoding);
-            }
+                ExportType.Binary => ExtractBinary,
+                ExportType.Text => ExtractText,
+                ExportType.Basic => ExtractBasic,
+                ExportType.Picture => ExtractPicture,
+                _ => throw new ApplicationException(string.Format("Не известный формат преобразования: {0}", type.ToString()))
+            };
+            action(writer, content, address, attribute, encoding);
         }
         catch (Exception ex)
         {
@@ -267,10 +305,10 @@ class BruFile
     }
 
     private static void ExtractBasic(BinaryWriter writer, byte[] content,
-        ushort address,  byte attribute, ExportEncoding encoding)
+        ushort address, byte attribute, ExportEncoding encoding)
     {
-#region  _vacabular
-        Dictionary<byte, string> _vacabular = new Dictionary<byte, string>()
+        #region  _vacabular
+        Dictionary<byte, string> _vacabular = new()
         {
             { 0x80, "CLS" },
             { 0x81, "FOR" },
@@ -375,10 +413,10 @@ class BruFile
             { 0xDF, "EXIST" },
             { 0xE0, "VARPTR" },
         };
-#endregion
+        #endregion
         var text = new StringBuilder(1024);
-        using (MemoryStream stream = new (content))
-        using (BinaryReader reader = new (stream))
+        using (MemoryStream stream = new(content))
+        using (BinaryReader reader = new(stream))
         {
             var line = new StringBuilder(128);
             while (true)
@@ -401,13 +439,13 @@ class BruFile
                         reader.BaseStream.Seek(-1, SeekOrigin.Current);
                         break;
                     }
-                    
-                    line.Append(_vacabular.ContainsKey(cmd) ? _vacabular[cmd] : GetEncodedSymbol(encoding, cmd));
+
+                    line.Append(_vacabular.TryGetValue(cmd, out string? value1) ? value1 : GetEncodedSymbol(encoding, cmd));
                 }
                 text.AppendLine(line.ToString());
             }
         }
-        writer.Write(Encoding.UTF8.GetBytes(text.ToString()));   
+        writer.Write(Encoding.UTF8.GetBytes(text.ToString()));
     }
 
     public static void ExtractPicture(BinaryWriter writer, byte[] content,
@@ -421,7 +459,7 @@ class BruFile
         ushort width = reader.ReadByte();   // Ширина в байтах
         var size = height * width;
         width <<= 3;                        // Ширина в битах
-        
+
         using var image = new Image<Rgba64>(width, height);
         byte[] colors = Decompress(stream, size);
         byte[] bitmap = Decompress(stream, size);
@@ -449,7 +487,7 @@ class BruFile
         image.SaveAsBmp(writer.BaseStream);
         return;
 
-#region Decompress
+        #region Decompress
         static byte[] Decompress(MemoryStream stream, int size)
         {
             byte[] result = new byte[size];
@@ -485,16 +523,16 @@ class BruFile
             while (pos < size);
             return result;
         }
-#endregion
-#region GetColors
+        #endregion
+        #region GetColors
         static (Color foreColor, Color backColor) GetColors(byte color)
         {
             Color foreColor = GetColor((byte)(color & 0x0F));
             Color backColor = GetColor((byte)((color >> 4) & 0x0F));
             return (foreColor, backColor);
         }
-#endregion
-#region GetColor
+        #endregion
+        #region GetColor
         static Color GetColor(byte color)
         {
             return color switch
@@ -518,7 +556,7 @@ class BruFile
                 _ => throw new IndexOutOfRangeException(),
             };
         }
-#endregion
+        #endregion
     }
 
     private static char GetEncodedSymbol(ExportEncoding encoding, byte value)

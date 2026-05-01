@@ -1,7 +1,7 @@
 ﻿using System.CommandLine;
 using System.Text;
 
-namespace brutool;
+namespace brutool.tool;
 
 public static class OdiFile
 {
@@ -44,11 +44,12 @@ public static class OdiFile
 
     public static Command GetCommand()
     {
-        var fileInfoExistsArgument = new Argument<FileInfo?>("file", CommandLine.Parsing.ParseFileInfoExistsOption,
-            isDefault: true, description: "Имя ODI файла");
-
-
-        var command = new Command("odi", "Действия с ODI файлами");
+        var fileInfoExistsArgument = new Argument<FileInfo?>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя ODI файла",
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption
+        };
 
         // var newCommand = new Command("new", "создать BRU файл");
         // var fileNameNewArgument = new Argument<string>("file", description: "Имя BRU файла",
@@ -102,43 +103,62 @@ public static class OdiFile
         // newCommand.SetHandler(New, fileNameNewArgument, addressOption, sourceOption);
         // command.Add(newCommand);
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
         var listommand = new Command("list", "Отобразить данные ODI файла")
         {
-            fileInfoExistsArgument
+            Arguments = { fileInfoExistsArgument },
         };
-        listommand.SetHandler(List, fileInfoExistsArgument);
-        command.Add(listommand);
+        listommand.SetAction(result => {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            List(file);
+        });
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var fileNameExtactOption = new Option<string>("--file", "-f")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Имя файла для извлечения"
+        };
+        var fileNameOutputOption = new Option<string>("--out", "-o")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Required = true,
+            Description = "Имя файла для сохранения"
+        };
         var extractCommand = new Command("extract", "Извлечь содержимое из ODI файла")
         {
-            fileInfoExistsArgument
+            Arguments = { fileInfoExistsArgument },
+            Options = { fileNameExtactOption , fileNameOutputOption },
         };
-        var fileNameExtactOption = new Option<string>("--file", description: "Имя файла для извлечения");
-        fileNameExtactOption.AddAlias("-f");
-        extractCommand.Add(fileNameExtactOption);
-        var fileNameOutputOption = new Option<string>("--out", description: "Имя файла для сохранения")
-        {
-            IsRequired = true
-        };
-        fileNameOutputOption.AddAlias("-o");
-        extractCommand.Add(fileNameOutputOption);
-        extractCommand.SetHandler(Extract, fileInfoExistsArgument, fileNameExtactOption, fileNameOutputOption);
-        command.Add(extractCommand);
+        extractCommand.SetAction(result => {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            string filename = result.GetValue(fileNameExtactOption)!;
+            string outfilename = result.GetValue(fileNameOutputOption)!;
+            Extract(file, filename, outfilename); 
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var command = new Command("odi", "Действия с ODI файлами");
+        command.Subcommands.Add(listommand);
+        command.Subcommands.Add(extractCommand);
 
         return command;
     }
-    
-    private static long ext_offset(int extent)
+
+    private static long Ext_Offset(int extent)
     {
         return (long)BASE + (long)extent * (long)EXTSIZEINBYTES;
     }
-    
+
     public static List<OdiFileEntry> GetOdiFileEntries(this BinaryReader reader)
     {
         var entries = new List<OdiFileEntry>();
-        reader.BaseStream.Position = ext_offset(0);
+        reader.BaseStream.Position = Ext_Offset(0);
         entries.LoadFileInfo(reader);
-        reader.BaseStream.Position = ext_offset(1);
+        reader.BaseStream.Position = Ext_Offset(1);
         entries.LoadFileInfo(reader);
         return entries;
     }
@@ -158,14 +178,14 @@ public static class OdiFile
             .Where(e => e.FileName == entry.FileName)
             .OrderBy(e => e.RecNo)
             .ToArray();
-        List<byte> data = new();
+        List<byte> data = [];
         foreach (OdiFileEntry record in records)
         {
             for (int i = 0; i < record.Extent.Length; i++)
             {
                 if (record.Extent[i] == 0) break;
 
-                long offset = ext_offset(record.Extent[i]);
+                long offset = Ext_Offset(record.Extent[i]);
                 reader.BaseStream.Position = offset;
                 var size = entry.ExtSize;
                 for (int n = 0; n < 16; n++)
@@ -176,7 +196,7 @@ public static class OdiFile
                 }
             }
         }
-        return new MemoryStream(data.ToArray());
+        return new MemoryStream([.. data]);
     }
 
     private static void List(FileInfo? file)
@@ -207,7 +227,7 @@ public static class OdiFile
             Console.WriteLine(ex.Message);
         }
     }
-    
+
     private static void Extract(FileInfo? file, string filename, string outfilename)
     {
         try
@@ -223,19 +243,18 @@ public static class OdiFile
             if (!String.IsNullOrEmpty(filename))
             {
                 var item = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0 && d.Name[0] != ' ')
-                    .First(d => d.FileName.ToUpper() == filename.ToUpper());
-                if (item == null) throw new ApplicationException(string.Format("Файл {0} не найден", filename));
+                    .First(d => d.FileName.Equals(filename, StringComparison.CurrentCultureIgnoreCase)) ?? throw new ApplicationException(string.Format("Файл {0} не найден", filename));
                 using var memory = item.ExtractFile(reader, entryList);
-                    File.WriteAllBytes(outfilename, memory.ToArray());
+                File.WriteAllBytes(outfilename, memory.ToArray());
             }
             else
             {
                 var list = entryList.Where(d => d.User != 0xE5 && d.RecNo == 0 && d.Name[0] != ' ');
                 foreach (var item in list)
                 {
-                    
+
                     using var memory = item.ExtractFile(reader, entryList);
-                        File.WriteAllBytes(Path.Combine(outfilename, item.FileName.ToUpper()), memory.ToArray());
+                    File.WriteAllBytes(Path.Combine(outfilename, item.FileName.ToUpper()), memory.ToArray());
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using brutool.tool;
+using System.CommandLine;
 using System.CommandLine.Parsing;
 
 namespace brutool;
@@ -10,11 +11,8 @@ internal class Program
     {
         var rootCommand = new RootCommand
         {
-            BruFile.GetCommand(),
-            RomFile.GetCommand(),
-            OdiFile.GetCommand(),
-            BinFile.GetCommand(),
+            Subcommands = { BruFile.GetCommand(), RomFile.GetCommand(), OdiFile.GetCommand(), BinFile.GetCommand() },
         };
-        rootCommand.Invoke(args);
+        rootCommand.Parse(args).Invoke();
     }
 }

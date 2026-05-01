@@ -1,6 +1,6 @@
 using System.CommandLine.Parsing;
 
-namespace CommandLine
+namespace brutool
 {
     public class Parsing
     {
@@ -8,13 +8,13 @@ namespace CommandLine
         {
             if (result.Tokens.Count == 0)
             {
-                result.ErrorMessage = "Неуказано имя файла";
+                result.AddError("Неуказано имя файла");
                 return null;
             }
             string? path = result.Tokens.Single().Value;
             if (!File.Exists(path))
             {
-                result.ErrorMessage = string.Format("Файл \"{0}\" не найден", path);
+                result.AddError(string.Format("Файл \"{0}\" не найден", path));
                 return null;
             }
             return new FileInfo(path);
@@ -24,7 +24,7 @@ namespace CommandLine
             List<FileInfo> list = [];
             if (result.Tokens.Count == 0)
             {
-                result.ErrorMessage = "Неуказаны файлы";
+                result.AddError("Неуказаны файлы");
                 return [];
             }
             foreach (var token in result.Tokens)
@@ -44,7 +44,7 @@ namespace CommandLine
                 {
                     if (!File.Exists(path))
                     {
-                        result.ErrorMessage = string.Format("Файл \"{0}\" не найден", path);
+                        result.AddError(string.Format("Файл \"{0}\" не найден", path));
                         return [];
                     }
                     list.Add(new FileInfo(path));

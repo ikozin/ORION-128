@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.Text;
 
-namespace brutool;
+namespace brutool.tool;
 
 public class RomFile
 {
@@ -11,72 +11,109 @@ public class RomFile
 
     public static Command GetCommand()
     {
-        var command = new Command("rom", "Действия с ROM образами");
+        var fileInfoExistsArgument = new Argument<FileInfo?>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя файла с образом ROM диска",
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption,
+        };
 
-        var fileInfoExistsArgument = new Argument<FileInfo?>("file", CommandLine.Parsing.ParseFileInfoExistsOption,
-            isDefault: true, description: "Имя файла с образом ROM диска");
-        
-        var newCommand = new Command("new", "Создать образ ROM диска");
-        var fileNameNewArgument = new Argument<string>("file", description: "Имя файла с образом ROM диска", isDefault: true,
-            parse: result =>
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var fileNameNewArgument = new Argument<string>("file")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Имя файла с образом ROM диска",
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
                     return "romdisk.rom";
                 }
                 return result.Tokens.Single().Value;
-            });
-        newCommand.Add(fileNameNewArgument);
-        var bootOption = new Option<FileInfo?>("--boot", CommandLine.Parsing.ParseFileInfoExistsOption,
-            description: "Файл загрузчика образа ROM диска")
-            {
-                IsRequired = true
-            };
-        bootOption.AddAlias("-b");
-        newCommand.Add(bootOption);
-        var listArgument = new Option<FileInfo[]>("--list", CommandLine.Parsing.ParseFileInfoListOption,
-            description: "Перечень BRU файлов для образа ROM диска" )
-            {
-                IsRequired = true,
-                AllowMultipleArgumentsPerToken = true
-            };
-        listArgument.AddAlias("-l");
-        newCommand.Add(listArgument);
-        newCommand.SetHandler(New, fileNameNewArgument, bootOption, listArgument);
-        command.Add(newCommand);
+            },
+        };
+        var bootOption = new Option<FileInfo?>("--boot", "-b")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Файл загрузчика образа ROM диска",
+            Required = true,
+            DefaultValueFactory = Parsing.ParseFileInfoExistsOption,
+
+        };
+        var listOption = new Option<FileInfo[]>("--list", "-l")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Перечень BRU файлов для образа ROM диска",
+            Required = true,
+            AllowMultipleArgumentsPerToken = true,
+            DefaultValueFactory = Parsing.ParseFileInfoListOption,
+        };
+        var newCommand = new Command("new", "Создать образ ROM диска")
+        {
+            Arguments = { fileNameNewArgument },
+            Options = { bootOption, listOption },
+        };
+        newCommand.SetAction(result =>
+        {
+            string file = result.GetValue(fileNameNewArgument)!;
+            FileInfo? boot = result.GetValue(bootOption);
+            FileInfo[] list = result.GetValue(listOption)!;
+            New(file, boot, list);
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
         var listCommand = new Command("list", "Отобразить содержимое образа ROM диска")
         {
-            fileInfoExistsArgument
+            Arguments = { fileInfoExistsArgument },
         };
-        listCommand.SetHandler(List, fileInfoExistsArgument);
-        command.Add(listCommand);
-
-        var extractCommand = new Command("extract", "Извлечь содержимое из образа ROM диска")
+        listCommand.SetAction(result =>
         {
-            fileInfoExistsArgument
-        };
-        var indexRomOption = new Option<int>("--rom"
-            ,description: "Индекс ROM образа в файле"
-            ,isDefault: true
-            ,parseArgument: result =>
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            List(file);
+        });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var indexRomOption = new Option<int>("--rom", "-r")
+        {
+            Arity = ArgumentArity.ExactlyOne,
+            Description = "Индекс ROM образа в файле",
+            DefaultValueFactory = result =>
             {
                 if (result.Tokens.Count == 0)
                 {
                     return -1;
                 }
-                return int.TryParse(result.Tokens.Single().Value, out int value) ? value : 0;;
-            });
-        indexRomOption.AddAlias("-r");
-        extractCommand.Add(indexRomOption);
+                return int.TryParse(result.Tokens.Single().Value, out int value) ? value : 0;
+            },
+        };
+        var directoryRomOption = new Option<string>("--dir", "-d")
+        {
+            Arity = ArgumentArity.ZeroOrOne,
+            Description = "Директория c BRU файлами образа ROM диска",
+            DefaultValueFactory = Parsing.ParseDirectoryOption,
+        };
+        var extractCommand = new Command("extract", "Извлечь содержимое из образа ROM диска")
+        {
+            Arguments = { fileInfoExistsArgument },
+            Options = { indexRomOption, directoryRomOption },
+        };
+        extractCommand.SetAction(result =>
+        {
+            FileInfo? file = result.GetValue(fileInfoExistsArgument);
+            int indexRom = result.GetValue(indexRomOption);
+            string path = result.GetValue(directoryRomOption)!;
+            Extract(file, indexRom, path);
+        });
 
-        var directoryRomOption = new Option<string>("--dir", CommandLine.Parsing.ParseDirectoryOption,
-            isDefault: true,
-            description: "Директория c BRU файлами образа ROM диска");
-        directoryRomOption.AddAlias("-d");
-        extractCommand.Add(directoryRomOption);
-        extractCommand.SetHandler(Extract, fileInfoExistsArgument, indexRomOption, directoryRomOption);
-        command.Add(extractCommand);
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+        var command = new Command("rom", "Действия с ROM образами");
+        command.Subcommands.Add(newCommand);
+        command.Subcommands.Add(listCommand);
+        command.Subcommands.Add(extractCommand);
 
         return command;
     }
@@ -130,44 +167,43 @@ public class RomFile
                 throw new ApplicationException("Ошибка формата образа ROM диска");
             }
             int romIndex = 0;
-            using (Stream stream = file.OpenRead())
-            using (BinaryReader reader = new (stream))
+            using Stream stream = file.OpenRead();
+            using BinaryReader reader = new(stream);
+            while (reader.BaseStream.Position < file.Length)
             {
-                while (reader.BaseStream.Position < file.Length)
+                Console.WriteLine("ROM = {0}, file pos: 0x{1:X4}", romIndex++, reader.BaseStream.Position);
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine("| FileName | Start | Size | Attr |");
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine(romListFormat, loaderName, null, loaderSize, null);
+                reader.BaseStream.Seek(loaderSize, SeekOrigin.Current);
+                long start = loaderSize;
+                while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
                 {
-                    Console.WriteLine("ROM = {0}, file pos: 0x{1:X4}", romIndex++, reader.BaseStream.Position);
-                    Console.WriteLine("----------------------------------");
-                    Console.WriteLine("| FileName | Start | Size | Attr |");
-                    Console.WriteLine("----------------------------------");
-                    Console.WriteLine(romListFormat, loaderName, null, loaderSize, null);
-                    reader.BaseStream.Seek(loaderSize, SeekOrigin.Current);
-                    long start = loaderSize;
-                    while (start < MaxRomSize && reader.BaseStream.Position < file.Length)
+                    byte[] data = reader.ReadBytes(8);
+                    if (data[0] == 0xFF) break;
+                    var name = Encoding.ASCII.GetString(data).Trim();
+                    var address = reader.ReadUInt16();
+                    var size = reader.ReadUInt16();
+                    var attribute = reader.ReadByte();
+                    var reserv = reader.ReadBytes(3);
+                    start += size + 16;
+                    if (start > MaxRomSize)
                     {
-                        byte[] data = reader.ReadBytes(8);
-                        if (data[0] == 0xFF) break;
-                        var name = Encoding.ASCII.GetString(data).Trim();
-                        var address = reader.ReadUInt16();
-                        var size = reader.ReadUInt16();
-                        var attribute = reader.ReadByte();
-                        var reserv = reader.ReadBytes(3);
-                        start += size + 16;
-                        if (start > MaxRomSize) {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(romListFormat, name, address, size, attribute);
-                            Console.ResetColor();
-                            break;
-                        }
-                        reader.BaseStream.Seek(size, SeekOrigin.Current);
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(romListFormat, name, address, size, attribute);
+                        Console.ResetColor();
+                        break;
                     }
-                    Console.WriteLine("----------------------------------");
-                    Console.WriteLine();
-                    
-                    long pos = ((reader.BaseStream.Position >> 16) + 1) << 16;
-                    if (pos >= file.Length ) break;
-                    reader.BaseStream.Seek(pos, SeekOrigin.Begin);
+                    reader.BaseStream.Seek(size, SeekOrigin.Current);
+                    Console.WriteLine(romListFormat, name, address, size, attribute);
                 }
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine();
+
+                long pos = ((reader.BaseStream.Position >> 16) + 1) << 16;
+                if (pos >= file.Length) break;
+                reader.BaseStream.Seek(pos, SeekOrigin.Begin);
             }
         }
         catch (Exception ex)
